@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import { initCollapses } from 'flowbite'
 
 const isDarkMode = ref(false)
 
@@ -30,6 +31,7 @@ const toggleDarkMode = () => {
 
 onMounted(() => {
   initializeDarkMode()
+  initCollapses()
 })
 
 watch(isDarkMode, (newValue) => {

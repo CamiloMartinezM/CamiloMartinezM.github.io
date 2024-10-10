@@ -11,6 +11,18 @@ export default defineConfig({
         vue(),
         vueJsx(),
     ],
+    optimizeDeps: {
+        include: ['flowbite']
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    flowbite: ['flowbite']
+                }
+            }
+        }
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
