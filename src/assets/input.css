@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .text-highlight {
+    @apply text-highlighted transition-colors duration-75 ease-in-out;
+  }
+}
