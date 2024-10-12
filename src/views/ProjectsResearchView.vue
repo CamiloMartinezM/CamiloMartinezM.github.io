@@ -1,31 +1,72 @@
 <template>
   <div class="flex justify-center min-h-screen text-justify dark:bg-body dark:text-white">
-    <div class="container flex max-w-6xl">
+    <div class="container flex max-w-6xl relative">
       <!-- Sidebar Navigation -->
-      <nav class="w-1/4 h-screen sticky top-0 pt-16 pr-8">
-        <ul class="space-y-4">
-          <li v-for="project in projects" :key="project.id">
-            <a
-              :href="`#${project.id}`"
-              @click.prevent="scrollTo(project.id)"
-              :class="{
-                'text-highlighted font-semibold': currentProject === project.id,
-                'text-secondary dark:text-secondary-white': currentProject !== project.id
-              }"
-              class="block py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
-            >
-              <span
-                v-if="currentProject === project.id"
-                class="absolute left-0 top-0 bottom-0 w-1 bg-highlighted rounded-full"
-              ></span>
-              <span v-html="project.title"></span>
-            </a>
-          </li>
-        </ul>
+      <nav
+        :class="{
+          'w-1/4 border-r border-gray-200 dark:border-gray-700': !isSidebarFolded,
+          'w-0': isSidebarFolded
+        }"
+        class="sticky top-0 h-screen transition-all duration-300 ease-in-out bg-white dark:bg-body"
+      >
+        <div class="h-full overflow-hidden">
+          <ul class="space-y-4 pt-16 pr-4" :class="{ 'opacity-0': isSidebarFolded }">
+            <li v-for="project in projects" :key="project.id">
+              <a
+                :href="`#${project.id}`"
+                @click.prevent="scrollTo(project.id)"
+                :class="{
+                  'text-highlighted font-semibold': currentProject === project.id,
+                  'text-secondary dark:text-secondary-white': currentProject !== project.id
+                }"
+                class="block py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+              >
+                <span
+                  v-if="currentProject === project.id"
+                  class="absolute left-0 top-0 bottom-0 w-1 bg-highlighted rounded-full"
+                ></span>
+                <span v-html="project.title"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- Toggle button -->
+        <button
+          @click="toggleSidebar"
+          class="absolute top-4 -right-3 bg-white dark:bg-gray-700 p-2 rounded-full z-10 transition-all duration-300 ease-in-out"
+          :class="{
+            'shadow-lg shadow-gray-200 dark:shadow-[0_0_10px_3px_rgba(255,255,255,0.1)]':
+              !isSidebarFolded,
+            'shadow-lg shadow-gray-400 dark:shadow-[0_0_10px_3px_rgba(255,255,255,0.3)]':
+              isSidebarFolded
+          }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 transform transition-transform duration-300 dark:text-white"
+            :class="{ 'rotate-180': isSidebarFolded }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
       </nav>
 
       <!-- Main Content -->
-      <main class="flex-1 p-8 overflow-y-auto">
+      <main
+        :class="{
+          'w-3/4': !isSidebarFolded,
+          'flex-1': isSidebarFolded
+        }"
+        class="p-8 transition-all duration-300 ease-in-out overflow-x-hidden"
+      >
         <h1 class="text-4xl font-bold mb-8">Projects &amp; Research</h1>
         <div v-for="project in projects" :key="project.id" :id="project.id" class="mb-16">
           <h2 class="text-3xl font-semibold mb-4 flex items-center border-b-2 dark:border-gray-500">
@@ -81,6 +122,11 @@ const projects = ref([
 
 const currentProject = ref('')
 const router = useRouter()
+const isSidebarFolded = ref(false)
+
+const toggleSidebar = () => {
+  isSidebarFolded.value = !isSidebarFolded.value
+}
 
 const scrollTo = (id: string) => {
   const element = document.getElementById(id)
@@ -116,8 +162,6 @@ const updateCurrentProject = () => {
 
   if (maxVisibleProject) {
     currentProject.value = maxVisibleProject
-    // Update the URL without navigating
-    // router.replace({ hash: `#${maxVisibleProject}` })
   }
 }
 
