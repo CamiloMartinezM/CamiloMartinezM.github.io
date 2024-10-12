@@ -1,6 +1,6 @@
 # CamiloMartinezM.github.io
 
-This template should help get you started developing with Vue 3 in Vite.
+A cool Portfolio website with Vue 3 in Vite.
 
 ## Recommended IDE Setup
 
@@ -30,6 +30,12 @@ npm run dev
 
 ```sh
 npm run build
+```
+
+### Deploy website with gh-pages
+
+```sh
+npm run deploy
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
