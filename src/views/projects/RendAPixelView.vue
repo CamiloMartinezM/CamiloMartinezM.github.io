@@ -12,6 +12,10 @@
     </a>
     during the Winter Semester 2023/2024. Some of the implemented features are showcased below:
   </p>
+  <p class="text-sm mt-4 text-gray-700 italic dark:text-gray-400">
+    These dynamic images are not yet fully responsive so they are better viewed on a Desktop
+    <span style="font-style: normal">:)</span>
+  </p>
   <section class="section">
     <div>
       <h2 class="subsection">Area Lights</h2>
