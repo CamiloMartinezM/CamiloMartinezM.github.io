@@ -17,7 +17,8 @@ export default {
             yellow: colors.yellow,
             "primary": "#09090b",
             "secondary": "#596673",
-            "highlighted": "#7862ff",
+            "secondary-white": "#A9ABAE", // #F5F7FA darkened 30% (https://www.cssfontstack.com/oldsites/hexcolortool/)
+            "highlighted": "#0D92F4",
             "header": "#1C1C1D",
             "body": "#1C1C1D",
             "footer": "#1C1C1D",
