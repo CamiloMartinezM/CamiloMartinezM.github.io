@@ -7,7 +7,7 @@
           'w-1/4 border-r border-gray-200 dark:border-gray-700': !isSidebarFolded,
           'w-0': isSidebarFolded
         }"
-        class="sticky top-0 h-screen transition-all duration-300 ease-in-out bg-white dark:bg-body"
+        class="sticky top-0 h-screen transition-all duration-300 ease-in-out bg-white dark:bg-body text-xs md:text-sm"
       >
         <div class="h-full overflow-hidden">
           <ul class="space-y-4 pt-16 pr-4" :class="{ 'opacity-0': isSidebarFolded }">
@@ -68,7 +68,7 @@
         class="p-8 transition-all duration-300 ease-in-out overflow-x-hidden"
       >
         <h1 class="text-4xl font-bold mb-8">Projects &amp; Research</h1>
-        <div v-for="project in projects" :key="project.id" :id="project.id" class="mb-16">
+        <div v-for="project in projects" :key="project.id" :id="project.id" class="mb-8">
           <h2 class="text-3xl font-semibold mb-4 flex items-center border-b-2 dark:border-gray-500">
             <span v-html="project.title"></span>
             <a
@@ -92,6 +92,12 @@
             </a>
           </h2>
           <component :is="project.component" />
+          <p v-if="project.githubUrl" class="text-sm mt-4 text-gray-700 italic dark:text-gray-400">
+            For more details, please refer to the project's
+            <a :href="project.githubUrl" target="_blank" rel="noopener noreferrer" class="link"
+              >GitHub repository</a
+            >.
+          </p>
         </div>
       </main>
     </div>
@@ -105,6 +111,12 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 
 const projects = ref([
+  {
+    id: 'stringstosequences',
+    title: 'Acoustic Guitar Chords Recognition',
+    component: defineAsyncComponent(() => import('./projects/StringsToSequencesView.vue')),
+    githubUrl: 'https://github.com/dhimitriosduka1/hlcv'
+  },
   {
     id: 'rendapixel',
     title: '<span class="font-normal">Rend-a-Pixel</span> <em>Raytracer</em>',
