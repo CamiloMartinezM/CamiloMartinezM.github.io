@@ -3,11 +3,15 @@
     <span class="text-highlighted">Rend-a-Pixel</span> is a raytracing rendering engine developed on
     top of the <span class="text-highlighted">Lightwave</span> Framework as the final project for
     the
-    <a href="https://graphics.cg.uni-saarland.de/" class="link"
+    <a href="https://graphics.cg.uni-saarland.de/" class="link" target="_blank" rel="noopener"
       >Computer Graphics course at Saarland University</a
     >
     lectured by
-    <a href="https://graphics.cg.uni-saarland.de/people/slusallek.html" class="link"
+    <a
+      href="https://graphics.cg.uni-saarland.de/people/slusallek.html"
+      class="link"
+      target="_blank"
+      rel="noopener"
       >Prof. Dr.-Ing. Philipp Slusallek
     </a>
     during the Winter Semester 2023/2024. Some of the implemented features are showcased below:
@@ -20,17 +24,20 @@
     <div>
       <h2 class="subsection">Area Lights</h2>
       <TwentyTwenty>
-        <img src="../../assets/images/area_lights/no_area_lights_ref.jpeg" alt="No area lights" />
         <img
-          src="../../assets/images/area_lights/area_lights_sphere_uniform_sampling.jpeg"
+          src="../../assets/images/rend-a-pixel/area_lights/no_area_lights_ref.jpeg"
+          alt="No area lights"
+        />
+        <img
+          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_uniform_sampling.jpeg"
           alt="Uniform sphere sampling"
         />
         <img
-          src="../../assets/images/area_lights/area_lights_sphere_cosine_weighted_sampling.jpeg"
+          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_cosine_weighted_sampling.jpeg"
           alt="Cosine-weighted sampling"
         />
         <img
-          src="../../assets/images/area_lights/area_lights_sphere_subtended_cone_sampling.jpeg"
+          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_subtended_cone_sampling.jpeg"
           alt="Subtended-cone sampling"
         />
       </TwentyTwenty>
@@ -43,10 +50,13 @@
       <h2 class="subsection">Shading Normals</h2>
       <TwentyTwenty>
         <img
-          src="../../assets/images/shading_normals/no_normal_mapping.jpeg"
+          src="../../assets/images/rend-a-pixel/shading_normals/no_normal_mapping.jpeg"
           alt="No normal mapping"
         />
-        <img src="../../assets/images/shading_normals/normal_mapping.jpeg" alt="Normal mapping" />
+        <img
+          src="../../assets/images/rend-a-pixel/shading_normals/normal_mapping.jpeg"
+          alt="Normal mapping"
+        />
       </TwentyTwenty>
     </div>
   </section>
@@ -57,11 +67,11 @@
       <h2 class="subsection">A Thinlens Camera Model</h2>
       <TwentyTwenty>
         <img
-          src="../../assets/images/thinlens_camera_model/no_thinlens_ducks.jpg"
+          src="../../assets/images/rend-a-pixel/thinlens_camera_model/no_thinlens_ducks.jpg"
           alt="Perspective"
         />
         <img
-          src="../../assets/images/thinlens_camera_model/thinlens_ducks.jpg"
+          src="../../assets/images/rend-a-pixel/thinlens_camera_model/thinlens_ducks.jpg"
           alt="Perspective with Thinlens"
         />
       </TwentyTwenty>
@@ -73,8 +83,14 @@
     <div>
       <h2 class="subsection">Alpha Masking</h2>
       <TwentyTwenty>
-        <img src="../../assets/images/alpha_masking/no_alpha_masking.jpeg" alt="No alpha masking" />
-        <img src="../../assets/images/alpha_masking/alpha_masking.jpeg" alt="Alpha masking" />
+        <img
+          src="../../assets/images/rend-a-pixel/alpha_masking/no_alpha_masking.jpeg"
+          alt="No alpha masking"
+        />
+        <img
+          src="../../assets/images/rend-a-pixel/alpha_masking/alpha_masking.jpeg"
+          alt="Alpha masking"
+        />
       </TwentyTwenty>
     </div>
   </section>
@@ -84,8 +100,14 @@
     <div>
       <h2 class="subsection">Image Denoising</h2>
       <TwentyTwenty>
-        <img src="../../assets/images/denoising/noisy_pathtracing_lights.jpeg" alt="Noisy" />
-        <img src="../../assets/images/denoising/denoised_pathtracing_lights.jpeg" alt="Denoised" />
+        <img
+          src="../../assets/images/rend-a-pixel/denoising/noisy_pathtracing_lights.jpeg"
+          alt="Noisy"
+        />
+        <img
+          src="../../assets/images/rend-a-pixel/denoising/denoised_pathtracing_lights.jpeg"
+          alt="Denoised"
+        />
       </TwentyTwenty>
     </div>
   </section>
@@ -97,37 +119,37 @@
       <section>
         <TwentyTwenty>
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_independent.jpeg"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_independent.jpeg"
             alt="Independent sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_halton_no_permutation.jpeg"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_no_permutation.jpeg"
             alt="Normal Halton sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_halton_digit_permutations.jpeg"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_digit_permutations.jpeg"
             alt="Digit-permutated Halton sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_halton_owen_scramble.jpeg"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_owen_scramble.jpeg"
             alt="Owen-scrambled Halton sampling"
           />
         </TwentyTwenty>
         <TwentyTwenty>
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_detail_independent.png"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_independent.png"
             alt="Independent sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_detail_halton.png"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_halton.png"
             alt="Normal Halton sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_detail_permutedigits.png"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_permutedigits.png"
             alt="Digit-permutated Halton sampling"
           />
           <img
-            src="../../assets/images/halton_sampler/bunny_constant_detail_owen.png"
+            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_owen.png"
             alt="Owen-scrambled Halton sampling"
           />
         </TwentyTwenty>
@@ -140,13 +162,16 @@
     <div>
       <h2 class="subsection">Multiple Importance Sampling (MIS)</h2>
       <TwentyTwenty>
-        <img src="../../assets/images/mis_path_tracer/veach_bsdf.jpeg" alt="BSDF sampling" />
         <img
-          src="../../assets/images/mis_path_tracer/veach_nee.jpeg"
+          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_bsdf.jpeg"
+          alt="BSDF sampling"
+        />
+        <img
+          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_nee.jpeg"
           alt="Next Event Estimation (NEE)"
         />
         <img
-          src="../../assets/images/mis_path_tracer/veach_mis.jpeg"
+          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_mis.jpeg"
           alt="Multiple Importance Sampling (MIS)"
         />
       </TwentyTwenty>
@@ -264,19 +289,34 @@
     <h2 class="subsection">Copyright & Credits</h2>
     <p>
       &copy; The Lightwave Framework was written by
-      <a href="https://graphics.cg.uni-saarland.de/people/rath.html" class="link">Alexander Rath</a
+      <a
+        href="https://graphics.cg.uni-saarland.de/people/rath.html"
+        class="link"
+        target="_blank"
+        rel="noopener"
+        >Alexander Rath</a
       >, with contributions from
-      <a href="https://graphics.cg.uni-saarland.de/people/yazici.html" class="link"
+      <a
+        href="https://graphics.cg.uni-saarland.de/people/yazici.html"
+        class="link"
+        target="_blank"
+        rel="noopener"
         >Ömercan Yazici</a
       >
       and
-      <a href="https://graphics.cg.uni-saarland.de/people/weier.html" class="link">Philippe Weier</a
+      <a
+        href="https://graphics.cg.uni-saarland.de/people/weier.html"
+        class="link"
+        target="_blank"
+        rel="noopener"
+        >Philippe Weier</a
       >. Their support was invaluable in the coding of these features. The scenes showcasing the
       features were provided by their team, and should be used under permission. Many textures and
-      models were taken from <a href="https://polyhaven.com" class="link">Poly Haven</a>'s extensive
-      library. Many thanks to the team behind
-      <a href="https://github.com/Tom94/tev" class="link">Tev</a> used extensively throughout this
-      project as an EXR viewer.
+      models were taken from
+      <a href="https://polyhaven.com" class="link" target="_blank" rel="noopener">Poly Haven</a>'s
+      extensive library. Many thanks to the team behind
+      <a href="https://github.com/Tom94/tev" class="link" target="_blank" rel="noopener">Tev</a>
+      used extensively throughout this project as an EXR viewer.
     </p>
   </section>
 </template>
@@ -293,10 +333,6 @@ const options = ref({
 </script>
 
 <style scoped>
-.section {
-  padding-top: 1rem /* 16px */;
-}
-
 .two-column-section {
   display: flex;
   flex-wrap: wrap;
