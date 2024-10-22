@@ -11,21 +11,21 @@
       >
         <div class="h-full overflow-hidden">
           <ul class="space-y-4 pt-16 pr-4" :class="{ 'opacity-0': isSidebarFolded }">
-            <li v-for="project in projects" :key="project.id">
+            <li v-for="item in allNavigationItems" :key="item.id">
               <a
-                :href="`#${project.id}`"
-                @click.prevent="scrollTo(project.id)"
+                :href="`#${item.id}`"
+                @click.prevent="scrollTo(item.id)"
                 :class="{
-                  'text-highlighted font-semibold': currentProject === project.id,
-                  'text-secondary dark:text-secondary-white': currentProject !== project.id
+                  'text-highlighted font-semibold': currentSection === item.id,
+                  'text-secondary dark:text-secondary-white': currentSection !== item.id
                 }"
                 class="block py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
               >
                 <span
-                  v-if="currentProject === project.id"
+                  v-if="currentSection === item.id"
                   class="absolute left-0 top-0 bottom-0 w-1 bg-highlighted rounded-full"
                 ></span>
-                <span v-html="project.title"></span>
+                <span v-html="item.title"></span>
               </a>
             </li>
           </ul>
@@ -67,9 +67,30 @@
         }"
         class="p-8 transition-all duration-300 ease-in-out overflow-x-hidden"
       >
-        <h1 class="text-4xl font-bold mb-8">Projects &amp; Research</h1>
+        <!-- <h1 class="text-4xl font-bold mb-4 border-b-2 dark:border-gray-500">
+          Projects &amp; Research
+        </h1> -->
+
+        <!-- Overview section with id -->
+        <div id="overview" ref="overviewSection">
+          <ProjectOverview @projectClick="scrollTo" />
+        </div>
+
+        <!-- Project sections -->
         <div v-for="project in projects" :key="project.id" :id="project.id" class="mb-8">
-          <h2 class="text-3xl font-semibold mb-4 flex items-center border-b-2 dark:border-gray-500">
+          <h2
+            v-if="project.id !== 'publications'"
+            class="text-3xl font-semibold mb-6 flex items-center border-b-2 dark:border-gray-500"
+          >
+            Projects
+          </h2>
+          <h2
+            class="font-semibold flex items-center"
+            :class="{
+              'text-3xl border-b-2 dark:border-gray-500': project.id === 'publications',
+              'text-2xl mb-2': project.id !== 'publications'
+            }"
+          >
             <span v-html="project.title"></span>
             <a
               v-if="project.githubUrl"
@@ -91,7 +112,16 @@
               <span class="sr-only">View on GitHub</span>
             </a>
           </h2>
-          <component :is="project.component" />
+          <Suspense>
+            <component :is="project.component" />
+            <template #fallback>
+              <div class="flex justify-center items-center p-8">
+                <div
+                  class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"
+                ></div>
+              </div>
+            </template>
+          </Suspense>
           <p v-if="project.githubUrl" class="text-sm mt-4 text-gray-700 italic dark:text-gray-400">
             For more details, please refer to the project's
             <a :href="project.githubUrl" target="_blank" rel="noopener noreferrer" class="link"
@@ -105,36 +135,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineAsyncComponent, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useProjectsStore } from '../stores/projects'
+import ProjectOverview from './ProjectsOverview.vue'
 
 const route = useRoute()
-
-const projects = ref([
-  {
-    id: 'stringstosequences',
-    title: 'Acoustic Guitar Chords Recognition',
-    component: defineAsyncComponent(() => import('./projects/StringsToSequencesView.vue')),
-    githubUrl: 'https://github.com/dhimitriosduka1/hlcv'
-  },
-  {
-    id: 'rendapixel',
-    title: '<span class="font-normal">Rend-a-Pixel</span> <em>Raytracer</em>',
-    component: defineAsyncComponent(() => import('./projects/RendAPixelView.vue')),
-    githubUrl: 'https://github.com/CamiloMartinezM/rend-a-pixel'
-  },
-  {
-    id: 'publications',
-    title: 'Publications',
-    component: defineAsyncComponent(() => import('./projects/MyPublications.vue')),
-    githubUrl: null
-  }
-  // Add more projects as needed
-])
-
-const currentProject = ref('')
 const router = useRouter()
+const projectsStore = useProjectsStore()
+const { projects, allNavigationItems } = storeToRefs(projectsStore)
+
+const currentSection = ref('overview') // Default to overview
 const isSidebarFolded = ref(false)
+const overviewSection = ref<HTMLElement | null>(null)
 
 const toggleSidebar = () => {
   isSidebarFolded.value = !isSidebarFolded.value
@@ -147,17 +161,28 @@ const scrollTo = (id: string) => {
       behavior: 'smooth',
       block: 'start'
     })
-    updateCurrentProject()
-    // Update the URL without navigating
-    router.replace({ hash: `#${id}` })
+    currentSection.value = id
+    router.replace({ hash: `#${id}` }) // Update the URL without navigating
   }
 }
 
-const updateCurrentProject = () => {
+const updateCurrentSection = () => {
   const windowHeight = window.innerHeight
-  let maxVisibleProject = null
+  let maxVisibleSection = null
   let maxVisiblePercentage = 0
 
+  // Check overview section first
+  if (overviewSection.value) {
+    const rect = overviewSection.value.getBoundingClientRect()
+    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0)
+    const visiblePercentage = visibleHeight / overviewSection.value.offsetHeight
+    if (visiblePercentage > maxVisiblePercentage) {
+      maxVisiblePercentage = visiblePercentage
+      maxVisibleSection = 'overview'
+    }
+  }
+
+  // Then check project sections
   for (const project of projects.value) {
     const element = document.getElementById(project.id)
     if (element) {
@@ -167,32 +192,33 @@ const updateCurrentProject = () => {
 
       if (visiblePercentage > maxVisiblePercentage) {
         maxVisiblePercentage = visiblePercentage
-        maxVisibleProject = project.id
+        maxVisibleSection = project.id
       }
     }
   }
 
-  if (maxVisibleProject) {
-    currentProject.value = maxVisibleProject
+  if (maxVisibleSection) {
+    currentSection.value = maxVisibleSection
   }
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', updateCurrentProject)
-  window.addEventListener('resize', updateCurrentProject)
+  window.addEventListener('scroll', updateCurrentSection)
+  window.addEventListener('resize', updateCurrentSection)
 
-  // If there's a hash in the URL, scroll to that project
+  // If there's a hash in the URL, scroll to that section
   if (route.hash) {
-    scrollTo(route.hash.slice(1))
+    const id = route.hash.slice(1)
+    scrollTo(id)
   } else {
-    // Otherwise, update based on initial scroll position
-    updateCurrentProject()
+    // Otherwise, start at overview
+    currentSection.value = 'overview'
   }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateCurrentProject)
-  window.removeEventListener('resize', updateCurrentProject)
+  window.removeEventListener('scroll', updateCurrentSection)
+  window.removeEventListener('resize', updateCurrentSection)
 })
 
 // Watch for route changes
@@ -208,7 +234,7 @@ watch(
 
 <style scoped>
 .sr-only {
-  position: absolute;
+  /* position: absolute;
   width: 1px;
   height: 1px;
   padding: 0;
@@ -216,6 +242,6 @@ watch(
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border-width: 0;
+  border-width: 0; */
 }
 </style>
