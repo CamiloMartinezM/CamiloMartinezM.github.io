@@ -20,11 +20,7 @@
         </p>
 
         <div class="image-wrapper">
-          <img
-            src="../assets/images/profile-picture.jpg"
-            alt="Camilo Martínez"
-            class="profile-image"
-          />
+          <img src="/images/profile-picture.jpg" alt="Camilo Martínez" class="profile-image" />
         </div>
 
         <p class="mb-4 text-lg">

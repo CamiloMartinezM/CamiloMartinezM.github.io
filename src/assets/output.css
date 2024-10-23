@@ -1267,16 +1267,16 @@ input:checked + .toggle-bg {
   margin-left: 0.25rem;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
 .ml-3 {
   margin-left: 0.75rem;
 }
 
 .ml-4 {
   margin-left: 1rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }
 
 .mt-2 {
@@ -1331,10 +1331,6 @@ input:checked + .toggle-bg {
   height: 2.5rem;
 }
 
-.h-2 {
-  height: 0.5rem;
-}
-
 .h-24 {
   height: 6rem;
 }
@@ -1369,38 +1365,6 @@ input:checked + .toggle-bg {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-1\/4 {
-  height: 25%;
-}
-
-.h-1\/2 {
-  height: 50%;
-}
-
-.h-20 {
-  height: 5rem;
-}
-
-.h-\[25\%\] {
-  height: 25%;
-}
-
-.h-\[10\%\] {
-  height: 10%;
-}
-
-.h-\[1\%\] {
-  height: 1%;
-}
-
-.h-48 {
-  height: 12rem;
-}
-
-.h-40 {
-  height: 10rem;
 }
 
 .min-h-full {
@@ -1477,6 +1441,10 @@ input:checked + .toggle-bg {
 
 .max-w-6xl {
   max-width: 72rem;
+}
+
+.max-w-none {
+  max-width: none;
 }
 
 .max-w-screen-xl {
@@ -1665,10 +1633,6 @@ input:checked + .toggle-bg {
 
 .overflow-x-hidden {
   overflow-x: hidden;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
 }
 
 .rounded-full {
@@ -2467,16 +2431,16 @@ input:checked + .toggle-bg {
 }
 
 @media (min-width: 768px) {
+  .md\:inline {
+    display: inline;
+  }
+
   .md\:flex {
     display: flex;
   }
 
   .md\:hidden {
     display: none;
-  }
-
-  .md\:h-full {
-    height: 100%;
   }
 
   .md\:w-1\/4 {

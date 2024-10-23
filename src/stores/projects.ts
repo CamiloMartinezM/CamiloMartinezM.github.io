@@ -42,7 +42,7 @@ export const useProjectsStore = defineStore('projects', () => {
             title: 'Acoustic Guitar Chords Recognition',
             component: defineAsyncComponent(() => import('../views/projects/StringsToSequencesView.vue')),
             githubUrl: 'https://github.com/dhimitriosduka1/hlcv',
-            iconPath: 'strings-to-sequences/icon.jpg',
+            iconPath: '/images/strings-to-sequences/icon.jpg',
             authors: [
                 {
                     name: 'Camilo Martínez',
@@ -58,14 +58,35 @@ export const useProjectsStore = defineStore('projects', () => {
                 }
             ],
             summary:
-                'An innovative system for recognizing guitar chords using computer vision and deep learning techniques. The project processes video input of guitar playing to identify and classify chord patterns in real-time.'
+                'An innovative automated system for recognizing <strong> guitar chords</strong> in acoustic guitar videos. Our approach combines <strong>YOLO</strong> <a href="https://arxiv.org/abs/1506.02640" class="link" target="_blank" rel="noopener">[Redmon et al., 2016]</a> for fretboard detection and <strong>DINOv2</strong> <a href="https://arxiv.org/abs/2304.07193" class="link" target="_blank" rel="noopener">[Oquab et al.]</a> with a <strong>ViT</strong> backbone <a href="https://arxiv.org/abs/2010.11929" class="link" target="_blank" rel="noopener">[Dosovitskiy et al., 2020]</a> for chord classification. We investigate <strong>hand pose estimation</strong> using <a href="https://github.com/google-ai-edge/mediapipe" class="link" target="_blank" rel="noopener">MediaPipe</a> and extend the work of <a href="https://ph01.tci-thaijo.org/index.php/ecticit/article/view/254624" class="link" target="_blank" rel="noopener">[Kristian et al., 2024]</a> by integrating modern deep learning techniques and proposing an audio generation component.'
+        },
+        {
+            id: 'multilingual-lm',
+            title: 'Multilingual Language Models Representations and Fine-Tuning',
+            component: defineAsyncComponent(
+                () => import('../views/projects/MultilingualLMRepresentations.vue')
+            ),
+            githubUrl: 'https://github.com/Kanakanajm/nnti/tree/main',
+            iconPath: '/images/multilingual-lm-representations/icon.svg',
+            authors: [
+                {
+                    name: 'Camilo Martínez',
+                    linkedinUrl: 'https://linkedin.com/in/camilo-martinez'
+                },
+                {
+                    name: 'Honglu Ma',
+                    linkedinUrl: 'https://github.com/Kanakanajm'
+                }
+            ],
+            summary:
+                'This study evaluates multilingual representation spaces using <a href="https://huggingface.co/facebook/xglm-564M" class="link" target="_blank" rel="noopener">XGLM-564M</a> and <a href="https://huggingface.co/openai-community/gpt2" class="link" target="_blank" rel="noopener">GPT-2</a> on the <strong><a href="https://huggingface.co/datasets/facebook/flores" class="link" target="_blank" rel="noopener">FLORES-200</a></strong> dataset, focusing on <strong>English, Spanish, German, Arabic, Tamil, and Quechua</strong>. We analyze hidden representations using PCA with <a href="https://scikit-learn.org/dev/modules/generated/sklearn.decomposition.PCA.html" class="link" target="_blank" rel="noopener">scikit-learn</a> and t-SNE with <a href="https://opentsne.readthedocs.io/en/stable/" class="link" target="_blank" rel="noopener">openTSNE</a> to visualize and interpret these high-dimensional spaces. We then fine-tune XGLM-564M on the <strong><a href="https://huggingface.co/datasets/Llamacha/monolingual-quechua-iic" class="link" target="_blank" rel="noopener">Monolingual-Quechua-IIC</a></strong> corpus, comparing four approaches: full fine-tuning, BitFit <a href="https://arxiv.org/abs/2106.10199" class="link" target="_blank" rel="noopener">[Zaken et al., 2022]</a>, LoRA <a href="https://arxiv.org/abs/2106.09685" class="link" target="_blank" rel="noopener">[Hu et al., 2021]</a>, and IA³ <a href="https://arxiv.org/abs/2205.05638" class="link" target="_blank" rel="noopener">[Liu et al., 2022]</a>. Our analysis examines both performance improvements on Quechua and cross-lingual transfer effects.'
         },
         {
             id: 'rendapixel',
             title: '<span class="font-normal">Rend-a-Pixel</span> <em>Raytracer</em>',
             component: defineAsyncComponent(() => import('../views/projects/RendAPixelView.vue')),
             githubUrl: 'https://github.com/CamiloMartinezM/rend-a-pixel',
-            iconPath: 'rend-a-pixel/icon.png',
+            iconPath: '/images/rend-a-pixel/icon.png',
             authors: [
                 {
                     name: 'Camilo Martínez',
@@ -73,7 +94,7 @@ export const useProjectsStore = defineStore('projects', () => {
                 }
             ],
             summary:
-                'A physically-based renderer implementing various ray tracing techniques. Features include global illumination, multiple importance sampling, and support for various material types and lighting conditions.'
+                'A physically-based renderer implementing various ray tracing techniques. Features include image denoising, normal mapping, multiple importance sampling, support for various material, texture types and lighting conditions, and many more.'
         }
     ])
 

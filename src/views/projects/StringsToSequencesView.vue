@@ -243,10 +243,7 @@
       </table>
 
       <figure>
-        <img
-          src="../../assets/images/strings-to-sequences/recall_vs_map50.jpg"
-          alt="Recall vs mAP@50"
-        />
+        <img src="/images/strings-to-sequences/recall_vs_map50.jpg" alt="Recall vs mAP@50" />
         <figcaption class="mt-2">
           <strong>Figure 1:</strong> Recall vs. mAP@50 for the models tested and finetuned on the
           <em>fretboard</em> class.
@@ -267,7 +264,7 @@
 
       <figure class="mb-4">
         <img
-          src="../../assets/images/strings-to-sequences/confusion_matrix_subset.png"
+          src="/images/strings-to-sequences/confusion_matrix_subset.png"
           alt="Recall vs mAP@50"
         />
         <figcaption>
@@ -281,7 +278,7 @@
 
       <figure class="mt-4">
         <img
-          src="../../assets/images/strings-to-sequences/difference_confusion_matrix.png"
+          src="/images/strings-to-sequences/difference_confusion_matrix.png"
           alt="Recall vs mAP@50"
         />
         <figcaption>
@@ -311,25 +308,29 @@
             <figure>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <img
-                  src="../../assets/images/strings-to-sequences/other-image-original.jpg"
+                  src="/images/strings-to-sequences/other-image-original.jpg"
                   alt="Original YOLOv9 prediction"
                   class="w-full h-auto object-contain"
                 />
                 <img
-                  src="../../assets/images/strings-to-sequences/other-image-non-frozen.jpg"
+                  src="/images/strings-to-sequences/other-image-non-frozen.jpg"
                   alt="Full-finetuning"
                   class="w-full h-auto object-contain"
                 />
                 <img
-                  src="../../assets/images/strings-to-sequences/other-image-finetuned.jpg"
+                  src="/images/strings-to-sequences/other-image-finetuned.jpg"
                   alt="Frozen backbone + Classifier layer"
                   class="w-full h-auto object-contain"
                 />
               </div>
               <figcaption class="mt-2 text-justify text-base">
                 <strong>Figure 2</strong>: Comparison of YOLOv9 (c) predictions with different
-                training approaches. From <strong>left</strong> to <strong>right</strong>: original
-                prediction, with full-finetuning, and with a frozen backbone + classifier layer.
+                training approaches.
+                <span class="hidden md:inline"
+                  >From <strong>left</strong> to <strong>right</strong></span
+                ><span class="md:hidden">From <strong>top</strong> to <strong>bottom</strong></span
+                >: original prediction, with full-finetuning, and with a frozen backbone +
+                classifier layer.
               </figcaption>
             </figure>
 
@@ -337,20 +338,23 @@
             <figure>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <img
-                  src="../../assets/images/strings-to-sequences/dhimitrios-non-frozen.jpg"
+                  src="/images/strings-to-sequences/dhimitrios-non-frozen.jpg"
                   alt="With full-finetuning"
                   class="w-full h-auto object-contain"
                 />
                 <img
-                  src="../../assets/images/strings-to-sequences/dhimitrios.jpg"
+                  src="/images/strings-to-sequences/dhimitrios.jpg"
                   alt="Frozen backbone + Classifier layer"
                   class="w-full h-auto object-contain"
                 />
               </div>
               <figcaption class="mt-2 text-justify text-base">
                 <strong>Figure 3</strong>: Comparison of full-finetuning vs. frozen backbone with
-                classifier layer. <strong>Left</strong>: with full-finetuning,
-                <strong>right</strong>: with frozen backbone + classifier layer.
+                classifier layer. <span class="hidden md:inline"><strong>Left</strong></span
+                ><span class="md:hidden"><strong>Top</strong></span
+                >: with full-finetuning, <span class="hidden md:inline"><strong>right</strong></span
+                ><span class="md:hidden"><strong>bottom</strong></span
+                >: with frozen backbone + classifier layer.
               </figcaption>
             </figure>
 
@@ -358,22 +362,26 @@
             <figure>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 align-middle items-center">
                 <img
-                  src="../../assets/images/strings-to-sequences/output_normal_image.jpg"
+                  src="/images/strings-to-sequences/output_normal_image.jpg"
                   alt="Prediction on an image from the COCO dataset"
                   class="w-full h-auto object-contain"
                 />
                 <img
-                  src="../../assets/images/strings-to-sequences/other-image-2-finetuned.jpg"
+                  src="/images/strings-to-sequences/other-image-2-finetuned.jpg"
                   alt="From the Penn-Fudan dataset"
                   class="w-full h-auto object-contain"
                 />
               </div>
               <figcaption class="mt-2 text-justify text-base">
                 <strong>Figure 4</strong>: Model predictions on different datasets.
-                <strong>Left</strong>: prediction on an image from the
+                <span class="hidden md:inline"><strong>Left</strong></span
+                ><span class="md:hidden"><strong>Top</strong></span
+                >: prediction on an image from the
                 <a href="https://cocodataset.org/#home" class="link" target="_blank" rel="noopener"
                   >COCO dataset</a
-                >, <strong>right</strong>: from the
+                >, <span class="hidden md:inline"><strong>right</strong></span
+                ><span class="md:hidden"><strong>bottom</strong></span
+                >: from the
                 <a
                   href="https://www.cis.upenn.edu/~jshi/ped_html/"
                   class="link"
@@ -600,12 +608,12 @@
 
       <figure class="flex flex-col items-center align-middle mb-4">
         <img
-          src="../../assets/images/strings-to-sequences/occlusion_untrained.jpg"
+          src="/images/strings-to-sequences/occlusion_untrained.jpg"
           alt="Occlusion in untrained model"
           width="75%"
         />
         <img
-          src="../../assets/images/strings-to-sequences/occlusion_trained.jpg"
+          src="/images/strings-to-sequences/occlusion_trained.jpg"
           alt="Occlusion in trained model"
           width="75%"
         />
@@ -629,7 +637,7 @@
 
       <figure class="flex flex-col mb-4 align-middle items-center">
         <img
-          src="../../assets/images/strings-to-sequences/occlusion_trained_full.jpg"
+          src="/images/strings-to-sequences/occlusion_trained_full.jpg"
           alt="Occlusion in trained model - full picture"
           width="75%"
         />

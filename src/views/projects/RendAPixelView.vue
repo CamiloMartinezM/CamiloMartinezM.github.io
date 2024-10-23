@@ -24,20 +24,17 @@
     <div>
       <h2 class="subsection">Area Lights</h2>
       <TwentyTwenty>
+        <img src="/images/rend-a-pixel/area_lights/no_area_lights_ref.jpeg" alt="No area lights" />
         <img
-          src="../../assets/images/rend-a-pixel/area_lights/no_area_lights_ref.jpeg"
-          alt="No area lights"
-        />
-        <img
-          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_uniform_sampling.jpeg"
+          src="/images/rend-a-pixel/area_lights/area_lights_sphere_uniform_sampling.jpeg"
           alt="Uniform sphere sampling"
         />
         <img
-          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_cosine_weighted_sampling.jpeg"
+          src="/images/rend-a-pixel/area_lights/area_lights_sphere_cosine_weighted_sampling.jpeg"
           alt="Cosine-weighted sampling"
         />
         <img
-          src="../../assets/images/rend-a-pixel/area_lights/area_lights_sphere_subtended_cone_sampling.jpeg"
+          src="/images/rend-a-pixel/area_lights/area_lights_sphere_subtended_cone_sampling.jpeg"
           alt="Subtended-cone sampling"
         />
       </TwentyTwenty>
@@ -50,13 +47,10 @@
       <h2 class="subsection">Shading Normals</h2>
       <TwentyTwenty>
         <img
-          src="../../assets/images/rend-a-pixel/shading_normals/no_normal_mapping.jpeg"
+          src="/images/rend-a-pixel/shading_normals/no_normal_mapping.jpeg"
           alt="No normal mapping"
         />
-        <img
-          src="../../assets/images/rend-a-pixel/shading_normals/normal_mapping.jpeg"
-          alt="Normal mapping"
-        />
+        <img src="/images/rend-a-pixel/shading_normals/normal_mapping.jpeg" alt="Normal mapping" />
       </TwentyTwenty>
     </div>
   </section>
@@ -67,11 +61,11 @@
       <h2 class="subsection">A Thinlens Camera Model</h2>
       <TwentyTwenty>
         <img
-          src="../../assets/images/rend-a-pixel/thinlens_camera_model/no_thinlens_ducks.jpg"
+          src="/images/rend-a-pixel/thinlens_camera_model/no_thinlens_ducks.jpg"
           alt="Perspective"
         />
         <img
-          src="../../assets/images/rend-a-pixel/thinlens_camera_model/thinlens_ducks.jpg"
+          src="/images/rend-a-pixel/thinlens_camera_model/thinlens_ducks.jpg"
           alt="Perspective with Thinlens"
         />
       </TwentyTwenty>
@@ -84,13 +78,10 @@
       <h2 class="subsection">Alpha Masking</h2>
       <TwentyTwenty>
         <img
-          src="../../assets/images/rend-a-pixel/alpha_masking/no_alpha_masking.jpeg"
+          src="/images/rend-a-pixel/alpha_masking/no_alpha_masking.jpeg"
           alt="No alpha masking"
         />
-        <img
-          src="../../assets/images/rend-a-pixel/alpha_masking/alpha_masking.jpeg"
-          alt="Alpha masking"
-        />
+        <img src="/images/rend-a-pixel/alpha_masking/alpha_masking.jpeg" alt="Alpha masking" />
       </TwentyTwenty>
     </div>
   </section>
@@ -100,14 +91,8 @@
     <div>
       <h2 class="subsection">Image Denoising</h2>
       <TwentyTwenty>
-        <img
-          src="../../assets/images/rend-a-pixel/denoising/noisy_pathtracing_lights.jpeg"
-          alt="Noisy"
-        />
-        <img
-          src="../../assets/images/rend-a-pixel/denoising/denoised_pathtracing_lights.jpeg"
-          alt="Denoised"
-        />
+        <img src="/images/rend-a-pixel/denoising/noisy_pathtracing_lights.jpeg" alt="Noisy" />
+        <img src="/images/rend-a-pixel/denoising/denoised_pathtracing_lights.jpeg" alt="Denoised" />
       </TwentyTwenty>
     </div>
   </section>
@@ -119,37 +104,37 @@
       <section>
         <TwentyTwenty>
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_independent.jpeg"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_independent.jpeg"
             alt="Independent sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_no_permutation.jpeg"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_halton_no_permutation.jpeg"
             alt="Normal Halton sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_digit_permutations.jpeg"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_halton_digit_permutations.jpeg"
             alt="Digit-permutated Halton sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_halton_owen_scramble.jpeg"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_halton_owen_scramble.jpeg"
             alt="Owen-scrambled Halton sampling"
           />
         </TwentyTwenty>
         <TwentyTwenty>
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_independent.png"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_detail_independent.png"
             alt="Independent sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_halton.png"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_detail_halton.png"
             alt="Normal Halton sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_permutedigits.png"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_detail_permutedigits.png"
             alt="Digit-permutated Halton sampling"
           />
           <img
-            src="../../assets/images/rend-a-pixel/halton_sampler/bunny_constant_detail_owen.png"
+            src="/images/rend-a-pixel/halton_sampler/bunny_constant_detail_owen.png"
             alt="Owen-scrambled Halton sampling"
           />
         </TwentyTwenty>
@@ -162,16 +147,13 @@
     <div>
       <h2 class="subsection">Multiple Importance Sampling (MIS)</h2>
       <TwentyTwenty>
+        <img src="/images/rend-a-pixel/mis_path_tracer/veach_bsdf.jpeg" alt="BSDF sampling" />
         <img
-          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_bsdf.jpeg"
-          alt="BSDF sampling"
-        />
-        <img
-          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_nee.jpeg"
+          src="/images/rend-a-pixel/mis_path_tracer/veach_nee.jpeg"
           alt="Next Event Estimation (NEE)"
         />
         <img
-          src="../../assets/images/rend-a-pixel/mis_path_tracer/veach_mis.jpeg"
+          src="/images/rend-a-pixel/mis_path_tracer/veach_mis.jpeg"
           alt="Multiple Importance Sampling (MIS)"
         />
       </TwentyTwenty>
