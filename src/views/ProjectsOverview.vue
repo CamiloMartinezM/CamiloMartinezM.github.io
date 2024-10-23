@@ -20,7 +20,11 @@
           <div
             class="w-full md:w-1/4 p-4 flex items-center justify-center bg-gray-50 dark:bg-gray-700"
           >
-            <img :src="project.iconPath" :alt="project.title" class="w-full h-full object-cover" />
+            <img
+              :src="`src/assets/images/${project.iconPath}`"
+              :alt="project.title"
+              class="w-full h-full object-cover"
+            />
           </div>
 
           <!-- Project Details -->
