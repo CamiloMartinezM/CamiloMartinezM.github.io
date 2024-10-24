@@ -125,7 +125,7 @@
     <!-- Figure 1 -->
     <figure class="mb-4">
       <img
-        src="/images/multilingual-lm-representations/xglm_vs_gpt2_mean_losses-2.svg"
+        src="/images/multilingual-lm-representations/xglm_vs_gpt2_mean_losses.jpg"
         alt="Loss of XGLM-564M compared to GPT-2"
         class="w-full h-auto object-contain"
       />
@@ -163,7 +163,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <img
-            src="/images/multilingual-lm-representations/sentence_xglm-564M_layer_0_t-SNE.svg"
+            src="/images/multilingual-lm-representations/sentence_xglm-564M_layer_0_t-SNE.png"
             alt="t-SNE Visualization of Sentences in Layer 24"
             class="w-full h-auto object-contain"
           />
@@ -173,7 +173,7 @@
         </div>
         <div>
           <img
-            src="/images/multilingual-lm-representations/sentence_xglm-564M_layer_24_t-SNE.svg"
+            src="/images/multilingual-lm-representations/sentence_xglm-564M_layer_24_t-SNE.png"
             alt="PCA Visualization of Sentences in Layer 24"
             class="w-full h-auto object-contain"
           />
@@ -188,7 +188,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <img
-            src="/images/multilingual-lm-representations/token_xglm-564M_layer_0_t-SNE.svg"
+            src="/images/multilingual-lm-representations/token_xglm-564M_layer_0_t-SNE.png"
             alt="t-SNE Visualization of Tokens in Layer 24"
             class="w-full h-auto object-contain"
           />
@@ -198,7 +198,7 @@
         </div>
         <div>
           <img
-            src="/images/multilingual-lm-representations/token_xglm-564M_layer_24_t-SNE.svg"
+            src="/images/multilingual-lm-representations/token_xglm-564M_layer_24_t-SNE.png"
             alt="PCA Visualization of Tokens in Layer 24"
             class="w-full h-auto object-contain"
           />
@@ -233,7 +233,7 @@
 
     <figure class="mb-4">
       <img
-        src="/images/multilingual-lm-representations/xglm_vs_all_finetuning_methods-2.svg"
+        src="/images/multilingual-lm-representations/xglm_vs_all_finetuning_methods.jpg"
         alt="Loss of XGLM-564M vs Fine-tuned Versions"
         class="w-full h-auto object-contain"
       />
@@ -252,7 +252,7 @@
 
     <figure class="mb-4">
       <img
-        src="/images/multilingual-lm-representations/train_eval_metrics_finetuning-2.svg"
+        src="/images/multilingual-lm-representations/train_eval_metrics_finetuning.jpg"
         alt="Performance metrics comparison of finetuning methods in training and validation"
         class="w-full h-auto object-contain"
       />

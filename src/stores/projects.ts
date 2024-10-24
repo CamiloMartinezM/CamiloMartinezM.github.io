@@ -67,7 +67,7 @@ export const useProjectsStore = defineStore('projects', () => {
                 () => import('../views/projects/MultilingualLMRepresentations.vue')
             ),
             githubUrl: 'https://github.com/Kanakanajm/nnti/tree/main',
-            iconPath: '/images/multilingual-lm-representations/icon.svg',
+            iconPath: '/images/multilingual-lm-representations/icon.png',
             authors: [
                 {
                     name: 'Camilo Martínez',
