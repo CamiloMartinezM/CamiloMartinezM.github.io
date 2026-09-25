@@ -48,6 +48,23 @@ import { ref, computed } from 'vue'
 
 const publications = ref([
     {
+        id: 'crossmicroscope2026',
+        title:
+            'A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification',
+        authors: [
+            'Björn-Ivo Bachmann',
+            'Marie Stiefel',
+            'Martin Müller',
+            'Camilo Martínez',
+            'Dominik Britz',
+            'Frank Mücklich'
+        ],
+        journal: 'Scientific Reports (Nature Portfolio), Vol. 16, Article 29853',
+        year: 2026,
+        githubUrl: null,
+        url: 'https://www.nature.com/articles/s41598-026-73141-2'
+    },
+    {
         id: 'regenerativepump2026',
         title:
             'Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement',
@@ -63,7 +80,7 @@ const publications = ref([
         journal: 'Discover Mechanical Engineering (Springer Nature), Vol. 5, Article 4',
         year: 2026,
         githubUrl: null,
-        url: 'https://link.springer.com/journal/44245'
+        url: 'https://link.springer.com/article/10.1007/s44245-025-00170-y'
     },
     {
         id: 'bachelorthesis',
@@ -90,7 +107,7 @@ const publications = ref([
             'Proceedings of the 26th International Conference on Multimodal Interaction (ICMI). ACM',
         year: 2024,
         githubUrl: null,
-        url: null
+        url: 'https://dl.acm.org/doi/10.1145/3678957.3685728'
     }
 ])
 
