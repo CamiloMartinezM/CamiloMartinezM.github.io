@@ -8,12 +8,12 @@ import { Hammer } from 'lucide-vue-next'
       <hr class="my-2 border-gray-200 dark:border-gray-700" />
       <div class="flex flex-col items-center">
         <span class="block text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2">
-          Copyright © 2024.
+          Copyright © 2026.
           <a
             href="https://www.linkedin.com/in/camilo-martinez-m/?locale=en_US"
             class="text-highlight"
           >
-            Camilo Martínez </a
+            Camilo Martínez</a
           >. All rights reserved.
         </span>
         <div class="flex items-center space-x-2 text-yellow-500 dark:text-yellow-400 animate-pulse">
