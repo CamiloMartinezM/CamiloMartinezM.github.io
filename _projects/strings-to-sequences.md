@@ -7,7 +7,7 @@ importance: 1
 _styles: >
   .post-header .post-description { display: none; }
   .on-wide { display: none; }
-  .table-responsive table { border-collapse: collapse; border-top: 3px solid var(--global-text-color); border-bottom: 3px solid var(--global-text-color); }
+  .table-responsive table { color: inherit; border-collapse: collapse; border-top: 3px solid var(--global-text-color); border-bottom: 3px solid var(--global-text-color); }
   .table-responsive caption { caption-side: top; padding-bottom: 0.5rem; color: inherit; text-align: justify; }
   .table-responsive thead tr { border-top: 2px solid var(--global-text-color); border-bottom: 2px solid var(--global-text-color); }
   .table-responsive tbody tr:hover { background: var(--global-divider-color); }

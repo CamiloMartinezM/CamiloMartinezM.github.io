@@ -146,6 +146,7 @@ collections:
     output: false # inline items only appear on the home page
   projects:
     output: true
+    permalink: /:collection/:path/ # /projects/<file name>/
 
 # -----------------------------------------------------------------------------
 # Jekyll settings
