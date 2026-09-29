@@ -143,9 +143,7 @@ newsletter:
 
 collections:
   news:
-    defaults:
-      layout: post
-    output: true
+    output: false # inline items only appear on the home page
   projects:
     output: true
 
