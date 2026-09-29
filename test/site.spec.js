@@ -698,3 +698,151 @@ test.describe("Acoustic Guitar Chords Recognition page", () => {
     expect(colors[0]).toBe(colors[1]);
   });
 });
+
+const MULTILINGUAL_PATH = "/projects/multilingual-lm-representations/";
+const MULTILINGUAL_TITLE = "Multilingual Language Models Representations and Fine-Tuning";
+const MULTILINGUAL_GITHUB = "https://github.com/Kanakanajm/nnti/tree/main";
+const MULTILINGUAL_IMAGE_DIR = "/assets/img/projects/multilingual-lm-representations/";
+
+const MULTILINGUAL_SUMMARY =
+  "This study evaluates multilingual representation spaces using XGLM-564M and GPT-2 on the FLORES-200 dataset, focusing on English, Spanish, German, Arabic, Tamil, and Quechua. We analyze hidden representations using PCA with scikit-learn and t-SNE with openTSNE to visualize and interpret these high-dimensional spaces. We then fine-tune XGLM-564M on the Monolingual-Quechua-IIC corpus, comparing four approaches: full fine-tuning, BitFit [Zaken et al., 2022], LoRA [Hu et al., 2021], and IA³ [Liu et al., 2022]. Our analysis examines both performance improvements on Quechua and cross-lingual transfer effects.";
+
+const MULTILINGUAL_SUMMARY_LINKS = [
+  ["XGLM-564M", "https://huggingface.co/facebook/xglm-564M"],
+  ["GPT-2", "https://huggingface.co/openai-community/gpt2"],
+  ["FLORES-200", "https://huggingface.co/datasets/facebook/flores"],
+  ["scikit-learn", "https://scikit-learn.org/dev/modules/generated/sklearn.decomposition.PCA.html"],
+  ["openTSNE", "https://opentsne.readthedocs.io/en/stable/"],
+  ["Monolingual-Quechua-IIC", "https://huggingface.co/datasets/Llamacha/monolingual-quechua-iic"],
+  ["[Zaken et al., 2022]", "https://arxiv.org/abs/2106.10199"],
+  ["[Hu et al., 2021]", "https://arxiv.org/abs/2106.09685"],
+  ["[Liu et al., 2022]", "https://arxiv.org/abs/2205.05638"],
+];
+
+const MULTILINGUAL_WRITE_UP = [
+  "We evaluated the models: XGLM-564M, a multilingual autoregressive language model (with 564 million parameters) trained on a balanced corpus of a diverse set of 30 languages totaling 500 billion sub-tokens, and GPT-2, a transformers model pretrained on a very large corpus of English data in a self-supervised fashion. As evaluation dataset, we used the famous FLORES-200 dataset, available on HuggingFace, specifically on six languages: English, Spanish, German, Arabic, Tamil, and Quechua.",
+  "We analyzed the multilingual embeddings (both sentence-level and token-level) from both pre-trained language models using dimensionality reduction techniques: PCA with scikit-learn and t-SNE with openTSNE.",
+  "Finally, we finetuned the XGLM-564M model on a specific language: Quechua with a dataset the model hadn't seen before, Monolingual-Quechua-IIC, a monolingual corpus of Southern Quechua, consisting of nearly 450K segments [Zevallos et al., 2022]. We used different fine-tuning methods: full fine-tuning, BitFit [Zaken et al., 2022], LoRA [Hu et al., 2021], and IA³ [Liu et al., 2022] and analyzed their performance and evaluation loss on the six languages mentioned above to see how much the performance on the Quechua language improved, and whether it decreased for the rest.",
+  "Experiments and Analyses",
+  "We first compared the performance of the XGLM-564M model with GPT-2, in terms of Mean Language Modeling Loss.",
+  "Figure 1: Loss of the XGLM-564M model compared to GPT-2, on the original languages. Both struggle with quy_Latn (Quechua).",
+  "Afterwards, we visualized the hidden representations of both the XGLM-564M model using PCA and t-SNE for both sentence-level and token-level embeddings across all layers of the model. Below are visualizations from our experiments, which clearly show the progression of how the model learns to better separate the languages as we move to deeper layers:",
+  "Figure 2: t-SNE Visualization of Sentences for Layer 0.",
+  "Figure 3: t-SNE Visualization of Sentences for Layer 24.",
+  "Figure 4: t-SNE Visualization of Tokens for Layer 0.",
+  "Figure 5: t-SNE Visualization of Tokens for Layer 24.",
+  "Finally, the results for the finetuning of the XGLM-564M model on the Monolingual-Quechua-IIC dataset were the following:",
+  "Figure 6: Loss of the XGLM-564M model compared to its finetuned versions (FFT meaning Full Fine-Tuning).",
+  "Figure 7: Performance metrics comparison of finetuning methods in training and validation.",
+  "Conclusion",
+  "This project provides insights into multilingual representation spaces (in sentence and token-level) for the XGLM-564M model on an underrepresented language, e.g., Quechua, and demonstrates the effectiveness of several fine-tuning techniques. While full fine-tuning offers the best performance, methods such as LoRA, BitFit and IA³ offer practical alternatives under computational constraints, such as our case.",
+];
+
+const MULTILINGUAL_WRITE_UP_LINKS = [
+  ["HuggingFace", "https://huggingface.co/"],
+  ["Quechua", "https://en.wikipedia.org/wiki/Quechuan_languages"],
+  ["[Zevallos et al., 2022]", "https://aclanthology.org/2022.deeplo-1.1.pdf"],
+];
+
+const MULTILINGUAL_FIGURES = [
+  ["xglm_vs_gpt2_mean_losses.jpg", "Loss of XGLM-564M compared to GPT-2"],
+  ["sentence_xglm-564M_layer_0_t-SNE.png", "t-SNE Visualization of Sentences in Layer 24"],
+  ["sentence_xglm-564M_layer_24_t-SNE.png", "PCA Visualization of Sentences in Layer 24"],
+  ["token_xglm-564M_layer_0_t-SNE.png", "t-SNE Visualization of Tokens in Layer 24"],
+  ["token_xglm-564M_layer_24_t-SNE.png", "PCA Visualization of Tokens in Layer 24"],
+  ["xglm_vs_all_finetuning_methods.jpg", "Loss of XGLM-564M vs Fine-tuned Versions"],
+  ["train_eval_metrics_finetuning.jpg", "Performance metrics comparison of finetuning methods in training and validation"],
+];
+
+test.describe("Multilingual Language Models Representations and Fine-Tuning", () => {
+  test("is the second card on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+    await page.goto("/projects/");
+    const cards = page.locator(".projects .card");
+    await expect(cards).toHaveCount(2);
+    const card = cards.nth(1);
+    await expect(card.locator(".card-title")).toHaveText(MULTILINGUAL_TITLE);
+    await expect(card.locator(".card-text")).toHaveText(
+      "This study evaluates multilingual representation spaces using XGLM-564M and GPT-2 on the FLORES-200 dataset, focusing on English, Spanish, German, Arabic, Tamil, and Quechua."
+    );
+    const icon = card.locator("img");
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(await icon.evaluate((img) => img.currentSrc)).toContain("/projects/multilingual-lm-representations/icon");
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${MULTILINGUAL_PATH}$`));
+    await expect(page.locator("h1.post-title")).toHaveText(MULTILINGUAL_TITLE);
+  });
+
+  test.describe("page", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto(MULTILINGUAL_PATH);
+    });
+
+    test("opens with the summary, the authors line and the GitHub link, in that order", async ({ page }) => {
+      const article = page.locator("article");
+      const blocks = await article.locator(":scope > *").evaluateAll((els) => els.slice(0, 3).map((el) => el.innerText.replace(/\s+/g, " ").trim()));
+      expect(blocks).toEqual([MULTILINGUAL_SUMMARY, "By: Camilo Martínez, Honglu Ma", "View on GitHub"]);
+      const summary = article.locator(":scope > p").first();
+      const links = await summary.locator("a").evaluateAll((as) => as.map((a) => [a.textContent.trim(), a.getAttribute("href")]));
+      expect(links).toEqual(MULTILINGUAL_SUMMARY_LINKS);
+    });
+
+    test("links the authors and the GitHub repository exactly, and underlines the owner", async ({ page }) => {
+      const authors = page.locator("article > p").nth(1).locator("a");
+      const actual = await authors.evaluateAll((as) => as.map((a) => [a.textContent.trim(), a.getAttribute("href")]));
+      expect(actual).toEqual([PROJECT_AUTHORS[0], PROJECT_AUTHORS[2]]);
+      expect(await authors.first().evaluate((a) => getComputedStyle(a.querySelector("u") ?? a).textDecorationLine)).toBe("underline");
+      await expect(page.locator("article > p").nth(2).getByRole("link", { name: "View on GitHub" })).toHaveAttribute("href", MULTILINGUAL_GITHUB);
+    });
+
+    test("shows every section heading, in order", async ({ page }) => {
+      const headings = await page.locator("article h2, article h3").evaluateAll((hs) => hs.map((h) => [h.tagName, h.textContent.trim()]));
+      expect(headings).toEqual([
+        ["H2", "Experiments and Analyses"],
+        ["H3", "Conclusion"],
+      ]);
+    });
+
+    test("shows the write-up word for word, captions included, and keeps its links", async ({ page }) => {
+      const text = squash(await page.locator("article").innerText());
+      const start = text.indexOf(MULTILINGUAL_WRITE_UP[0]);
+      const end = text.indexOf(CLOSING_LINE);
+      expect(start).toBeGreaterThan(-1);
+      expect(text.slice(start, end).trim()).toBe(MULTILINGUAL_WRITE_UP.join(" "));
+      const links = await page
+        .locator("article a")
+        .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
+      for (const link of MULTILINGUAL_WRITE_UP_LINKS) expect(links).toContainEqual(link);
+    });
+
+    test("shows its seven figures, loaded and captioned, with the pairs side by side only on wide screens", async ({ page }, testInfo) => {
+      const images = page.locator("article figure img");
+      await expect(images).toHaveCount(MULTILINGUAL_FIGURES.length);
+      const actual = await images.evaluateAll((imgs) => imgs.map((img) => [new URL(img.src).pathname, img.alt]));
+      expect(actual).toEqual(MULTILINGUAL_FIGURES.map(([file, alt]) => [MULTILINGUAL_IMAGE_DIR + file, alt]));
+      await expect(page.locator("article figure figcaption")).toHaveCount(7);
+      for (const image of await images.all()) {
+        await image.scrollIntoViewIfNeeded();
+        await expect.poll(() => image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+      }
+      const tops = await images.evaluateAll((imgs) => imgs.map((img) => Math.round(img.getBoundingClientRect().top + scrollY)));
+      const wide = testInfo.project.name === "desktop";
+      expect(tops[1] === tops[2]).toBe(wide);
+      expect(tops[3] === tops[4]).toBe(wide);
+    });
+
+    test("ends with the pointer to the GitHub repository", async ({ page }) => {
+      const closing = page.locator("article > p").last();
+      expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
+      await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", MULTILINGUAL_GITHUB);
+    });
+
+    test("fits a phone-width screen and loads without errors", async ({ page }) => {
+      const problems = watchPage(page);
+      await page.goto(MULTILINGUAL_PATH, { waitUntil: "networkidle" });
+      expect(problems.consoleErrors).toEqual([]);
+      expect(problems.failedRequests).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    });
+  });
+});
