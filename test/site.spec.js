@@ -77,6 +77,7 @@ test.describe("home page", () => {
     const profile = page.locator(".profile");
     const photo = profile.locator("img");
     await expect(photo).toBeVisible();
+    expect(await photo.evaluate((img) => img.currentSrc)).toContain("profile-picture");
     expect(await photo.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
     expect(await profile.evaluate((el) => getComputedStyle(el).float)).toBe("right");
     expect(await photo.evaluate((img) => parseFloat(getComputedStyle(img).borderRadius) < img.clientWidth / 4)).toBe(true);

@@ -3,7 +3,7 @@ const { devices } = require("@playwright/test");
 
 const repoRoot = path.resolve(__dirname, "..");
 
-// Serves the site built by `bundle exec jekyll build` (or a downloaded CI artifact unpacked to _site).
+// Serves the built site from _site: the CI build, or its artifact unpacked there (needs python3).
 const webServer = process.env.NO_WEBSERVER
   ? undefined
   : {
