@@ -147,6 +147,16 @@ const PUBLICATIONS = [
 
 const squash = (text) => text.replace(/\s+/g, " ").trim();
 
+// Every page of the site, for the checks that apply to all of them.
+const PAGES = [
+  "/",
+  "/publications/",
+  "/projects/",
+  "/projects/strings-to-sequences/",
+  "/projects/multilingual-lm-representations/",
+  "/projects/rend-a-pixel/",
+];
+
 // Collects what a visitor's browser would flag as broken while a page loads.
 function watchPage(page) {
   const problems = { consoleErrors: [], failedRequests: [] };
@@ -371,14 +381,6 @@ test.describe("publications page", () => {
       });
     });
   }
-
-  test("fits a phone-width screen and loads without errors", async ({ page }) => {
-    const problems = watchPage(page);
-    await page.goto("/publications/", { waitUntil: "networkidle" });
-    expect(problems.consoleErrors).toEqual([]);
-    expect(problems.failedRequests).toEqual([]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-  });
 });
 
 test.describe("accent colors", () => {
@@ -416,23 +418,25 @@ test.describe("site chrome", () => {
     expect((await page.request.get(href)).status()).toBe(200);
   });
 
-  test("loads without console errors or failed internal requests", async ({ page }) => {
-    const problems = watchPage(page);
-    await page.goto("/", { waitUntil: "networkidle" });
-    expect(problems.consoleErrors).toEqual([]);
-    expect(problems.failedRequests).toEqual([]);
-  });
+  for (const path of PAGES) {
+    test(`${path} has no console errors, failed internal requests, horizontal scroll, demo content or template base path`, async ({ page }) => {
+      const problems = watchPage(page);
+      await page.goto(path, { waitUntil: "networkidle" });
+      expect(problems.consoleErrors).toEqual([]);
+      expect(problems.failedRequests).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      const html = await page.content();
+      expect(html).not.toMatch(/(?:href|src|content)="[^"]*\/al-folio\//);
+      expect(html).not.toMatch(/alshedivat\.github\.io/);
+      for (const demo of ["Einstein", "Albert", "You R. Name", "your address", "555 your office", "Lorem ipsum"]) {
+        expect(html).not.toContain(demo);
+      }
+    });
+  }
 
-  test("contains no demo content or template base path", async ({ page }) => {
-    await page.goto("/");
-    const html = await page.content();
-    expect(html).not.toMatch(/(?:href|src|content)="[^"]*\/al-folio\//);
-    expect(html).not.toMatch(/alshedivat\.github\.io/);
-    for (const demo of ["Einstein", "Albert", "You R. Name", "your address", "555 your office", "Lorem ipsum"]) {
-      expect(html).not.toContain(demo);
-    }
+  test("has none of the other starter pages", async ({ request }) => {
     for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/"]) {
-      expect((await page.request.get(gone)).status(), gone).toBe(404);
+      expect((await request.get(gone)).status(), gone).toBe(404);
     }
   });
 
@@ -836,14 +840,6 @@ test.describe("Multilingual Language Models Representations and Fine-Tuning", ()
       expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
       await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", MULTILINGUAL_GITHUB);
     });
-
-    test("fits a phone-width screen and loads without errors", async ({ page }) => {
-      const problems = watchPage(page);
-      await page.goto(MULTILINGUAL_PATH, { waitUntil: "networkidle" });
-      expect(problems.consoleErrors).toEqual([]);
-      expect(problems.failedRequests).toEqual([]);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-    });
   });
 });
 
@@ -1119,14 +1115,25 @@ test.describe("Rend-a-Pixel Raytracer", () => {
 
     test("follows a finger", async ({ page }, testInfo) => {
       test.skip(testInfo.project.name !== "mobile", "needs a touch screen");
+      // Playwright's touchscreen can only tap, so the drag is sent as raw touch events.
+      const touch = await page.context().newCDPSession(page);
       const compares = page.locator("article .compare");
       for (const [index, [, labels]] of COMPARISONS.entries()) {
         const compare = compares.nth(index);
         // Centered, so the fixed navbar and footer never cover the pointer.
         await compare.evaluate((el) => el.scrollIntoView({ block: "center" }));
         const box = await compare.boundingBox();
-        await page.touchscreen.tap(box.x + box.width * 0.3, box.y + box.height * 0.7);
-        await expectLayout(compare, labels.length, 0.3, labels.length === 2 ? 0.5 : 0.7);
+        const at = (x, y) => [{ x: box.x + box.width * x, y: box.y + box.height * y }];
+        // Two images split horizontally only, so the finger moves sideways there; a vertical move scrolls the page.
+        const [x, y] = [0.3, labels.length === 2 ? 0.5 : 0.7];
+        await touch.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: at(0.5, 0.5) });
+        // In small steps, like a real finger, so a comparison that let the page scroll would lose the drag.
+        for (let step = 1; step <= 10; step++) {
+          const t = step / 10;
+          await touch.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: at(0.5 + (x - 0.5) * t, 0.5 + (y - 0.5) * t) });
+        }
+        await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+        await expectLayout(compare, labels.length, x, y);
       }
     });
 
