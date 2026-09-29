@@ -23,5 +23,7 @@ module.exports = {
     // and page chrome (scroll-progress bar, ToC) bleeds through a zoomed image.
     "medium-zoom-overlay",
     "medium-zoom-image--opened",
+    // compare.js adds these (compare-2/3/4, compare-region, compare-label, compare-line-*) at runtime.
+    /^compare-/,
   ],
 };

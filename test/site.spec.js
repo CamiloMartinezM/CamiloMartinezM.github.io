@@ -755,10 +755,10 @@ const MULTILINGUAL_FIGURES = [
 ];
 
 test.describe("Multilingual Language Models Representations and Fine-Tuning", () => {
-  test("is the second card on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+  test("is the second of three cards on the projects page, with its icon, and opens its Project page", async ({ page }) => {
     await page.goto("/projects/");
     const cards = page.locator(".projects .card");
-    await expect(cards).toHaveCount(2);
+    await expect(cards).toHaveCount(3);
     const card = cards.nth(1);
     await expect(card.locator(".card-title")).toHaveText(MULTILINGUAL_TITLE);
     await expect(card.locator(".card-text")).toHaveText(
@@ -843,6 +843,299 @@ test.describe("Multilingual Language Models Representations and Fine-Tuning", ()
       expect(problems.consoleErrors).toEqual([]);
       expect(problems.failedRequests).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    });
+  });
+});
+
+const RAP_PATH = "/projects/rend-a-pixel/";
+const RAP_TITLE = "Rend-a-Pixel Raytracer";
+const RAP_GITHUB = "https://github.com/CamiloMartinezM/rend-a-pixel";
+
+const RAP_SUMMARY =
+  "A physically-based renderer implementing various ray tracing techniques. Features include image denoising, normal mapping, multiple importance sampling, support for various material, texture types and lighting conditions, and many more.";
+
+const HALTON_LABELS = ["Independent sampling", "Normal Halton sampling", "Digit-permutated Halton sampling", "Owen-scrambled Halton sampling"];
+
+// The comparisons in page order: the section heading above each one and the labels of its images.
+const COMPARISONS = [
+  ["Area Lights", ["No area lights", "Uniform sphere sampling", "Cosine-weighted sampling", "Subtended-cone sampling"]],
+  ["Shading Normals", ["No normal mapping", "Normal mapping"]],
+  ["A Thinlens Camera Model", ["Perspective", "Perspective with Thinlens"]],
+  ["Alpha Masking", ["No alpha masking", "Alpha masking"]],
+  ["Image Denoising", ["Noisy", "Denoised"]],
+  ["Halton Sampler", HALTON_LABELS],
+  ["Halton Sampler", HALTON_LABELS],
+  ["Multiple Importance Sampling (MIS)", ["BSDF sampling", "Next Event Estimation (NEE)", "Multiple Importance Sampling (MIS)"]],
+];
+
+const RAP_HEADINGS = [
+  "Area Lights",
+  "Shading Normals",
+  "A Thinlens Camera Model",
+  "Alpha Masking",
+  "Image Denoising",
+  "Halton Sampler",
+  "Multiple Importance Sampling (MIS)",
+  "Summary of Features",
+  "Copyright & Credits",
+];
+
+// The write-up in reading order, from the introduction to the last credit. Each comparison's labels are part of its text.
+const RAP_WRITE_UP = [
+  "Rend-a-Pixel is a raytracing rendering engine developed on top of the Lightwave Framework as the final project for the Computer Graphics course at Saarland University lectured by Prof. Dr.-Ing. Philipp Slusallek during the Winter Semester 2023/2024. Some of the implemented features are showcased below:",
+  "Area Lights",
+  ...COMPARISONS[0][1],
+  "Shading Normals",
+  ...COMPARISONS[1][1],
+  "A Thinlens Camera Model",
+  ...COMPARISONS[2][1],
+  "Alpha Masking",
+  ...COMPARISONS[3][1],
+  "Image Denoising",
+  ...COMPARISONS[4][1],
+  "Halton Sampler",
+  ...HALTON_LABELS,
+  ...HALTON_LABELS,
+  "Multiple Importance Sampling (MIS)",
+  ...COMPARISONS[7][1],
+  "Every single image rendered with 128spp. The further improvement on the noise is not because of having done 128spp (all three images were rendered with the same spp's), but because of the Subtended-Cone Sampling.",
+  "Summary of Features",
+  "✓ Camera Models",
+  "✓ Basic Perspective Camera",
+  "✓ Thinlens Camera",
+  "✓ Basic Primitives",
+  "✓ Sphere",
+  "✓ Rectangles",
+  "✓ Triangle/Generic Meshes",
+  "✓ Integrators",
+  "✓ Albedo",
+  "✓ Normals",
+  "✓ Direct Lighting",
+  "✓ Path Tracing",
+  "✓ BSDFs & Lighting Models:",
+  "✓ Materials:",
+  "✓ Diffuse",
+  "✓ Conductor",
+  "✓ Rough Conductor",
+  "✓ Dielectric",
+  "✓ Principled",
+  "✓ Lambertian Emission",
+  "✓ Textures:",
+  "✓ Checkerboard Texture",
+  "✓ Image Texture",
+  "✓ Lights:",
+  "✓ Environment Map",
+  "✓ Area Lights",
+  "✓ Uniform Sphere Sampling",
+  "✓ Cosine-Weighted Sampling",
+  "✓ Subtended-Cone Sampling",
+  "✓ Point Light",
+  "✓ Directional Light",
+  "✓ Sampling:",
+  "✓ BSDF Sampling",
+  "✓ Next Event Estimation (NEE)",
+  "✓ Multiple Importance Sampling (MIS)",
+  "✓ Image denoising using Intel® Open Image Denoise",
+  "✓ Acceleration Structures:",
+  "✓ SAH Bounding Volume Hierarchy",
+  "✓ Shading Normals",
+  "✓ Alpha Masking",
+  "✓ Custom Bokeh Shapes",
+  "Copyright & Credits",
+  "© The Lightwave Framework was written by Alexander Rath, with contributions from Ömercan Yazici and Philippe Weier. Their support was invaluable in the coding of these features. The scenes showcasing the features were provided by their team, and should be used under permission. Many textures and models were taken from Poly Haven's extensive library. Many thanks to the team behind Tev used extensively throughout this project as an EXR viewer.",
+];
+
+const RAP_WRITE_UP_LINKS = [
+  ["Computer Graphics course at Saarland University", "https://graphics.cg.uni-saarland.de/"],
+  ["Prof. Dr.-Ing. Philipp Slusallek", "https://graphics.cg.uni-saarland.de/people/slusallek.html"],
+  ["Intel® Open Image Denoise", "https://www.openimagedenoise.org/"],
+  ["Alexander Rath", "https://graphics.cg.uni-saarland.de/people/rath.html"],
+  ["Ömercan Yazici", "https://graphics.cg.uni-saarland.de/people/yazici.html"],
+  ["Philippe Weier", "https://graphics.cg.uni-saarland.de/people/weier.html"],
+  ["Poly Haven", "https://polyhaven.com"],
+  ["Tev", "https://github.com/Tom94/tev"],
+];
+
+// Where each region of a comparison should lie, in fractions of its width and height, for a split at (x, y): [left, top, right, bottom].
+const expectedRegions = (count, x, y) =>
+  ({
+    2: [
+      [0, 0, x, 1],
+      [x, 0, 1, 1],
+    ],
+    3: [
+      [0, 0, x, y],
+      [x, 0, 1, y],
+      [0, y, 1, 1],
+    ],
+    4: [
+      [0, 0, x, y],
+      [x, 0, 1, y],
+      [0, y, x, 1],
+      [x, y, 1, 1],
+    ],
+  })[count];
+
+// Measures a comparison's regions relative to its own box, as fractions.
+const measureRegions = (compare) =>
+  compare.evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    return [...el.querySelectorAll(".compare-region")].map((region) => {
+      const r = region.getBoundingClientRect();
+      return [(r.left - box.left) / box.width, (r.top - box.top) / box.height, (r.right - box.left) / box.width, (r.bottom - box.top) / box.height];
+    });
+  });
+
+const expectRegions = async (compare, count, x, y) => {
+  await expect
+    .poll(async () => {
+      const actual = (await measureRegions(compare)).flat();
+      const wanted = expectedRegions(count, x, y).flat();
+      return actual.length === wanted.length && actual.every((v, i) => Math.abs(v - wanted[i]) < 0.01);
+    })
+    .toBe(true);
+};
+
+test.describe("Rend-a-Pixel Raytracer", () => {
+  test("is the third card on the projects page, with its icon, in the same row as the others on wide screens, and opens its Project page", async ({
+    page,
+  }, testInfo) => {
+    await page.goto("/projects/");
+    const cards = page.locator(".projects .card");
+    await expect(cards).toHaveCount(3);
+    const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
+    expect(tops[0] === tops[1] && tops[1] === tops[2]).toBe(testInfo.project.name === "desktop");
+    const card = cards.nth(2);
+    await expect(card.locator(".card-title")).toHaveText(RAP_TITLE);
+    await expect(card.locator(".card-text")).toHaveText("A physically-based renderer implementing various ray tracing techniques.");
+    expect(await card.locator(".card-title").evaluate((el) => el.children.length)).toBe(0);
+    const icon = card.locator("img");
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(await icon.evaluate((img) => img.currentSrc)).toContain("/projects/rend-a-pixel/icon");
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${RAP_PATH}$`));
+    await expect(page.locator("h1.post-title")).toHaveText(RAP_TITLE);
+  });
+
+  test.describe("page", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto(RAP_PATH);
+    });
+
+    test("opens with the summary, the authors line and the GitHub link, in that order", async ({ page }) => {
+      const paragraphs = page.locator("article > p");
+      const blocks = await paragraphs.evaluateAll((els) => els.slice(0, 3).map((el) => el.innerText.replace(/\s+/g, " ").trim()));
+      expect(blocks).toEqual([RAP_SUMMARY, "By: Camilo Martínez", "View on GitHub"]);
+      await expect(paragraphs.first().locator("a")).toHaveCount(0);
+      const author = paragraphs.nth(1).locator("a");
+      await expect(author).toHaveCount(1);
+      await expect(author).toHaveAttribute("href", PROJECT_AUTHORS[0][1]);
+      expect(await author.evaluate((a) => getComputedStyle(a.querySelector("u") ?? a).textDecorationLine)).toBe("underline");
+      await expect(paragraphs.nth(2).getByRole("link", { name: "View on GitHub" })).toHaveAttribute("href", RAP_GITHUB);
+    });
+
+    test("shows every section heading, in order", async ({ page }) => {
+      const headings = await page.locator("article h2, article h3").evaluateAll((hs) => hs.map((h) => [h.tagName, h.textContent.trim()]));
+      expect(headings).toEqual(RAP_HEADINGS.map((heading) => ["H2", heading]));
+    });
+
+    test("shows the write-up word for word and keeps its links", async ({ page }) => {
+      const text = squash(await page.locator("article").innerText());
+      const start = text.indexOf(RAP_WRITE_UP[0]);
+      const end = text.indexOf(CLOSING_LINE);
+      expect(start).toBeGreaterThan(-1);
+      expect(text.slice(start, end).trim()).toBe(RAP_WRITE_UP.join(" "));
+      expect(text).not.toContain("not yet fully responsive");
+      const links = await page
+        .locator("article a")
+        .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
+      for (const link of RAP_WRITE_UP_LINKS) expect(links).toContainEqual(link);
+    });
+
+    test("lists the Summary of Features in two columns on wide screens and stacks them on phones", async ({ page }, testInfo) => {
+      const columns = page.locator("article .column");
+      await expect(columns).toHaveCount(2);
+      const tops = await columns.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+      expect(tops[0] === tops[1]).toBe(testInfo.project.name === "desktop");
+    });
+
+    test("ends with the pointer to the GitHub repository", async ({ page }) => {
+      const closing = page.locator("article > p").last();
+      expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
+      await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", RAP_GITHUB);
+    });
+
+    test("shows all eight comparisons with the right images and labels, each under its heading", async ({ page }) => {
+      const compares = page.locator("article .compare");
+      await expect(compares).toHaveCount(COMPARISONS.length);
+      for (const [index, [heading, labels]] of COMPARISONS.entries()) {
+        const compare = compares.nth(index);
+        await compare.scrollIntoViewIfNeeded();
+        const images = compare.locator("img");
+        await expect(images).toHaveCount(labels.length);
+        expect(await images.evaluateAll((imgs) => imgs.map((img) => img.alt))).toEqual(labels);
+        await expect(compare.locator(".compare-label")).toHaveText(labels);
+        for (const image of await images.all()) {
+          await expect.poll(() => image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+        }
+        const above = await compare.evaluate((el) => {
+          let node = el;
+          while (node && node.tagName !== "H2") node = node.previousElementSibling;
+          return node && node.textContent.trim();
+        });
+        expect(above, `comparison ${index + 1}`).toBe(heading);
+      }
+    });
+
+    test("starts with the split at the center, follows a mouse and keeps the image aspect ratio", async ({ page }) => {
+      const compares = page.locator("article .compare");
+      for (const [index, [, labels]] of COMPARISONS.entries()) {
+        const compare = compares.nth(index);
+        // Centered, so the fixed navbar and footer never cover the pointer.
+        await compare.evaluate((el) => el.scrollIntoView({ block: "center" }));
+        await expectRegions(compare, labels.length, 0.5, 0.5);
+        const box = await compare.boundingBox();
+        const natural = await compare
+          .locator("img")
+          .first()
+          .evaluate((img) => img.naturalWidth / img.naturalHeight);
+        expect(box.width / box.height, `comparison ${index + 1}`).toBeCloseTo(natural, 1);
+        // Two images split horizontally only, so the pointer's height must not matter for them.
+        for (const [x, y] of [
+          [0.25, 0.75],
+          [0.8, 0.2],
+        ]) {
+          await page.mouse.move(box.x + box.width * x, box.y + box.height * y);
+          await expectRegions(compare, labels.length, x, labels.length === 2 ? 0.5 : y);
+        }
+      }
+    });
+
+    test("follows a finger", async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== "mobile", "needs a touch screen");
+      const compares = page.locator("article .compare");
+      for (const [index, [, labels]] of COMPARISONS.entries()) {
+        const compare = compares.nth(index);
+        // Centered, so the fixed navbar and footer never cover the pointer.
+        await compare.evaluate((el) => el.scrollIntoView({ block: "center" }));
+        const box = await compare.boundingBox();
+        await page.touchscreen.tap(box.x + box.width * 0.3, box.y + box.height * 0.7);
+        await expectRegions(compare, labels.length, 0.3, labels.length === 2 ? 0.5 : 0.7);
+      }
+    });
+
+    test("fits the content column at every width and loads without errors", async ({ page }) => {
+      const problems = watchPage(page);
+      await page.goto(RAP_PATH, { waitUntil: "networkidle" });
+      expect(problems.consoleErrors).toEqual([]);
+      expect(problems.failedRequests).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      const widths = await page.locator("article .compare").evaluateAll((els) => {
+        const column = document.querySelector("article").getBoundingClientRect().right;
+        return els.map((el) => el.getBoundingClientRect().right <= column + 1);
+      });
+      expect(widths.every(Boolean)).toBe(true);
     });
   });
 });
