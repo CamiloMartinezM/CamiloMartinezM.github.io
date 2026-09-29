@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "lint:prettier": "prettier . --check",
+    "test": "playwright test --config test/playwright.config.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@shopify/prettier-plugin-liquid": "^1.10.0",
+    "prettier": "^3.8.0"
+  }
+}
