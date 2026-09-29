@@ -8,6 +8,11 @@ profile:
   align: right
   image: profile-picture.jpg
   image_circular: false
+
+announcements:
+  limit: 3
+
+social: true
 ---
 
 Hello there! I'm a Master's student of [Data Science and Artificial Intelligence](https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/) at Saarland University, Germany. I am also a Mechanical Engineer with a Minor in Computational Mathematics from [Universidad de los Andes](<https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)>), Colombia.
@@ -21,3 +26,7 @@ Before that, I was a Functional Consultant at [Indra](https://www.linkedin.com/c
 - Computer Vision (_Robotics_ & _Autonomous Driving_)
 - Large Vision and Language Models
 - Model-based Machine Learning
+
+## News
+
+{% include news.liquid limit=true %}

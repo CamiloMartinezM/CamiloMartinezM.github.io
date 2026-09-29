@@ -32,6 +32,31 @@ const BIO = [
 
 const INTERESTS = ["Computer Vision (Robotics & Autonomous Driving)", "Large Vision and Language Models", "Model-based Machine Learning"];
 
+const SOCIAL_LINKS = [
+  "https://www.linkedin.com/in/camilo-martinez-m",
+  "https://scholar.google.com/citations?user=cD4PXB8AAAAJ",
+  "https://github.com/CamiloMartinezM",
+  "https://stackoverflow.com/users/13223456",
+];
+
+const NEWS = [
+  {
+    date: "Sep 25, 2026",
+    text: "The article A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification was published in Scientific Reports.",
+    href: "https://www.nature.com/articles/s41598-026-73141-2",
+  },
+  {
+    date: "Jan 08, 2026",
+    text: "The article Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement was published in Discover Mechanical Engineering.",
+    href: "https://link.springer.com/article/10.1007/s44245-025-00170-y",
+  },
+  {
+    date: "Nov 04, 2024",
+    text: "The paper Distinguishing Target and Non-Target Fixations with EEG and Eye Tracking in Realistic Visual Scenes was published in the proceedings of ICMI 2024.",
+    href: "https://dl.acm.org/doi/10.1145/3678957.3685728",
+  },
+];
+
 const squash = (text) => text.replace(/\s+/g, " ").trim();
 
 // Collects what a visitor's browser would flag as broken while a page loads.
@@ -96,10 +121,38 @@ test.describe("home page", () => {
   });
 
   test("shows the Research Interests list word for word", async ({ page }) => {
-    await expect(page.locator(".clearfix h2")).toHaveText("Research Interests");
+    await expect(page.locator(".clearfix h2", { hasText: "Research Interests" })).toHaveCount(1);
     const items = page.locator(".clearfix > ul > li");
     expect((await items.allInnerTexts()).map(squash)).toEqual(INTERESTS);
     await expect(items.first().locator("em")).toHaveText(["Robotics", "Autonomous Driving"]);
+  });
+
+  test("shows the three latest News items, newest first, without scrolling", async ({ page }) => {
+    await expect(page.locator(".clearfix h2", { hasText: "News" })).toHaveCount(1);
+    const rows = page.locator(".news tr");
+    await expect(rows).toHaveCount(NEWS.length);
+    for (const [i, expected] of NEWS.entries()) {
+      const row = rows.nth(i);
+      expect(squash(await row.locator("th").innerText())).toBe(expected.date);
+      expect(squash(await row.locator("td").innerText())).toBe(expected.text);
+      await expect(row.locator("td a")).toHaveAttribute("href", expected.href);
+    }
+    const box = await page.locator(".news .table-responsive").evaluate((el) => ({
+      scrolls: el.scrollHeight > el.clientHeight + 1,
+      limited: getComputedStyle(el).maxHeight !== "none",
+    }));
+    expect(box).toEqual({ scrolls: false, limited: false });
+  });
+
+  test("shows the social links at the bottom, in order", async ({ page }) => {
+    const links = page.locator(".social .contact-icons a");
+    expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute("href")))).toEqual(SOCIAL_LINKS);
+    for (const link of await links.all()) await expect(link).toBeVisible();
+    const below = await page.evaluate(() => {
+      const y = (selector) => document.querySelector(selector).getBoundingClientRect().top;
+      return y(".social") > y(".news");
+    });
+    expect(below).toBe(true);
   });
 
   test("has no construction banner", async ({ page }) => {
@@ -111,6 +164,22 @@ test.describe("home page", () => {
     await expect(footer).toContainText(`© Copyright ${new Date().getFullYear()} Camilo Martínez`);
     await expect(footer.getByRole("link", { name: "al-folio" })).toHaveAttribute("href", "https://github.com/alshedivat/al-folio");
   });
+});
+
+test.describe("accent colors", () => {
+  const cases = [
+    { scheme: "light", link: "rgb(0, 118, 223)", background: "rgb(255, 255, 255)" },
+    { scheme: "dark", link: "rgb(38, 152, 186)", background: "rgb(28, 28, 29)" },
+  ];
+  for (const { scheme, link, background } of cases) {
+    test(`links are ${link} on ${background} in ${scheme} mode`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto("/");
+      await expect(page.locator("html")).toHaveAttribute("data-theme", scheme);
+      await expect(page.locator(".clearfix > p a").first()).toHaveCSS("color", link);
+      await expect(page.locator("body")).toHaveCSS("background-color", background);
+    });
+  }
 });
 
 test.describe("site chrome", () => {
