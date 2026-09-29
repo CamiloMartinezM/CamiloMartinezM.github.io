@@ -12,6 +12,7 @@ profile:
 announcements:
   limit: 3
 
+selected_papers: true
 social: true
 ---
 

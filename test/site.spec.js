@@ -57,6 +57,94 @@ const NEWS = [
   },
 ];
 
+const OWNER = "Camilo Martínez";
+
+const PUBLICATIONS = [
+  {
+    id: "Bachmann_2026",
+    year: "2026",
+    badge: "Sci. Rep.",
+    title:
+      "A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification",
+    authors: ["Björn-Ivo Bachmann", "Marie Stiefel", "Martin Müller", OWNER, "Dominik Britz", "Frank Mücklich"],
+    venue: "Scientific Reports",
+    thumbnail: "scientific-reports",
+    abstract: "The establishment of robust machine learning workflows for microstructure analysis",
+    links: [
+      ["Abs", null],
+      ["DOI", "https://doi.org/10.1038/s41598-026-73141-2"],
+      ["Bib", null],
+      ["HTML", "https://www.nature.com/articles/s41598-026-73141-2"],
+      ["PDF", "https://www.nature.com/articles/s41598-026-73141-2.pdf"],
+    ],
+    bibtex: [/month\s*=\s*\{?sep\b/, /pages\s*=\s*\{29853\}/, /volume\s*=\s*\{16\}/],
+    notBibtex: [/Sept/, /\bnumber\s*=/],
+  },
+  {
+    id: "Pena_2026",
+    year: "2026",
+    badge: "Discov. Mech. Eng.",
+    title: "Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement",
+    authors: ["Laura Peña", "Flor Calderon", OWNER, "Jennifer Páez", "Miguel Asuaje", "Omar Lopez", "Nicolas Ratkovich"],
+    venue: "Discover Mechanical Engineering",
+    thumbnail: "discover-mechanical-engineering",
+    abstract: "Regenerative (peripheral) pumps offer compact, high-head solutions",
+    links: [
+      ["Abs", null],
+      ["DOI", "https://doi.org/10.1007/s44245-025-00170-y"],
+      ["Bib", null],
+      ["HTML", "https://link.springer.com/article/10.1007/s44245-025-00170-y"],
+      ["PDF", "https://link.springer.com/content/pdf/10.1007/s44245-025-00170-y.pdf"],
+    ],
+    bibtex: [/month\s*=\s*\{?jan\b/, /pages\s*=\s*\{4\}/, /volume\s*=\s*\{5\}/],
+    notBibtex: [/\bnumber\s*=/],
+  },
+  {
+    id: "Sharma_2024",
+    year: "2024",
+    badge: "ICMI",
+    title: "Distinguishing Target and Non-Target Fixations with EEG and Eye Tracking in Realistic Visual Scenes",
+    authors: ["Mansi Sharma", OWNER, "Benedikt Emanuel Wirth", "Antonio Krüger", "Philipp Müller"],
+    venue: "In Proceedings of the 26th International Conference on Multimodal Interaction",
+    thumbnail: "icmi-2024",
+    abstract: "Distinguishing target from non-target fixations during visual search",
+    links: [
+      ["Abs", null],
+      ["DOI", "https://doi.org/10.1145/3678957.3685728"],
+      ["Bib", null],
+      ["HTML", "https://dl.acm.org/doi/10.1145/3678957.3685728"],
+      ["PDF", "https://arxiv.org/pdf/2508.01853v1"],
+    ],
+    bibtex: [
+      /booktitle\s*=\s*\{Proceedings of the 26th International Conference on Multimodal Interaction\}/,
+      /pages\s*=\s*\{459--468\}/,
+      /isbn\s*=\s*\{979-8-4007-0462-8\}/,
+      /address\s*=\s*\{New York, NY, USA\}/,
+    ],
+    notBibtex: [/Multimodel/],
+  },
+  {
+    id: "Martinez_2021",
+    year: "2021",
+    badge: "B.Sc. Thesis",
+    title: "Application of Computer Vision in the Analysis of Microstructures and Obtaining Structure-Property Relationships",
+    authors: [OWNER],
+    venue: "Universidad de los Andes",
+    note: "Bachelor's thesis",
+    thumbnail: "bsc-thesis",
+    abstract: "Manual identification, classification, and segmentation of micrographs",
+    links: [
+      ["Abs", null],
+      ["Bib", null],
+      ["HTML", "http://hdl.handle.net/1992/51616"],
+      ["PDF", "https://repositorio.uniandes.edu.co/bitstreams/d18cb27e-10e3-4ae5-bedb-ba84213e67ec/download"],
+      ["Code", "https://github.com/CamiloMartinezM/supervised-micrograph-segmentation"],
+    ],
+    bibtex: [/@mastersthesis/, /note\s*=\s*\{Bachelor's thesis\}/, /month\s*=\s*\{?feb\b/],
+    notBibtex: [/\btype\s*=/],
+  },
+];
+
 const squash = (text) => text.replace(/\s+/g, " ").trim();
 
 // Collects what a visitor's browser would flag as broken while a page loads.
@@ -144,6 +232,17 @@ test.describe("home page", () => {
     expect(box).toEqual({ scrolls: false, limited: false });
   });
 
+  test("lists the four Selected publications between the News and the social links", async ({ page }) => {
+    await expect(page.getByRole("heading", { name: "selected publications" })).toHaveCount(1);
+    const titles = page.locator(".publications ol.bibliography > li .title");
+    expect((await titles.allInnerTexts()).map(squash)).toEqual(PUBLICATIONS.map((publication) => publication.title));
+    const inOrder = await page.evaluate(() => {
+      const y = (selector) => document.querySelector(selector).getBoundingClientRect().top;
+      return y(".news") < y(".publications") && y(".publications") < y(".social");
+    });
+    expect(inOrder).toBe(true);
+  });
+
   test("shows the social links at the bottom, in order", async ({ page }) => {
     const links = page.locator(".social .contact-icons a");
     expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute("href")))).toEqual(SOCIAL_LINKS);
@@ -166,6 +265,119 @@ test.describe("home page", () => {
   });
 });
 
+test.describe("publications page", () => {
+  const entry = (page, id) => page.locator(`li:has(#${id})`);
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/publications/");
+  });
+
+  test("groups the four Publications by year, newest first", async ({ page }) => {
+    const groups = await page.locator(".publications h2.bibliography").evaluateAll((headings) =>
+      headings.map((h) => ({
+        year: h.textContent.trim(),
+        ids: [...h.nextElementSibling.querySelectorAll(":scope > li .title")].map((title) => title.parentElement.id),
+      }))
+    );
+    const expected = [];
+    for (const { id, year } of PUBLICATIONS) {
+      if (expected.at(-1)?.year === year) expected.at(-1).ids.push(id);
+      else expected.push({ year, ids: [id] });
+    }
+    expect(groups).toEqual(expected);
+  });
+
+  test("has no intro text, search, badges, award labels or topic filter", async ({ page }) => {
+    for (const text of await page.locator(".post-description").allInnerTexts()) expect(text.trim()).toBe("");
+    await expect(page.locator("article > *:not(.publications)").filter({ hasText: /\S/ })).toHaveCount(0);
+    for (const gone of [".badges", ".altmetric-embed", "a.award", "input", "[data-toggle=popover]", "sup"]) {
+      await expect(page.locator(`.publications ${gone}`), gone).toHaveCount(0);
+    }
+  });
+
+  for (const publication of PUBLICATIONS) {
+    test.describe(publication.badge, () => {
+      test("shows its title, venue and venue badge in the accent color", async ({ page }) => {
+        const li = entry(page, publication.id);
+        await expect(li.locator(".title")).toHaveText(publication.title);
+        const periodical = squash((await li.locator(".periodical").allInnerTexts()).join(" "));
+        expect(periodical).toContain(publication.venue);
+        if (publication.note) expect(periodical).toContain(publication.note);
+        const badge = li.locator("abbr.badge");
+        expect(squash(await badge.textContent())).toBe(publication.badge);
+        await expect(badge).toHaveCSS("background-color", "rgb(0, 118, 223)");
+      });
+
+      test("shows its authors in the original order with the owner underlined", async ({ page }) => {
+        const author = entry(page, publication.id).locator(".author");
+        const text = squash(await author.innerText());
+        let from = 0;
+        for (const name of publication.authors) {
+          const at = text.indexOf(name, from);
+          expect(at, `${name} in "${text}"`).toBeGreaterThanOrEqual(from);
+          from = at + name.length;
+        }
+        expect(text).not.toMatch(/more author/);
+        const self = author.locator("em");
+        await expect(self).toHaveCount(1);
+        expect(squash(await self.innerText())).toBe(OWNER);
+        expect(await self.evaluate((el) => getComputedStyle(el).textDecorationLine)).toContain("underline");
+      });
+
+      test("shows a loaded, unaltered thumbnail", async ({ page }) => {
+        const image = entry(page, publication.id).locator(".abbr img");
+        await expect(image).toHaveCount(1);
+        await image.scrollIntoViewIfNeeded();
+        await expect.poll(() => image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+        expect(await image.evaluate((img) => img.currentSrc)).toContain(publication.thumbnail);
+        const shape = await image.evaluate((img) => ({
+          fit: getComputedStyle(img).objectFit,
+          natural: img.naturalWidth / img.naturalHeight,
+          shown: img.clientWidth / img.clientHeight,
+        }));
+        expect(shape.fit).not.toBe("cover");
+        expect(Math.abs(shape.shown / shape.natural - 1)).toBeLessThan(0.02);
+      });
+
+      test("has its buttons, with the expected link targets", async ({ page }) => {
+        const buttons = entry(page, publication.id).locator(".links a.btn");
+        const actual = await buttons.evaluateAll((as) => as.map((a) => [a.textContent.trim(), a.getAttribute("href")]));
+        expect(actual).toEqual(publication.links);
+      });
+
+      test("expands its abstract in place", async ({ page }) => {
+        const li = entry(page, publication.id);
+        const panel = li.locator(".abstract.hidden");
+        await expect(panel).toBeHidden();
+        await li.locator("a.abstract").click();
+        await expect(panel).toBeVisible();
+        expect(squash(await panel.innerText())).toContain(publication.abstract);
+      });
+
+      test("reveals its BibTeX with the corrected fields", async ({ page }) => {
+        const li = entry(page, publication.id);
+        const panel = li.locator(".bibtex.hidden");
+        await expect(panel).toBeHidden();
+        await li.locator("a.bibtex").click();
+        await expect(panel).toBeVisible();
+        const text = await panel.innerText();
+        expect(text).toMatch(/author\s*=\s*\{[^}]*Martínez, Camilo/);
+        expect(text).not.toMatch(/Martinez Martinez|Martínez Martínez/);
+        for (const pattern of publication.bibtex) expect(text).toMatch(pattern);
+        for (const pattern of publication.notBibtex) expect(text).not.toMatch(pattern);
+      });
+    });
+  }
+
+  test("fits a phone-width screen and loads without errors", async ({ page }) => {
+    const problems = watchPage(page);
+    await page.goto("/publications/", { waitUntil: "networkidle" });
+    expect(problems.consoleErrors).toEqual([]);
+    expect(problems.failedRequests).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+});
+
 test.describe("accent colors", () => {
   const cases = [
     { scheme: "light", link: "rgb(0, 118, 223)", background: "rgb(255, 255, 255)" },
@@ -183,12 +395,12 @@ test.describe("accent colors", () => {
 });
 
 test.describe("site chrome", () => {
-  test("navbar shows about and the theme toggle, without search or social icons", async ({ page }) => {
+  test("navbar shows about, publications and the theme toggle, without search or social icons", async ({ page }) => {
     await page.goto("/");
     const toggler = page.locator(".navbar-toggler-main");
     if (await toggler.isVisible()) await toggler.click();
     const links = await page.locator(".navbar-nav .nav-link").allInnerTexts();
-    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about"]);
+    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications"]);
     await expect(page.locator("#light-toggle")).toBeVisible();
     await expect(page.locator("#search-toggle")).toHaveCount(0);
     await expect(page.locator("nav .social")).toHaveCount(0);
@@ -216,7 +428,7 @@ test.describe("site chrome", () => {
     for (const demo of ["Einstein", "Albert", "You R. Name", "your address", "555 your office", "Lorem ipsum"]) {
       expect(html).not.toContain(demo);
     }
-    for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/", "/publications/", "/projects/"]) {
+    for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/", "/projects/"]) {
       expect((await page.request.get(gone)).status(), gone).toBe(404);
     }
   });

@@ -206,3 +206,9 @@ html[data-theme-setting="light"] {
 #light-toggle:hover .fa-half-sun-moon::after {
   color: var(--global-theme-color);
 }
+
+/* The owner's name in a publication's author list is underlined */
+.publications ol.bibliography li div.author > em {
+  border-bottom: none;
+  text-decoration: underline;
+}
