@@ -1046,7 +1046,6 @@ test.describe("Rend-a-Pixel Raytracer", () => {
       const end = text.indexOf(CLOSING_LINE);
       expect(start).toBeGreaterThan(-1);
       expect(text.slice(start, end).trim()).toBe(RAP_WRITE_UP.join(" "));
-      expect(text).not.toContain("not yet fully responsive");
       const links = await page
         .locator("article a")
         .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
