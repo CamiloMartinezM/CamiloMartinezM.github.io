@@ -364,8 +364,8 @@ test.describe("publications page", () => {
         await li.locator("a.bibtex").click();
         await expect(panel).toBeVisible();
         const text = await panel.innerText();
-        expect(text).toMatch(/author\s*=\s*\{[^}]*Martínez, Camilo/);
-        expect(text).not.toMatch(/Martinez Martinez|Martínez Martínez/);
+        // The owner is one whole name in the author list, spelled exactly so.
+        expect(text).toMatch(/author\s*=\s*\{(?:[^}]* and )?Martínez, Camilo(?: and [^}]*)?\}/);
         for (const pattern of publication.bibtex) expect(text).toMatch(pattern);
         for (const pattern of publication.notBibtex) expect(text).not.toMatch(pattern);
       });
