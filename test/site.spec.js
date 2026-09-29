@@ -956,41 +956,47 @@ const RAP_WRITE_UP_LINKS = [
   ["Tev", "https://github.com/Tom94/tev"],
 ];
 
-// Where each region of a comparison should lie, in fractions of its width and height, for a split at (x, y): [left, top, right, bottom].
-const expectedRegions = (count, x, y) =>
+// Where each region of a comparison should lie, then its vertical and horizontal divider lines, in fractions of its width and height,
+// for a split at (x, y): [left, top, right, bottom].
+const expectedLayout = (count, x, y) =>
   ({
     2: [
       [0, 0, x, 1],
       [x, 0, 1, 1],
+      [x, 0, x, 1],
     ],
     3: [
       [0, 0, x, y],
       [x, 0, 1, y],
       [0, y, 1, 1],
+      [x, 0, x, y],
+      [0, y, 1, y],
     ],
     4: [
       [0, 0, x, y],
       [x, 0, 1, y],
       [0, y, x, 1],
       [x, y, 1, 1],
+      [x, 0, x, 1],
+      [0, y, 1, y],
     ],
   })[count];
 
-// Measures a comparison's regions relative to its own box, as fractions.
-const measureRegions = (compare) =>
+// Measures a comparison's regions and divider lines relative to its own box, as fractions.
+const measureLayout = (compare) =>
   compare.evaluate((el) => {
     const box = el.getBoundingClientRect();
-    return [...el.querySelectorAll(".compare-region")].map((region) => {
-      const r = region.getBoundingClientRect();
+    return [...el.querySelectorAll(".compare-region, .compare-line")].map((part) => {
+      const r = part.getBoundingClientRect();
       return [(r.left - box.left) / box.width, (r.top - box.top) / box.height, (r.right - box.left) / box.width, (r.bottom - box.top) / box.height];
     });
   });
 
-const expectRegions = async (compare, count, x, y) => {
+const expectLayout = async (compare, count, x, y) => {
   await expect
     .poll(async () => {
-      const actual = (await measureRegions(compare)).flat();
-      const wanted = expectedRegions(count, x, y).flat();
+      const actual = (await measureLayout(compare)).flat();
+      const wanted = expectedLayout(count, x, y).flat();
       return actual.length === wanted.length && actual.every((v, i) => Math.abs(v - wanted[i]) < 0.01);
     })
     .toBe(true);
@@ -1093,7 +1099,7 @@ test.describe("Rend-a-Pixel Raytracer", () => {
         const compare = compares.nth(index);
         // Centered, so the fixed navbar and footer never cover the pointer.
         await compare.evaluate((el) => el.scrollIntoView({ block: "center" }));
-        await expectRegions(compare, labels.length, 0.5, 0.5);
+        await expectLayout(compare, labels.length, 0.5, 0.5);
         const box = await compare.boundingBox();
         const natural = await compare
           .locator("img")
@@ -1106,7 +1112,7 @@ test.describe("Rend-a-Pixel Raytracer", () => {
           [0.8, 0.2],
         ]) {
           await page.mouse.move(box.x + box.width * x, box.y + box.height * y);
-          await expectRegions(compare, labels.length, x, labels.length === 2 ? 0.5 : y);
+          await expectLayout(compare, labels.length, x, labels.length === 2 ? 0.5 : y);
         }
       }
     });
@@ -1120,7 +1126,7 @@ test.describe("Rend-a-Pixel Raytracer", () => {
         await compare.evaluate((el) => el.scrollIntoView({ block: "center" }));
         const box = await compare.boundingBox();
         await page.touchscreen.tap(box.x + box.width * 0.3, box.y + box.height * 0.7);
-        await expectRegions(compare, labels.length, 0.3, labels.length === 2 ? 0.5 : 0.7);
+        await expectLayout(compare, labels.length, 0.3, labels.length === 2 ? 0.5 : 0.7);
       }
     });
 

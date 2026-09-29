@@ -33,7 +33,8 @@ document.querySelectorAll(".compare").forEach((box) => {
       });
     });
     verticalLine.style.left = `${x * 100}%`;
-    verticalLine.style.height = `${h * 100}%`;
+    // Only three images leave the bottom row undivided; otherwise the vertical line runs the full height.
+    verticalLine.style.height = count === 3 ? `${y * 100}%` : "100%";
     if (horizontalLine) horizontalLine.style.top = `${y * 100}%`;
   };
 
