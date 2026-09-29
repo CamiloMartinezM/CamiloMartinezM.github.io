@@ -398,12 +398,12 @@ test.describe("accent colors", () => {
 });
 
 test.describe("site chrome", () => {
-  test("navbar shows about, publications and the theme toggle, without search or social icons", async ({ page }) => {
+  test("navbar shows about, publications, projects and the theme toggle, without search or social icons", async ({ page }) => {
     await page.goto("/");
     const toggler = page.locator(".navbar-toggler-main");
     if (await toggler.isVisible()) await toggler.click();
     const links = await page.locator(".navbar-nav .nav-link").allInnerTexts();
-    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications"]);
+    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects"]);
     await expect(page.locator("#light-toggle")).toBeVisible();
     await expect(page.locator("#search-toggle")).toHaveCount(0);
     await expect(page.locator("nav .social")).toHaveCount(0);
@@ -431,7 +431,7 @@ test.describe("site chrome", () => {
     for (const demo of ["Einstein", "Albert", "You R. Name", "your address", "555 your office", "Lorem ipsum"]) {
       expect(html).not.toContain(demo);
     }
-    for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/", "/projects/"]) {
+    for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/"]) {
       expect((await page.request.get(gone)).status(), gone).toBe(404);
     }
   });
@@ -450,5 +450,251 @@ test.describe("site chrome", () => {
     for (const doc of docs) {
       expect((await request.get(doc)).status(), doc).toBe(404);
     }
+  });
+});
+
+const PROJECT_PATH = "/projects/strings-to-sequences/";
+const PROJECT_TITLE = "Acoustic Guitar Chords Recognition";
+const PROJECT_GITHUB = "https://github.com/dhimitriosduka1/hlcv";
+const IMAGE_DIR = "/assets/img/projects/strings-to-sequences/";
+const CLOSING_LINE = "For more details, please refer to the project's GitHub repository.";
+
+const PROJECT_SUMMARY =
+  "An innovative automated system for recognizing guitar chords in acoustic guitar videos. Our approach combines YOLO [Redmon et al., 2016] for fretboard detection and DINOv2 [Oquab et al.] with a ViT backbone [Dosovitskiy et al., 2020] for chord classification. We investigate hand pose estimation using MediaPipe and extend the work of [Kristian et al., 2024] by integrating modern deep learning techniques and proposing an audio generation component.";
+
+const PROJECT_SUMMARY_LINKS = [
+  ["[Redmon et al., 2016]", "https://arxiv.org/abs/1506.02640"],
+  ["[Oquab et al.]", "https://arxiv.org/abs/2304.07193"],
+  ["[Dosovitskiy et al., 2020]", "https://arxiv.org/abs/2010.11929"],
+  ["MediaPipe", "https://github.com/google-ai-edge/mediapipe"],
+  ["[Kristian et al., 2024]", "https://ph01.tci-thaijo.org/index.php/ecticit/article/view/254624"],
+];
+
+const PROJECT_AUTHORS = [
+  ["Camilo Martínez", "https://www.linkedin.com/in/camilo-martinez-m/"],
+  ["Dhimitrios Duka", "https://www.linkedin.com/in/dhimitriosduka/"],
+  ["Honglu Ma", "https://github.com/Kanakanajm"],
+];
+
+const PROJECT_HEADINGS = [
+  ["H2", "Fretboard Detection"],
+  ["H3", "Qualitative Results"],
+  ["H2", "Guitar Chord Classification"],
+  ["H3", "Hand Pose Estimation + Classifier"],
+  ["H3", "Classifier only approach"],
+];
+
+// The write-up in reading order. The captions of figures 2 to 4 name the layout that fits the screen, so they differ by viewport.
+const writeUp = (wide) => {
+  const [first, second] = wide ? ["Left", "right"] : ["Top", "bottom"];
+  return [
+    "This system automates chord recognition from acoustic guitar videos by detecting and classifying chords based on video input. It leverages YOLO [Redmon et al., 2016] and Faster R-CNN [Ren et al., 2016] for fretboard detection, allowing the system to identify the position of the hand and fingers on the guitar neck. For chord classification, it utilizes Vision Transformers [Dosovitskiy et al., 2020] and DINOv2 [Oquab et al.], which process visual cues to distinguish between different chords. Additionally, hand pose estimation with MediaPipe was explored as a potential method to perform chord recognition. Finally, we extend the work from [Kristian et al., 2024] by exploring the potential of using state-of-the-art deep learning models and techniques with an additional proposal for an audio generation module.",
+    "This system was created Dhimitrios Duka, Honglu Ma and myself, as the final project for the High-Level Computer Vision course lectured by Prof. Dr. Bernt Schiele at Saarland University during the Sommer Semester 2024.",
+    "Fretboard Detection",
+    "The table below shows the performance metrics of the different models tested on the finetuning dataset (Guitar necks detector), and the figure below shows the Recall vs. mAP@50 for the models tested and finetuned on the fretboard class, while showcasing the number of parameters. Naturally, the models finetuned with a Frozen Backbone (FB) performed slightly worse than the models finetuned without a Frozen Backbone; this was expected since the latter had the advantage of being able to learn the new task from scratch, using all layers, while the former only trained a smaller classifier head. Since we wanted to retain the ability to recognize the other 80 valuable classes from the COCO dataset, we chose a model from the (FB) list, the YOLOv9 (FB) model, as the best model for our task. This model obtained the highest precision and, after re-evaluating on the COCO dataset + fretboard class, it delivered better results in terms of confusion matrix and Precision-Recall curve.",
+    "Table 1: Performance metrics of different models on the evaluation dataset, shown in percentages. Each column represents a specific metric: Precision, Recall, mAP50-95, and mAP50. (FB) denotes models fine-tuned with a Frozen Backbone.",
+    "Model P R mAP50-95 mAP50",
+    "YOLOv8 (m) 98.9% 93.0% 88.7% 98.2%",
+    "YOLOv9 (c) 96.4% 96.8% 85.3% 97.8%",
+    "YOLOv10 (l) 94.2% 87.0% 80.0% 94.4%",
+    "Faster-RCNN-Resnet50 80.8% 82.4% 77.5% 94.0%",
+    "Faster-RCNN-MobileNetv3 79.4% 81.6% 75.7% 94.9%",
+    "YOLOv8 (FB) 76.7% 85.1% 53.4% 87.8%",
+    "YOLOv9 (FB) 82.4% 74.7% 54.7% 87.0%",
+    "YOLOv10 (FB) 81.4% 84.0% 71.2% 89.9%",
+    "Faster-RCNN-Resnet50 (FB) 62.9% 66.3% 59.0% 93.4%",
+    "Faster-RCNN-MobileNetv3 (FB) 71.7% 73.6% 68.3% 93.0%",
+    "Figure 1: Recall vs. mAP@50 for the models tested and finetuned on the fretboard class.",
+    "Qualitative Results",
+    "Some qualitative results are shown below, comparing the original YOLOv9 (c) prediction with the finetuned model and the model with a frozen backbone + classifier layer.",
+    `Figure 2: Comparison of YOLOv9 (c) predictions with different training approaches. From ${wide ? "left to right" : "top to bottom"}: original prediction, with full-finetuning, and with a frozen backbone + classifier layer.`,
+    `Figure 3: Comparison of full-finetuning vs. frozen backbone with classifier layer. ${first}: with full-finetuning, ${second}: with frozen backbone + classifier layer.`,
+    `Figure 4: Model predictions on different datasets. ${first}: prediction on an image from the COCO dataset, ${second}: from the Penn-Fudan dataset.`,
+    "Guitar Chord Classification",
+    "Hand Pose Estimation + Classifier",
+    "To evaluate our approach against those in our reference paper by [Kristian et al., 2024], we implemented the InceptionResNetv2 model as described by the authors. After training the model using the hyperparameters provided by [Kristian et al., 2024] on our dataset, we obtained the results shown in the table below, which provided us with a baseline to compare our models against. Surprisingly, this approach performed well, achieving good accuracy during validation and testing on two datasets. However, the model struggled to generalize to the third dataset, which was created by us. This outcome was anticipated, as the samples in our dataset were out of the training distribution, and the model lacked the complexity needed to generalize to such data.",
+    "Table 2: Accuracy of the Hand Pose Estimation + Classifier in the test set of different datasets. Datasets used: GC: Guitar_Chords, GCT: Guitar_Chords_Tiny, GCO: Guitar_Chords_Ours.",
+    "Model GC GCT GCO",
+    "InceptionResNetv2 83.56% 68.63% 15.57%",
+    "SVM (C = 300) 95.27% 85.71% 18.61%",
+    "Random Forest (n_estimators = 200) 93.35% 52.41% 16.16%",
+    "MLP (hidden_layer_sizes = (100, 256, 100)) 89.44% 78.57% 14.39%",
+    "Classifier only approach",
+    "To address this limitation of the previous approach, we decided to explore more complex models, such as Vision Transformers and DINOv2, which is also available on Hugging Face. The results of our experiments are summarized below:",
+    "Table 3: Accuracy of the Classifier-only approach on the test set of different datasets.",
+    "Model GC GCT GCO",
+    "InceptionResNetv2 83.56% 68.63% 15.57%",
+    "ViT-B/16 98.96% 85.29% 96.24%",
+    "ViT-B/32 93.07% 81.37% 95.83%",
+    "ViT-L/16 95.84% 81.37% 12.29%",
+    "ViT-L/32 77.03% 43.14% 13.43%",
+    "DINOv2-S 96.24% 88.24% 98.18%",
+    "DINOv2-L 96.44% 91.18% 97.92%",
+    "ViT models show varying performance across different datasets. The base models perform exceptionally well, with high accuracy on all datasets. However, the larger models do not exhibit the same performance. We argue that this is happening because the available data is not sufficient to train the large version of the models effectively. Additionally, we can also observe that the patch 16 versions of the ViT models perform better than the patch 32 versions. This is likely due to the fact that the patch 16 versions have a higher resolution, which is important for accurately distinguishing between different hand positions.",
+    "Moreover, both DINOv2 variants demonstrated strong and consistent performance across all datasets. The DINOv2-L model, in particular, achieved the highest accuracy on the Guitar_Chords_Ours dataset, slightly outperforming the small variant. The superior performance of DINOv2 can be attributed to its self-supervised learning approach. Unlike models pre-trained on ImageNet, which does not contain a specific class for hands, DINOv2's self-supervised learning enables it to learn more generic and transferable representations, leading to better generalization in our task. This enhanced generalization is further supported by attention visualizations of the model when applied to images from Guitar_Chords_Ours dataset, where the model correctly focuses on the hand performing the fretting, as evidenced by the following figures.",
+    "Figure 5: Occlusion-based attribution [Kokhlikyan et al., 2020] for model interpretability on a 74×389 input image using a stride of 8 and a sliding window of 30×30, using Captum. Top: Untrained DINOv2 model. Bottom: Our DINOv2 model.",
+    "Figure 6: Our DINOv2 model on a 360×640 input image using a stride of 20 and a sliding window of 60×60.",
+    "Overall, our proposed models outperformed the InceptionResNetv2 model, achieving higher accuracy across all datasets. This demonstrates the potential of using more advanced models for chord classification tasks.",
+  ];
+};
+
+const WRITE_UP_LINKS = [
+  ["[Ren et al., 2016]", "https://arxiv.org/abs/1506.01497"],
+  ["Dhimitrios Duka", "https://dhimitriosduka1.github.io/"],
+  ["Honglu Ma", "https://github.com/Kanakanajm"],
+  [
+    "High-Level Computer Vision",
+    "https://www.mpi-inf.mpg.de/departments/computer-vision-and-machine-learning/teaching/courses-1/ss-2024-high-level-computer-vision",
+  ],
+  ["Prof. Dr. Bernt Schiele", "https://www.mpi-inf.mpg.de/departments/computer-vision-and-machine-learning/people/bernt-schiele"],
+  ["Saarland University", "https://www.uni-saarland.de/"],
+  ["Guitar necks detector", "https://universe.roboflow.com/hubert-drapeau-qt6ae/guitar-necks-detector/dataset/1"],
+  ["COCO dataset", "https://cocodataset.org/#home"],
+  ["YOLOv8 (m)", "https://github.com/autogyro/yolo-V8"],
+  ["YOLOv9 (c)", "https://github.com/WongKinYiu/yolov9"],
+  ["YOLOv10 (l)", "https://github.com/THU-MIG/yolov10"],
+  ["Penn-Fudan dataset", "https://www.cis.upenn.edu/~jshi/ped_html/"],
+  ["InceptionResNetv2", "https://arxiv.org/abs/1602.07261"],
+  ["Hugging Face", "https://huggingface.co/docs/transformers/model_doc/dinov2"],
+  ["ImageNet", "https://www.image-net.org/"],
+  ["[Kokhlikyan et al., 2020]", "https://arxiv.org/abs/2009.07896"],
+  ["Captum", "https://captum.ai/tutorials/TorchVision_Interpret#3--Occlusion-based-attribution"],
+];
+
+const FIGURES = [
+  ["recall_vs_map50.jpg", "Recall vs mAP@50"],
+  ["other-image-original.jpg", "Original YOLOv9 prediction"],
+  ["other-image-non-frozen.jpg", "Full-finetuning"],
+  ["other-image-finetuned.jpg", "Frozen backbone + Classifier layer"],
+  ["dhimitrios-non-frozen.jpg", "With full-finetuning"],
+  ["dhimitrios.jpg", "Frozen backbone + Classifier layer"],
+  ["output_normal_image.jpg", "Prediction on an image from the COCO dataset"],
+  ["other-image-2-finetuned.jpg", "From the Penn-Fudan dataset"],
+  ["occlusion_untrained.jpg", "Occlusion in untrained model"],
+  ["occlusion_trained.jpg", "Occlusion in trained model"],
+  ["occlusion_trained_full.jpg", "Occlusion in trained model - full picture"],
+];
+
+test.describe("projects page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/projects/");
+  });
+
+  test("shows the Acoustic Guitar Chords Recognition card first, with its icon, and opens its Project page", async ({ page }) => {
+    const card = page.locator(".projects .card").first();
+    await expect(card.locator(".card-title")).toHaveText(PROJECT_TITLE);
+    await expect(card.locator(".card-text")).toHaveText("An innovative automated system for recognizing guitar chords in acoustic guitar videos.");
+    const icon = card.locator("img");
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(await icon.evaluate((img) => img.currentSrc)).toContain("/projects/strings-to-sequences/icon");
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${PROJECT_PATH}$`));
+    await expect(page.locator("h1.post-title")).toHaveText(PROJECT_TITLE);
+  });
+
+  test("has no placeholder text", async ({ page }) => {
+    await expect(page.locator("article")).not.toContainText("cool projects");
+    for (const text of await page.locator(".post-description").allInnerTexts()) expect(text.trim()).toBe("");
+  });
+});
+
+test.describe("Acoustic Guitar Chords Recognition page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(PROJECT_PATH);
+  });
+
+  test("opens with the summary, the authors line and the GitHub link, in that order", async ({ page }) => {
+    const article = page.locator("article");
+    const blocks = await article.locator(":scope > *").evaluateAll((els) => els.slice(0, 3).map((el) => el.innerText.replace(/\s+/g, " ").trim()));
+    expect(blocks).toEqual([PROJECT_SUMMARY, "By: Camilo Martínez, Dhimitrios Duka, Honglu Ma", "View on GitHub"]);
+    const summary = article.locator(":scope > p").first();
+    for (const [text, href] of PROJECT_SUMMARY_LINKS) {
+      await expect(summary.getByRole("link", { name: text, exact: true })).toHaveAttribute("href", href);
+    }
+    await expect(page.locator("h1.post-title")).toHaveText(PROJECT_TITLE);
+  });
+
+  test("links the authors to their exact profiles and underlines the owner", async ({ page }) => {
+    const authors = page.locator("article > p").nth(1);
+    const actual = await authors.locator("a").evaluateAll((as) => as.map((a) => [a.textContent.trim(), a.getAttribute("href")]));
+    expect(actual).toEqual(PROJECT_AUTHORS);
+    const decoration = await authors
+      .locator("a")
+      .first()
+      .evaluate((a) => getComputedStyle(a.querySelector("u") ?? a).textDecorationLine);
+    expect(decoration).toBe("underline");
+  });
+
+  test("links to the GitHub repository", async ({ page }) => {
+    await expect(page.locator("article > p").nth(2).getByRole("link", { name: "View on GitHub" })).toHaveAttribute("href", PROJECT_GITHUB);
+  });
+
+  test("shows every section heading, in order", async ({ page }) => {
+    const headings = await page.locator("article h2, article h3").evaluateAll((hs) => hs.map((h) => [h.tagName, h.textContent.trim()]));
+    expect(headings).toEqual(PROJECT_HEADINGS);
+  });
+
+  test("shows the write-up word for word, tables and captions included", async ({ page }, testInfo) => {
+    const blocks = writeUp(testInfo.project.name === "desktop");
+    const text = squash(await page.locator("article").innerText());
+    for (const block of blocks) expect(text, block.slice(0, 40)).toContain(block);
+    const start = text.indexOf(blocks[0]);
+    const end = text.indexOf(CLOSING_LINE);
+    expect(text.slice(start, end).trim()).toBe(blocks.join(" "));
+  });
+
+  test("keeps the write-up's links", async ({ page }) => {
+    const links = await page
+      .locator("article a")
+      .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
+    for (const link of WRITE_UP_LINKS) expect(links).toContainEqual(link);
+  });
+
+  test("shows its three captioned tables", async ({ page }) => {
+    const tables = page.locator("article table");
+    await expect(tables).toHaveCount(3);
+    for (const [index, label] of ["Table 1:", "Table 2:", "Table 3:"].entries()) {
+      await expect(tables.nth(index).locator("caption")).toContainText(label);
+    }
+  });
+
+  test("shows its figures, loaded and captioned", async ({ page }) => {
+    const images = page.locator("article figure img");
+    await expect(images).toHaveCount(FIGURES.length);
+    const actual = await images.evaluateAll((imgs) => imgs.map((img) => [new URL(img.src).pathname, img.alt]));
+    expect(actual).toEqual(FIGURES.map(([file, alt]) => [IMAGE_DIR + file, alt]));
+    await expect(page.locator("article figure figcaption")).toHaveCount(6);
+    for (const image of await images.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(() => image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    }
+  });
+
+  test("ends with the pointer to the GitHub repository", async ({ page }) => {
+    const closing = page.locator("article > p").last();
+    expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
+    await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", PROJECT_GITHUB);
+  });
+
+  test("fits a phone-width screen, scrolls wide tables in their own container and loads without errors", async ({ page }) => {
+    const problems = watchPage(page);
+    await page.goto(PROJECT_PATH, { waitUntil: "networkidle" });
+    expect(problems.consoleErrors).toEqual([]);
+    expect(problems.failedRequests).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    for (const table of await page.locator("article table").all()) {
+      expect(await table.evaluate((t) => getComputedStyle(t.parentElement).overflowX)).toBe("auto");
+    }
+  });
+
+  test("keeps table text readable in dark mode", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto(PROJECT_PATH);
+    const colors = await page
+      .locator("article table")
+      .first()
+      .evaluate((t) => [getComputedStyle(t).color, getComputedStyle(document.body).color]);
+    expect(colors[0]).toBe(colors[1]);
   });
 });
