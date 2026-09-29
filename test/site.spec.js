@@ -435,7 +435,7 @@ test.describe("site chrome", () => {
   }
 
   test("has none of the other starter pages", async ({ request }) => {
-    for (const gone of ["/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/"]) {
+    for (const gone of ["/404.html", "/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/"]) {
       expect((await request.get(gone)).status(), gone).toBe(404);
     }
   });
