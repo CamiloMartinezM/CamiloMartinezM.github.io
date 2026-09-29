@@ -352,7 +352,9 @@ test.describe("publications page", () => {
         expect(await height()).toBeLessThan(5);
         await li.locator("a.abstract").click();
         await expect.poll(height).toBeGreaterThan(50);
-        expect(squash(await panel.innerText())).toContain(publication.abstract);
+        const abstract = squash(await panel.innerText());
+        expect(abstract).toContain(publication.abstract);
+        expect(abstract).not.toMatch(/&\w+;/);
       });
 
       test("reveals its BibTeX with the corrected fields", async ({ page }) => {
