@@ -302,7 +302,7 @@ test.describe("publications page", () => {
         await expect(li.locator(".title")).toHaveText(publication.title);
         const periodical = squash((await li.locator(".periodical").allInnerTexts()).join(" "));
         expect(periodical).toContain(publication.venue);
-        if (publication.note) expect(periodical).toContain(publication.note);
+        if (publication.note) expect(periodical.replaceAll("’", "'")).toContain(publication.note);
         const badge = li.locator("abbr.badge");
         expect(squash(await badge.textContent())).toBe(publication.badge);
         await expect(badge).toHaveCSS("background-color", "rgb(0, 118, 223)");
@@ -348,9 +348,10 @@ test.describe("publications page", () => {
       test("expands its abstract in place", async ({ page }) => {
         const li = entry(page, publication.id);
         const panel = li.locator(".abstract.hidden");
-        await expect(panel).toBeHidden();
+        const height = () => panel.evaluate((el) => el.getBoundingClientRect().height);
+        expect(await height()).toBeLessThan(5);
         await li.locator("a.abstract").click();
-        await expect(panel).toBeVisible();
+        await expect.poll(height).toBeGreaterThan(50);
         expect(squash(await panel.innerText())).toContain(publication.abstract);
       });
 
