@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-The article [A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification](https://www.nature.com/articles/s41598-026-73141-2) was published in Scientific Reports.
+The article [A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification](https://www.nature.com/articles/s41598-026-73141-2) was published in Scientific Reports (Nature Portfolio).

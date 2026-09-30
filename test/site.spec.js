@@ -42,12 +42,12 @@ const SOCIAL_LINKS = [
 const NEWS = [
   {
     date: "Sep 25, 2026",
-    text: "The article A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification was published in Scientific Reports.",
+    text: "The article A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification was published in Scientific Reports (Nature Portfolio).",
     href: "https://www.nature.com/articles/s41598-026-73141-2",
   },
   {
     date: "Jan 08, 2026",
-    text: "The article Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement was published in Discover Mechanical Engineering.",
+    text: "The article Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement was published in Discover Mechanical Engineering (Springer Nature).",
     href: "https://link.springer.com/article/10.1007/s44245-025-00170-y",
   },
   {
@@ -67,7 +67,7 @@ const PUBLICATIONS = [
     title:
       "A Systematically Designed Open-Access Dataset for Cross-Microscope Machine Learning Benchmarking in Complex Steel Microstructure Classification",
     authors: ["Björn-Ivo Bachmann", "Marie Stiefel", "Martin Müller", OWNER, "Dominik Britz", "Frank Mücklich"],
-    venue: "Scientific Reports",
+    venue: "Scientific Reports (Nature Portfolio), Sep 2026",
     thumbnail: "scientific-reports",
     abstract: "The establishment of robust machine learning workflows for microstructure analysis",
     links: [
@@ -78,7 +78,7 @@ const PUBLICATIONS = [
       ["PDF", "https://www.nature.com/articles/s41598-026-73141-2.pdf"],
     ],
     bibtex: [/month\s*=\s*\{?sep\b/, /pages\s*=\s*\{29853\}/, /volume\s*=\s*\{16\}/],
-    notBibtex: [/Sept/, /\bnumber\s*=/],
+    notBibtex: [/Sept/, /\bnumber\s*=/, /imprint/, /Nature Portfolio/],
   },
   {
     id: "Pena_2026",
@@ -86,7 +86,7 @@ const PUBLICATIONS = [
     badge: "Discov. Mech. Eng.",
     title: "Numerical Study of Regenerative Pump Characteristics Operating under Different Fluid Viscosities and Multistage Arrangement",
     authors: ["Laura Peña", "Flor Calderon", OWNER, "Jennifer Páez", "Miguel Asuaje", "Omar Lopez", "Nicolas Ratkovich"],
-    venue: "Discover Mechanical Engineering",
+    venue: "Discover Mechanical Engineering (Springer Nature), Jan 2026",
     thumbnail: "discover-mechanical-engineering",
     abstract: "Regenerative (peripheral) pumps offer compact, high-head solutions",
     links: [
@@ -97,7 +97,7 @@ const PUBLICATIONS = [
       ["PDF", "https://link.springer.com/content/pdf/10.1007/s44245-025-00170-y.pdf"],
     ],
     bibtex: [/month\s*=\s*\{?jan\b/, /pages\s*=\s*\{4\}/, /volume\s*=\s*\{5\}/],
-    notBibtex: [/\bnumber\s*=/],
+    notBibtex: [/\bnumber\s*=/, /imprint/, /Springer Nature/],
   },
   {
     id: "Sharma_2024",
