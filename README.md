@@ -1,45 +1,17 @@
 # CamiloMartinezM.github.io
 
-A cool Portfolio website with Vue 3 in Vite.
+My personal academic website, built with [al-folio](https://github.com/alshedivat/al-folio) v1.2, a Jekyll theme for academic websites.
 
-## Recommended IDE Setup
+## Build and preview
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+There is no local Jekyll setup. GitHub Actions builds the site:
 
-## Type Support for `.vue` Imports in TS
+- Every push to a pull request into `main` builds the site without deploying it, uploads it as the `site` artifact and runs the Playwright browser tests in `test/` against it.
+- To preview a build, download its artifact (`gh run download <run-id> --name site --dir _site`) and serve `_site` with any static file server. `npm test` runs the browser tests against `_site` (it needs `python3`).
+- A push to `main` builds the site and deploys it to the `gh-pages` branch, which GitHub Pages serves.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+The formatting check is `npx prettier . --check`.
 
-## Customize configuration
+## License
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Deploy website with gh-pages
-
-```sh
-npm run deploy
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+MIT, see [LICENSE](LICENSE). The code is based on al-folio v1.2 by Maruan Al-Shedivat.

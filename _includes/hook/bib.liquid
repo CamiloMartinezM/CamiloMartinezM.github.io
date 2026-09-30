@@ -1,0 +1,8 @@
+{% comment %}
+  Runs inside al-folio's bib layout before the venue line is assembled. It appends a
+  display-only imprint to the journal name, such as "Scientific Reports (Nature Portfolio)",
+  so the BibTeX journal field stays as the version of record.
+{% endcomment %}
+{% if entry.imprint %}
+  {% capture entrytype %}{{ entrytype }} ({{ entry.imprint }}){% endcapture %}
+{% endif %}

@@ -1,0 +1,68 @@
+.compare {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 1rem 0;
+  user-select: none;
+  touch-action: none; /* three and four images follow a finger on both axes */
+}
+
+.compare.compare-2 {
+  touch-action: pan-y; /* two images only need horizontal moves, so the page keeps scrolling */
+}
+
+/* The first image sets the box's height; the others are stacked on it and clipped to their regions. */
+.compare img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+.compare img + img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.compare-region,
+.compare-line {
+  position: absolute;
+  pointer-events: none;
+}
+
+.compare-region {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.compare-label {
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.875rem;
+  text-align: center;
+  text-shadow:
+    0 0 4px #000,
+    0 0 4px #000;
+}
+
+.compare-line {
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.compare-line-vertical {
+  top: 0;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.compare-line-horizontal {
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
