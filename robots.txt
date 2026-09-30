@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://camilomartinezm.github.io/sitemap.xml
