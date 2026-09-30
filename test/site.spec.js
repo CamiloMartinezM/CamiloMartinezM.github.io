@@ -10,7 +10,7 @@ const BIO = [
     links: [["Data-Driven Design of Materials (D3M)", "https://martinmueller1104.github.io/d3m.github.io/"]],
   },
   {
-    text: "I hold a master's degree in Data Science and Artificial Intelligence from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from Universidad de los Andes, Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the Material Engineering Center Saarland (MECS), worked on multimodal EEG and eye tracking for intent prediction at the German Research Center for Artificial Intelligence (DFKI) and on continuous regression from EEG signals at the Max Planck Institute for Informatics.",
+    text: "I hold a master's degree in Data Science and Artificial Intelligence from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from Universidad de los Andes, Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the Material Engineering Center Saarland (MECS), worked on multimodal EEG and eye tracking for intent prediction at the German Research Center for Artificial Intelligence (DFKI) and driving photorealistic 3D Gaussian Avatars with EEG signals at the Max Planck Institute for Informatics.",
     links: [
       [
         "Data Science and Artificial Intelligence",
@@ -19,7 +19,7 @@ const BIO = [
       ["Universidad de los Andes", "https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)"],
       ["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"],
       ["German Research Center for Artificial Intelligence (DFKI)", "https://www.dfki.de/en/web"],
-      ["Max Planck Institute for Informatics", "https://www.mpi-inf.mpg.de/"],
+      ["Max Planck Institute for Informatics", "https://www.mpi-inf.mpg.de/home"],
     ],
   },
   {
