@@ -6,11 +6,14 @@ const SUBTITLE = "Research Assistant @Saarland University";
 
 const BIO = [
   {
-    text: "Hello there! I'm a Research Assistant in the Data-Driven Design of Materials (D3M) group at Saarland University, Germany. I work on Machine Learning for microstructure analysis in low-data regimes, developing reliable methods for small, heterogeneous datasets while reducing manual annotation effort. To this end, I explore active, semi- and self-supervised learning, synthetic data and the adaptation of foundation models.",
-    links: [["Data-Driven Design of Materials (D3M)", "https://martinmueller1104.github.io/d3m.github.io/"]],
+    text: "Hello there! I'm a full-time research assistant in the Data-Driven Design of Materials (d3M) research group at the Chair of Experimental Methods in Materials Science of Saarland University, Germany. I work on Machine Learning for microstructure analysis in low-data regimes, developing reliable methods for small, heterogeneous datasets while reducing manual annotation effort. To this end, I explore active, semi- and self-supervised learning, synthetic data and the adaptation of foundation models.",
+    links: [
+      ["Data-Driven Design of Materials (d3M)", "https://martinmueller1104.github.io/d3m.github.io/"],
+      ["Chair of Experimental Methods in Materials Science", "https://www.uni-saarland.de/en/chair/motz.html"],
+    ],
   },
   {
-    text: "I hold a master's degree in Data Science and Artificial Intelligence from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from Universidad de los Andes, Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the Material Engineering Center Saarland (MECS), worked on multimodal EEG and eye tracking for intent prediction at the German Research Center for Artificial Intelligence (DFKI) and driving photorealistic 3D Gaussian Avatars with EEG signals at the Max Planck Institute for Informatics.",
+    text: "I hold a master's degree in Data Science and Artificial Intelligence from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from Universidad de los Andes, Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the Material Engineering Center Saarland (MECS), worked on multimodal EEG and eye tracking for intent prediction at the German Research Center for Artificial Intelligence (DFKI) and driving photorealistic 3D Gaussian Avatars with EEG signals at the Max Planck Institute for Informatics (MPI).",
     links: [
       [
         "Data Science and Artificial Intelligence",
@@ -19,7 +22,7 @@ const BIO = [
       ["Universidad de los Andes", "https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)"],
       ["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"],
       ["German Research Center for Artificial Intelligence (DFKI)", "https://www.dfki.de/en/web"],
-      ["Max Planck Institute for Informatics", "https://www.mpi-inf.mpg.de/home"],
+      ["Max Planck Institute for Informatics (MPI)", "https://www.mpi-inf.mpg.de/home"],
     ],
   },
   {
