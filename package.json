@@ -6,6 +6,7 @@
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@shopify/prettier-plugin-liquid": "^1.10.0",
-    "prettier": "^3.8.0"
+    "prettier": "^3.8.0",
+    "purgecss": "^8.0.0"
   }
 }
