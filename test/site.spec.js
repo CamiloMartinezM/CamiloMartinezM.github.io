@@ -19,7 +19,7 @@ const BIO = [
         "Data Science and Artificial Intelligence",
         "https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/",
       ],
-      ["Universidad de los Andes", "https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)"],
+      ["Universidad de los Andes", "https://www.uniandes.edu.co/en"],
       ["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"],
       ["German Research Center for Artificial Intelligence (DFKI)", "https://www.dfki.de/en/web"],
       ["Max Planck Institute for Informatics (MPI)", "https://www.mpi-inf.mpg.de/home"],
