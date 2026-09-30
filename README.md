@@ -1,6 +1,6 @@
 # CamiloMartinezM.github.io
 
-The personal academic website of Camilo Martínez, built with [al-folio](https://github.com/alshedivat/al-folio) v1.2, a Jekyll theme for academic websites.
+My personal academic website, built with [al-folio](https://github.com/alshedivat/al-folio) v1.2, a Jekyll theme for academic websites.
 
 ## Build and preview
 
