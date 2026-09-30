@@ -19,7 +19,7 @@ const BIO = [
         "Data Science and Artificial Intelligence",
         "https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/",
       ],
-      ["Universidad de los Andes", "https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)"],
+      ["Universidad de los Andes", "https://www.uniandes.edu.co/en"],
       ["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"],
       ["German Research Center for Artificial Intelligence (DFKI)", "https://www.dfki.de/en/web"],
       ["Max Planck Institute for Informatics (MPI)", "https://www.mpi-inf.mpg.de/home"],
@@ -166,6 +166,7 @@ const PAGES = [
   "/projects/strings-to-sequences/",
   "/projects/multilingual-lm-representations/",
   "/projects/rend-a-pixel/",
+  "/teaching/",
 ];
 
 // Collects what a visitor's browser would flag as broken while a page loads.
@@ -410,12 +411,12 @@ test.describe("accent colors", () => {
 });
 
 test.describe("site chrome", () => {
-  test("navbar shows about, publications, projects and the theme toggle, without search or social icons", async ({ page }) => {
+  test("navbar shows about, publications, projects, teaching and the theme toggle, without search or social icons", async ({ page }) => {
     await page.goto("/");
     const toggler = page.locator(".navbar-toggler-main");
     if (await toggler.isVisible()) await toggler.click();
     const links = await page.locator(".navbar-nav .nav-link").allInnerTexts();
-    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects"]);
+    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects", "teaching"]);
     await expect(page.locator("#light-toggle")).toBeVisible();
     await expect(page.locator("#search-toggle")).toHaveCount(0);
     await expect(page.locator("nav .social")).toHaveCount(0);
@@ -445,7 +446,7 @@ test.describe("site chrome", () => {
   }
 
   test("has none of the other starter pages", async ({ request }) => {
-    for (const gone of ["/404.html", "/blog/", "/news/", "/cv/", "/repositories/", "/teaching/", "/people/", "/books/"]) {
+    for (const gone of ["/404.html", "/blog/", "/news/", "/cv/", "/repositories/", "/people/", "/books/"]) {
       expect((await request.get(gone)).status(), gone).toBe(404);
     }
   });
@@ -1159,5 +1160,63 @@ test.describe("Rend-a-Pixel Raytracer", () => {
       });
       expect(widths.every(Boolean)).toBe(true);
     });
+  });
+});
+
+const TEACHING = [
+  {
+    text: "Saarland University, Germany",
+    links: [["Saarland University", "https://www.uni-saarland.de/en/home.html"]],
+    courses: [
+      {
+        text: "Elements of Machine Learning, Winter semester 2024/25, Tutor",
+        bold: ["Elements of Machine Learning"],
+        links: [["Elements of Machine Learning", "https://cms.sic.saarland/eml24/"]],
+      },
+      {
+        text: "Digital Signal Processing, Summer semester 2024, Teaching Assistant",
+        bold: ["Digital Signal Processing"],
+        links: [["Digital Signal Processing", "https://www.lsv.uni-saarland.de/digital-signal-processing-2024/"]],
+      },
+    ],
+  },
+  {
+    text: "Universidad de los Andes, Colombia",
+    links: [["Universidad de los Andes", "https://www.uniandes.edu.co/en"]],
+    courses: [
+      {
+        text: "Introduction to Programming (Python), Semesters 2020-1 and 2020-2, Tutor",
+        bold: ["Introduction to Programming (Python)"],
+        links: [],
+      },
+    ],
+  },
+];
+
+test.describe("teaching page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/teaching/");
+  });
+
+  test("lists the courses under their universities, newest first, with bold names and exact links", async ({ page }) => {
+    const groups = await page.locator("article h2").evaluateAll((headings) => {
+      const text = (el) => el.textContent.replace(/\s+/g, " ").trim();
+      const links = (el) => [...el.querySelectorAll("a")].map((a) => [text(a), a.getAttribute("href")]);
+      return headings.map((h) => ({
+        text: text(h),
+        links: links(h),
+        courses: [...h.nextElementSibling.querySelectorAll(":scope > li")].map((li) => ({
+          text: text(li),
+          bold: [...li.querySelectorAll("strong")].map(text),
+          links: links(li),
+        })),
+      }));
+    });
+    expect(groups).toEqual(TEACHING);
+  });
+
+  test("has no intro text", async ({ page }) => {
+    for (const text of await page.locator(".post-description").allInnerTexts()) expect(text.trim()).toBe("");
+    expect(await page.locator("article > *").evaluateAll((els) => els.map((el) => el.tagName))).toEqual(["H2", "UL", "H2", "UL"]);
   });
 });
