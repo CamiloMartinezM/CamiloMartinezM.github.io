@@ -37,7 +37,7 @@ const INTERESTS = [
   "Computer Vision for Materials Microstructure Analysis",
   "Data-Frugal Learning: Active, Semi- and Self-Supervised Learning",
   "Vision and Language Foundation Models",
-  "Multimodal Learning with EEG and Eye Tracking",
+  "Multimodal Learning with EEG",
 ];
 
 const SOCIAL_LINKS = [

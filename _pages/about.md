@@ -27,7 +27,7 @@ Before that, I was a Functional Consultant at [Indra](https://www.linkedin.com/c
 - Computer Vision for Materials Microstructure Analysis
 - Data-Frugal Learning: Active, Semi- and Self-Supervised Learning
 - Vision and Language Foundation Models
-- Multimodal Learning with EEG and Eye Tracking
+- Multimodal Learning with EEG
 
 ## News
 
