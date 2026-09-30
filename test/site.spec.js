@@ -2,22 +2,25 @@ const { test, expect } = require("@playwright/test");
 
 const ORIGIN = "http://127.0.0.1:4000";
 
-const SUBTITLE = "M.Sc. Student @Saarland University";
+const SUBTITLE = "Research Assistant @Saarland University";
 
 const BIO = [
   {
-    text: "Hello there! I'm a Master's student of Data Science and Artificial Intelligence at Saarland University, Germany. I am also a Mechanical Engineer with a Minor in Computational Mathematics from Universidad de los Andes, Colombia.",
+    text: "Hello there! I'm a Research Assistant in the Data-Driven Design of Materials (D3M) group at Saarland University, Germany. I work on Machine Learning for microstructure analysis in low-data regimes, developing reliable methods for small, heterogeneous datasets while reducing manual annotation effort. To this end, I explore active, semi- and self-supervised learning, synthetic data and the adaptation of foundation models.",
+    links: [["Data-Driven Design of Materials (D3M)", "https://martinmueller1104.github.io/d3m.github.io/"]],
+  },
+  {
+    text: "I hold a master's degree in Data Science and Artificial Intelligence from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from Universidad de los Andes, Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the Material Engineering Center Saarland (MECS), worked on multimodal EEG and eye tracking for intent prediction at the German Research Center for Artificial Intelligence (DFKI) and on continuous regression from EEG signals at the Max Planck Institute for Informatics.",
     links: [
       [
         "Data Science and Artificial Intelligence",
         "https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/",
       ],
       ["Universidad de los Andes", "https://en.wikipedia.org/wiki/University_of_the_Andes_(Colombia)"],
+      ["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"],
+      ["German Research Center for Artificial Intelligence (DFKI)", "https://www.dfki.de/en/web"],
+      ["Max Planck Institute for Informatics", "https://www.mpi-inf.mpg.de/"],
     ],
-  },
-  {
-    text: "Currently, I am a Research Assistant at the Material Engineering Center Saarland (MECS), developing Machine Learning models for analysis and characterization tasks in Materials Science and Engineering (MES), leveraging both traditional ML and modern DL approaches. We apply state-of-the-art architectures, e.g., Visual Transformers (ViTs), semi-supervised, and self-supervised learning methods, optimized for low-data regimes for enhancing microstructure classification and segmentation.",
-    links: [["Material Engineering Center Saarland (MECS)", "https://www.mec-s.de/en/welcome/"]],
   },
   {
     text: "Before that, I was a Functional Consultant at Indra, where I oversaw a team to enhance utility companies' operational abilities to align with the Industry 4.0, namely, AFINIA in Colombia, Agua de Puebla in Mexico and Sedapal in Peru.",
@@ -30,7 +33,12 @@ const BIO = [
   },
 ];
 
-const INTERESTS = ["Computer Vision (Robotics & Autonomous Driving)", "Large Vision and Language Models", "Model-based Machine Learning"];
+const INTERESTS = [
+  "Computer Vision for Materials Microstructure Analysis",
+  "Data-Frugal Learning: Active, Semi- and Self-Supervised Learning",
+  "Vision and Language Foundation Models",
+  "Multimodal Learning with EEG and Eye Tracking",
+];
 
 const SOCIAL_LINKS = [
   "https://www.linkedin.com/in/camilo-martinez-m",
@@ -222,7 +230,6 @@ test.describe("home page", () => {
     await expect(page.locator(".clearfix h2", { hasText: "Research Interests" })).toHaveCount(1);
     const items = page.locator(".clearfix > ul > li");
     expect((await items.allInnerTexts()).map(squash)).toEqual(INTERESTS);
-    await expect(items.first().locator("em")).toHaveText(["Robotics", "Autonomous Driving"]);
   });
 
   test("shows the three latest News items, newest first, without scrolling", async ({ page }) => {
