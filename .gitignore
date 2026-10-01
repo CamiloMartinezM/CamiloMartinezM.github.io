@@ -1,5 +1,6 @@
 _site
 .bundle
+.claude/launch.json
 .DS_store
 .idea
 .jekyll-cache
