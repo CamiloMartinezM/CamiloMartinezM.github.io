@@ -18,3 +18,7 @@ _Avoid_: research
 **News item**:
 A short, dated announcement on the home page, such as a new Publication.
 _Avoid_: announcement, update
+
+**Social links**:
+The icons on the home page that link to the owner's profiles on LinkedIn, Google Scholar, GitHub and Stack Overflow.
+_Avoid_: contact icons, socials
