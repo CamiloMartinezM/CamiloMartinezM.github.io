@@ -374,6 +374,28 @@ test.describe("home page", () => {
         expect(await filter(".leaflet-marker-pane"), scheme).toBe("none");
       }
     });
+
+    test("keeps the popup and the map's buttons readable in dark mode", async ({ page }) => {
+      await page.emulateMedia({ colorScheme: "dark" });
+      await page.goto("/");
+      await map(page).scrollIntoViewIfNeeded();
+      await map(page).locator("img.leaflet-marker-icon").click();
+      await expect(map(page).locator(".leaflet-popup-content")).toBeVisible();
+      // The popup and buttons stay white, so their text must keep Leaflet's dark colors rather than the page's light text color.
+      const pageText = await page.evaluate(() => getComputedStyle(document.body).color);
+      const colors = await map(page).evaluate((el) =>
+        [".leaflet-popup-content", ".leaflet-popup-close-button span", ".leaflet-control-zoom-in span", ".leaflet-control-attribution span"].map(
+          (selector) => {
+            const node = el.querySelector(selector);
+            return [selector, getComputedStyle(node).color, getComputedStyle(node.parentElement).color];
+          }
+        )
+      );
+      for (const [selector, color, parent] of colors) {
+        expect(color, selector).toBe(parent);
+        expect(color, selector).not.toBe(pageText);
+      }
+    });
   });
 
   test("shows the Social links in one row under the profile photo, in order", async ({ page }) => {
