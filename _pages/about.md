@@ -14,6 +14,7 @@ announcements:
 
 selected_papers: true
 social: true
+map: true # loads Leaflet for the map in the Contact section
 ---
 
 Hello there! I'm a full-time research assistant in the [Data-Driven Design of Materials (d3M)](https://martinmueller1104.github.io/d3m.github.io/) research group at the [Chair of Experimental Methods in Materials Science](https://www.uni-saarland.de/en/chair/motz.html) of Saarland University, Germany. I work on Machine Learning for microstructure analysis in low-data regimes, developing reliable methods for small, heterogeneous datasets while reducing manual annotation effort. To this end, I explore active, semi- and self-supervised learning, synthetic data and the adaptation of foundation models.

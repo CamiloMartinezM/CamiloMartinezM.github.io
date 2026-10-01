@@ -70,6 +70,63 @@ layout: default
       {% include selected_papers.liquid %}
     {% endif %}
 
+    <!-- Contact section. The email is written out so the page holds no address for scrapers. -->
+    <h2 id="contact">Contact</h2>
+    <ul class="fa-ul contact">
+      <li>
+        <span class="fa-li"><i class="fa-solid fa-envelope fa-xl"></i></span>
+        <span class="email">
+          <span class="part">camilo <span class="sep">[dot]</span> martinez</span>
+          <span class="sep">[at]</span>
+          <span class="part">uni-saarland <span class="sep">[dot]</span> de</span>
+        </span>
+      </li>
+      <li>
+        <span class="fa-li"><i class="fa-solid fa-location-dot fa-xl"></i></span>
+        <a href="https://www.uni-saarland.de/en/home.html">Saarland University</a><br>
+        Campus D3 3, Room 2.10<br>
+        66123 Saarbrücken, Germany
+      </li>
+    </ul>
+    <div id="contact-map" role="region" aria-label="Map of building D3 3"></div>
+    <style>
+      .contact {
+        --fa-li-width: 2.5em;
+        --fa-li-margin: 2.5em;
+      }
+      .contact > li {
+        margin-bottom: 0.5rem;
+      }
+      .contact .email .part {
+        white-space: nowrap;
+      }
+      .contact .email .sep {
+        color: var(--global-text-color-light);
+      }
+      #contact-map {
+        height: 350px;
+      }
+      html[data-theme='dark'] #contact-map .leaflet-tile-pane {
+        filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+      }
+    </style>
+    <script>
+      /* Leaflet (map: true in the front matter) loads at the end of the page. */
+      document.addEventListener('DOMContentLoaded', () => {
+        const office = [49.25715, 7.04141]; /* building D3 3 on OpenStreetMap */
+        const map = L.map('contact-map', { scrollWheelZoom: false }).setView(office, 17);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+        L.marker(office, { alt: 'Campus D3 3' })
+          .addTo(map)
+          .bindPopup(
+            'Campus D3 3, Room 2.10<br><a href="https://www.openstreetmap.org/directions?route=%3B49.25715%2C7.04141" target="_blank" rel="external nofollow noopener">Directions</a>'
+          );
+      });
+    </script>
+
     {% if site.newsletter and site.newsletter.enabled and site.footer_fixed %}
       {% if site.plugins contains 'al_newsletter' %}
         {% include plugins/al_newsletter_form_center_margin.liquid %}
