@@ -253,26 +253,32 @@ test.describe("home page", () => {
     expect(box).toEqual({ scrolls: false, limited: false });
   });
 
-  test("lists the four Selected publications between the News and the social links", async ({ page }) => {
+  test("lists the four Selected publications after the News", async ({ page }) => {
     await expect(page.getByRole("heading", { name: "selected publications" })).toHaveCount(1);
     const titles = page.locator(".publications ol.bibliography > li .title");
     expect((await titles.allInnerTexts()).map(squash)).toEqual(PUBLICATIONS.map((publication) => publication.title));
     const inOrder = await page.evaluate(() => {
       const y = (selector) => document.querySelector(selector).getBoundingClientRect().top;
-      return y(".news") < y(".publications") && y(".publications") < y(".social");
+      return y(".news") < y(".publications");
     });
     expect(inOrder).toBe(true);
   });
 
-  test("shows the social links at the bottom, in order", async ({ page }) => {
-    const links = page.locator(".social .contact-icons a");
+  test("shows the Social links in one row under the profile photo, in order", async ({ page }) => {
+    await expect(page.locator(".social")).toHaveCount(1);
+    const links = page.locator(".profile .social .contact-icons a");
     expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute("href")))).toEqual(SOCIAL_LINKS);
     for (const link of await links.all()) await expect(link).toBeVisible();
-    const below = await page.evaluate(() => {
-      const y = (selector) => document.querySelector(selector).getBoundingClientRect().top;
-      return y(".social") > y(".news");
+    const layout = await page.evaluate(() => {
+      const photo = document.querySelector(".profile img").getBoundingClientRect();
+      const icons = [...document.querySelectorAll(".profile .contact-icons i")].map((i) => i.getBoundingClientRect());
+      return {
+        belowPhoto: icons.every((icon) => icon.top >= photo.bottom),
+        oneRow: icons.every((icon) => Math.abs(icon.top - icons[0].top) < 1),
+        fontSize: getComputedStyle(document.querySelector(".profile .contact-icons")).fontSize,
+      };
     });
-    expect(below).toBe(true);
+    expect(layout).toEqual({ belowPhoto: true, oneRow: true, fontSize: "32px" });
   });
 
   test("has no construction banner", async ({ page }) => {
