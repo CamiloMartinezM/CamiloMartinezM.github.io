@@ -179,9 +179,12 @@ const PAGES = [
   "/teaching/",
 ];
 
-// Collects what a visitor's browser would flag as broken while a page loads.
+// Collects what a visitor's browser would flag as broken while a page loads, and any request that would reach Google.
 function watchPage(page) {
-  const problems = { consoleErrors: [], failedRequests: [] };
+  const problems = { consoleErrors: [], failedRequests: [], googleRequests: [] };
+  page.on("request", (req) => {
+    if (/(^|\.)(google|googleapis|gstatic)\.com$/.test(new URL(req.url()).hostname)) problems.googleRequests.push(req.url());
+  });
   page.on("console", (msg) => {
     if (msg.type() === "error") problems.consoleErrors.push(msg.text());
   });
@@ -544,12 +547,34 @@ test.describe("site chrome", () => {
     expect((await page.request.get(href)).status()).toBe(200);
   });
 
+  test("renders the text in Roboto from the site's own font files", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    const fonts = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return {
+        weights: [...document.fonts]
+          .filter((face) => face.family.replace(/"/g, "") === "Roboto" && face.status === "loaded")
+          .map((face) => face.weight),
+        files: performance
+          .getEntriesByType("resource")
+          .map((entry) => entry.name)
+          .filter((url) => /roboto/i.test(url)),
+      };
+    });
+    expect(fonts.weights).toEqual(expect.arrayContaining(["300", "400", "700"]));
+    expect(fonts.files.length).toBeGreaterThan(0);
+    for (const file of fonts.files) expect(file.startsWith(`${ORIGIN}/assets/fonts/roboto`), file).toBe(true);
+  });
+
   for (const path of PAGES) {
-    test(`${path} has no console errors, failed internal requests, horizontal scroll, demo content or template base path`, async ({ page }) => {
+    test(`${path} has no console errors, failed internal requests, requests to Google, horizontal scroll, demo content or template base path`, async ({
+      page,
+    }) => {
       const problems = watchPage(page);
       await page.goto(path, { waitUntil: "networkidle" });
       expect(problems.consoleErrors).toEqual([]);
       expect(problems.failedRequests).toEqual([]);
+      expect(problems.googleRequests).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
       const html = await page.content();
       expect(html).not.toMatch(/(?:href|src|content)="[^"]*\/al-folio\//);
