@@ -66,6 +66,11 @@
       #contact-map {
         height: 350px;
       }
+      /* The theme colors every div and span, which hid the colors Leaflet gives its popup and buttons in dark mode.
+         This rule only ties with the theme's, and wins by coming later, so Leaflet's own class rules still apply. */
+      :where(#contact-map) :is(div, span) {
+        color: inherit;
+      }
       html[data-theme='dark'] #contact-map .leaflet-tile-pane {
         filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
       }
