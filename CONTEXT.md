@@ -22,3 +22,7 @@ _Avoid_: announcement, update
 **Social links**:
 The icons on the home page that link to the owner's profiles on LinkedIn, Google Scholar, GitHub and Stack Overflow.
 _Avoid_: contact icons, socials
+
+**Contact section**:
+The last section of the home page: the owner's email address, office address and a map of the office building. The Social links are not part of it.
+_Avoid_: contact page, contact info, contact widget
