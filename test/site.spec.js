@@ -68,6 +68,10 @@ const NEWS = [
   },
 ];
 
+const CONTACT_EMAIL = "camilo [dot] martinez [at] uni-saarland [dot] de";
+const CONTACT_ADDRESS = ["Saarland University", "Campus D3 3, Room 2.10", "66123 Saarbrücken, Germany"];
+const DIRECTIONS = "https://www.openstreetmap.org/directions?route=%3B49.25715%2C7.04141";
+
 const OWNER = "Camilo Martínez";
 
 const PUBLICATIONS = [
@@ -157,6 +161,12 @@ const PUBLICATIONS = [
 ];
 
 const squash = (text) => text.replace(/\s+/g, " ").trim();
+
+// The map tiles come from OpenStreetMap's servers. The tests get a blank tile instead, so they neither depend on those servers nor add load to them.
+const BLANK_TILE = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+test.beforeEach(async ({ page }) => {
+  await page.route("https://tile.openstreetmap.org/**", (route) => route.fulfill({ contentType: "image/png", body: BLANK_TILE }));
+});
 
 // Every page of the site, for the checks that apply to all of them.
 const PAGES = [
@@ -265,6 +275,105 @@ test.describe("home page", () => {
       return y(".news") < y(".publications");
     });
     expect(inOrder).toBe(true);
+  });
+
+  test.describe("Contact section", () => {
+    const map = (page) => page.locator("#contact-map");
+
+    test("is the last section, after the Selected publications", async ({ page }) => {
+      expect((await page.locator("article h2").allInnerTexts()).at(-1)).toBe("Contact");
+      const inOrder = await page.evaluate(
+        () => document.querySelector(".publications").getBoundingClientRect().bottom <= document.querySelector("#contact").getBoundingClientRect().top
+      );
+      expect(inOrder).toBe(true);
+    });
+
+    test("writes out the email, leaving no address in the page for scrapers", async ({ page }) => {
+      const item = page.locator(".contact li").first();
+      await expect(item.locator("i.fa-envelope")).toBeVisible();
+      const email = item.locator(".email");
+      expect(squash(await email.innerText())).toBe(CONTACT_EMAIL);
+      const separators = email.locator(".sep");
+      expect(await separators.allInnerTexts()).toEqual(["[dot]", "[at]", "[dot]"]);
+      for (const separator of await separators.all()) await expect(separator).toHaveCSS("color", "rgb(130, 130, 130)");
+      // Each half stays on one line, so a narrow screen breaks the address only at [at].
+      for (const part of await email.locator(".part").all()) {
+        expect(await part.evaluate((el) => new Set([...el.getClientRects()].map((rect) => Math.round(rect.top))).size)).toBe(1);
+      }
+      expect(await page.locator(".contact").innerHTML()).not.toContain("@");
+      const html = await page.content();
+      expect(html).not.toContain("mailto:");
+      expect(html).not.toContain("@uni-saarland");
+    });
+
+    test("shows the office address with Saarland University linked", async ({ page }) => {
+      const item = page.locator(".contact li").nth(1);
+      await expect(item.locator("i.fa-location-dot")).toBeVisible();
+      expect((await item.innerText()).split("\n").map(squash).filter(Boolean)).toEqual(CONTACT_ADDRESS);
+      await expect(item.getByRole("link", { name: "Saarland University" })).toHaveAttribute("href", "https://www.uni-saarland.de/en/home.html");
+    });
+
+    test("maps building D3 3 at zoom 17 with the pin in the middle and the OpenStreetMap credit", async ({ page }) => {
+      await map(page).scrollIntoViewIfNeeded();
+      await expect(map(page)).toHaveCSS("height", "350px");
+      const tile = map(page).locator("img.leaflet-tile-loaded").first();
+      await expect(tile).toBeVisible();
+      expect(await tile.getAttribute("src")).toMatch(/^https:\/\/tile\.openstreetmap\.org\/17\/\d+\/\d+\.png$/);
+      const pin = map(page).locator("img.leaflet-marker-icon");
+      await expect(pin).toHaveAttribute("alt", "Campus D3 3");
+      await expect.poll(() => pin.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+      // The pin's tip marks the building, so it sits at the center of the map.
+      const offset = await page.evaluate(() => {
+        const box = document.querySelector("#contact-map").getBoundingClientRect();
+        const pin = document.querySelector("#contact-map .leaflet-marker-icon").getBoundingClientRect();
+        return [pin.left + pin.width / 2 - (box.left + box.width / 2), pin.bottom - (box.top + box.height / 2)];
+      });
+      for (const pixels of offset) expect(Math.abs(pixels)).toBeLessThan(2);
+      const credit = map(page).locator(".leaflet-control-attribution");
+      await expect(credit).toContainText("© OpenStreetMap contributors");
+      await expect(credit.getByRole("link", { name: "OpenStreetMap" })).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
+    });
+
+    test("opens the pin's popup with the room and directions to the building", async ({ page }) => {
+      await map(page).scrollIntoViewIfNeeded();
+      await map(page).locator("img.leaflet-marker-icon").click();
+      const popup = map(page).locator(".leaflet-popup-content");
+      await expect(popup).toBeVisible();
+      expect(squash(await popup.innerText())).toBe("Campus D3 3, Room 2.10 Directions");
+      const directions = popup.getByRole("link", { name: "Directions" });
+      await expect(directions).toHaveAttribute("href", DIRECTIONS);
+      await expect(directions).toHaveAttribute("target", "_blank");
+    });
+
+    test("scrolls the page instead of zooming the map with the mouse wheel", async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== "desktop", "phones have no mouse wheel");
+      await map(page).scrollIntoViewIfNeeded();
+      const box = await map(page).boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 4);
+      const before = await page.evaluate(() => scrollY);
+      await page.mouse.wheel(0, -200);
+      await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(before);
+      const zooms = await map(page)
+        .locator("img.leaflet-tile")
+        .evaluateAll((imgs) => [...new Set(imgs.map((img) => new URL(img.src).pathname.split("/")[1]))]);
+      expect(zooms).toEqual(["17"]);
+    });
+
+    test("darkens the map tiles in dark mode, but not the pin", async ({ page }) => {
+      for (const [scheme, darkened] of [
+        ["light", false],
+        ["dark", true],
+      ]) {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.goto("/");
+        const filter = (pane) =>
+          map(page)
+            .locator(pane)
+            .evaluate((el) => getComputedStyle(el).filter);
+        expect((await filter(".leaflet-tile-pane")) !== "none", scheme).toBe(darkened);
+        expect(await filter(".leaflet-marker-pane"), scheme).toBe("none");
+      }
+    });
   });
 
   test("shows the Social links in one row under the profile photo, in order", async ({ page }) => {
