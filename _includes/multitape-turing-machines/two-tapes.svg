@@ -1,6 +1,6 @@
-<svg class="tm-fig" viewBox="0 0 480 178" role="img" aria-labelledby="tm-fig1-title tm-fig1-desc">
-<title id="tm-fig1-title">A two-tape machine</title>
-<desc id="tm-fig1-desc">State q1; the tapes hold 0110 with its head on cell 3 and $01 with its head on cell 4.</desc>
+<svg class="tm-fig" viewBox="0 0 480 178" role="img" aria-labelledby="tm-config-title tm-config-desc">
+<title id="tm-config-title">A two-tape machine</title>
+<desc id="tm-config-desc">State q1; the tapes hold 0110 with its head on cell 3 and $01 with its head on cell 4.</desc>
 <rect class="tm-control" x="4" y="38" width="84" height="122" rx="6"/>
 <text class="tm-muted" x="46" y="86">state</text>
 <text class="tm-sym tm-state" x="46" y="112">q1</text>

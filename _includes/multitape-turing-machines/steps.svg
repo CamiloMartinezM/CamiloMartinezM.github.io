@@ -1,6 +1,6 @@
-<svg class="tm-fig" viewBox="0 0 480 326" role="img" aria-labelledby="tm-fig3-title tm-fig3-desc">
-<title id="tm-fig3-title">Steps to accept a palindrome of length n</title>
-<desc id="tm-fig3-desc">At length 100, one tape takes 5,151 steps and two tapes take 403; the one-tape count grows quadratically, the two-tape count linearly.</desc>
+<svg class="tm-fig" viewBox="0 0 480 326" role="img" aria-labelledby="tm-steps-title tm-steps-desc">
+<title id="tm-steps-title">Steps to accept a palindrome of length n</title>
+<desc id="tm-steps-desc">At length 100, one tape takes 5,151 steps and two tapes take 403; the one-tape count grows quadratically, the two-tape count linearly.</desc>
 <text class="tm-muted tm-start" x="8" y="32">Steps</text>
 <path class="tm-axis" d="M56 272.0H404"/>
 <text class="tm-muted tm-end tm-num" x="48" y="272.0">0</text>

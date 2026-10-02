@@ -30,15 +30,24 @@ _styles: >
   .tm-fig .tm-two { --tm-series: var(--global-theme-color); }
   .tm-fig .tm-line { fill: none; stroke: var(--tm-series); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .tm-fig .tm-dot { fill: var(--tm-series); stroke: var(--global-bg-color); stroke-width: 2; }
+  .tm-scroll { overflow-x: auto; }
+  .tm-scroll + .tm-scroll { margin-top: 1rem; }
+  .tm-graph { display: block; width: 100%; height: auto; margin: 0 auto; }
+  .tm-graph text { fill: var(--global-text-color); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  .tm-graph .cluster text { fill: var(--global-text-color-light); font-family: inherit; }
+  .tm-graph .cluster path, .tm-graph .cluster polygon { fill: none; stroke: var(--global-text-color-light); }
+  .tm-graph .node ellipse { fill: none; stroke: var(--global-text-color); stroke-width: 1.5; }
+  .tm-graph .edge path { fill: none; stroke: var(--global-theme-color); stroke-width: 1.2; }
+  .tm-graph .edge polygon { fill: var(--global-theme-color); stroke: var(--global-theme-color); }
 ---
 
-A multitape, nondeterministic Turing machine class contributed to **automata**, an open-source Python library for automata theory. The `MNTM` class defines and runs Turing machines with any number of tapes, explores every branch of a **nondeterministic** computation breadth-first, and can replay a run on a **single tape**, following the textbook proof that both models are equally powerful.
+A multitape, nondeterministic Turing machine class contributed to **[automata](https://github.com/caleb531/automata)**, an open-source Python library for automata theory. The `MNTM` class defines and runs Turing machines with any number of tapes, explores every branch of a **nondeterministic** computation breadth-first, and can replay a run on a **single tape**, following the textbook proof that both models are equally powerful.
 
 By: [<u>Camilo Martínez</u>](https://www.linkedin.com/in/camilo-martinez-m/)
 
 <p><a href="https://github.com/caleb531/automata"><i class="fa-brands fa-github"></i> View on GitHub</a></p>
 
-<span class="text-highlighted">MNTM</span> is a class for <span class="text-highlighted">automata</span>, a Python library for finite automata, pushdown automata and Turing machines. It was developed as the final project for the [Introduction to the Theory of Computation](https://uniandes.smartcatalogiq.com/2020/catalogo/cursos/mate/2000/mate-2181) course lectured by [Prof. John Richard Goodrick](https://matematicas.uniandes.edu.co/en/professors/john-richard-goodrick) at [Universidad de los Andes](https://www.uniandes.edu.co/en) during the second semester of 2020, and then contributed to automata in [December 2020](https://github.com/caleb531/automata/pull/19), together with its tests and its single-tape simulation. A [second contribution in November 2024](https://github.com/caleb531/automata/pull/239) made that simulation follow every nondeterministic branch. The class is documented in the library's [API reference](https://caleb531.github.io/automata/api/tm/class-mntm/), and the library's paper in the Journal of Open Source Software [\[Evans & Robson, 2023\]](https://doi.org/10.21105/joss.05759) acknowledges the contribution.
+<span class="text-highlighted">MNTM</span> is a class for [automata](https://github.com/caleb531/automata), a Python library for finite automata, pushdown automata and Turing machines. It was developed as the final project for the [Introduction to the Theory of Computation](https://uniandes.smartcatalogiq.com/2020/catalogo/cursos/mate/2000/mate-2181) course lectured by [Prof. John Richard Goodrick](https://matematicas.uniandes.edu.co/en/professors/john-richard-goodrick) at [Universidad de los Andes](https://www.uniandes.edu.co/en) during the second semester of 2020, and then contributed to the library together with its tests and its single-tape simulation. The class is documented in the library's [API reference](https://caleb531.github.io/automata/api/tm/class-mntm/), and the library's paper in the Journal of Open Source Software [\[Evans & Robson, 2023\]](https://doi.org/10.21105/joss.05759) acknowledges the contribution.
 
 ## Why Multiple Tapes?
 
@@ -66,7 +75,14 @@ The quadratic bound cannot be improved in general: a two-tape machine recognizes
 
 ## Using the MNTM Class
 
-An `MNTM` is defined like the library's other automata, from its states, input and tape symbols, transitions, initial state, blank symbol and final states, plus the number of tapes. The transitions map each state and the tuple of symbols under the heads to a list of moves, and a list with more than one move makes the machine nondeterministic. The machine below accepts palindromes over $$\{0, 1\}$$: it copies the first half of its input onto its second tape, guesses where the middle is, and then reads the second half while walking back over the copy.
+An `MNTM` is defined like the library's other automata, from its states, input and tape symbols, transitions, initial state, blank symbol and final states, plus the number of tapes. The transitions map each state and the tuple of symbols under the heads to a list of moves, and a list with more than one move makes the machine nondeterministic. The machine below accepts palindromes over $$\{0, 1\}$$: it copies the first half of its input onto its second tape, guesses where the middle is, and then reads the second half while walking back over the copy (Figure 2).
+
+<figure>
+<div class="tm-scroll">
+{% include multitape-turing-machines/palindromes-diagram.svg %}
+</div>
+<figcaption class="caption"><strong>Figure 2:</strong> The palindrome machine. Each label gives, for tape 1 and then tape 2, the symbol read, the symbol written when it changes (after <code>|</code>) and the head's move; <code>0,1</code> stands for either symbol, and the double circle is the accepting state. From <code>q1</code>, the machine can push the symbol it reads, guess that the second half starts there, or guess that it is the middle symbol.</figcaption>
+</figure>
 
 ```python
 from automata.tm.mntm import MNTM
@@ -128,11 +144,11 @@ q3:
 
 Tapes are immutable: every step creates new tapes instead of changing the old ones, so each branch of the search holds its own copy and any configuration can be kept, compared or printed later. A tape grows by one blank cell whenever its head moves past either end. `read_input_stepwise` keeps a queue of configurations: it takes the next one, yields it and adds one successor for each applicable move. A branch with no applicable move stops there, and it accepts if its state is final; the input is rejected once the queue runs empty. Searching breadth-first rather than depth-first keeps a branch that never halts from blocking the others.
 
-`read_input_as_ntm` runs the same machine through the single-tape construction from the proof that both models are equivalent [\[Sipser, 2012\]](https://math.mit.edu/~sipser/book.html). It writes all the tapes one after another on a single tape, ends each with the separator `_` and marks every head with a `^` right after the cell it is on (Figure 2).
+`read_input_as_ntm` runs the same machine through the single-tape construction from the proof that both models are equivalent [\[Sipser, 2012\]](https://math.mit.edu/~sipser/book.html). It writes all the tapes one after another on a single tape, ends each with the separator `_` and marks every head with a `^` right after the cell it is on (Figure 3).
 
 <figure>
 {% include multitape-turing-machines/one-tape.svg %}
-<figcaption class="caption"><strong>Figure 2:</strong> The configuration of Figure 1, as <code>read_input_as_ntm</code> writes it on a single tape. Each <code>^</code> follows the cell under a head, and each <code>_</code> ends a tape.</figcaption>
+<figcaption class="caption"><strong>Figure 3:</strong> The configuration of Figure 1, as <code>read_input_as_ntm</code> writes it on a single tape. Each <code>^</code> follows the cell under a head, and each <code>_</code> ends a tape.</figcaption>
 </figure>
 
 Every step of the multitape machine then takes two passes over that tape. The first collects the symbol before each `^`, which selects the transition. The second, [shown below](https://github.com/caleb531/automata/blob/v9.2.0/automata/tm/mntm.py#L397-L431), rewrites each marked cell and moves its `^` one cell to the right, to the left or not at all. When a head moves onto its tape's separator, a blank cell is inserted before the separator, which is how a tape grows; a real single-tape machine pays for it by shifting everything to the right of that cell. These passes over the whole tape are what makes the single-tape machine quadratically slower.
@@ -175,7 +191,7 @@ for move in moves:
         i += 1
 ```
 
-Since 2024, the simulation follows every branch of a nondeterministic machine, as the multitape run does, and a test checks that both runs end on the same tapes. On `0110`, it starts from the encoded input and ends on the tapes printed above:
+The simulation follows every branch of a nondeterministic machine, as the multitape run does, and a test checks that both runs end on the same tapes. On `0110`, it starts from the encoded input and ends on the tapes printed above:
 
 ```python
 run = [config for (config,) in palindromes.read_input_as_ntm("0110")]
@@ -190,7 +206,19 @@ q3 0110#^_$^01#_
 
 ## One Tape vs. Many
 
-To measure what the second tape buys, two deterministic machines built with the library decide the same language, palindromes over $$\{0, 1\}$$. The single-tape `DTM` crosses off the first symbol, runs to the end of the input, checks that the last symbol matches, crosses it off and walks back to start again. The two-tape `MNTM` copies the input onto its second tape, moves the second head back to the start and compares the input read backwards with the copy read forwards. Each was run with automata-lib 9.2.0 on a palindrome of every length from 0 to 100, counting its steps from `read_input_stepwise`:
+To measure what the second tape buys, two deterministic machines built with the library decide the same language, palindromes over $$\{0, 1\}$$ (Figure 4). The single-tape `DTM` crosses off the first symbol, runs to the end of the input, checks that the last symbol matches, crosses it off and walks back to start again. The two-tape `MNTM` copies the input onto its second tape, moves the second head back to the start and compares the input read backwards with the copy read forwards.
+
+<figure>
+<div class="tm-scroll">
+{% include multitape-turing-machines/one-tape-diagram.svg %}
+</div>
+<div class="tm-scroll">
+{% include multitape-turing-machines/two-tapes-diagram.svg %}
+</div>
+<figcaption class="caption"><strong>Figure 4:</strong> The single-tape machine (top) and the two-tape machine (bottom), in the notation of Figure 2.</figcaption>
+</figure>
+
+Each was run with [automata-lib 9.2.0](https://github.com/caleb531/automata/releases/tag/v9.2.0) on a palindrome of every length from 0 to 100, counting its steps from `read_input_stepwise`:
 
 ```python
 def steps(machine, word):
@@ -216,13 +244,114 @@ def steps(machine, word):
 
 <figure>
 {% include multitape-turing-machines/steps.svg %}
-<figcaption class="caption"><strong>Figure 3:</strong> Number of steps each machine takes to accept a palindrome of length <em>n</em>, from 0 to 100.</figcaption>
+<figcaption class="caption"><strong>Figure 5:</strong> Number of steps each machine takes to accept a palindrome of length <em>n</em>, from 0 to 100.</figcaption>
 </figure>
 
-On a palindrome of length $$n \geq 1$$, the single-tape machine takes exactly $$(n+1)(n+2)/2$$ steps and the two-tape machine $$4n + 3$$, which overtakes it at length 6. At length 100 the single-tape machine takes 5,151 steps against 403, almost 13 times as many, and the gap keeps growing with $$n$$; by Hennie's bound, no single-tape machine can close it. The two machines are almost the same size, but the two-tape one reads like a program: copy, rewind, compare. The machines, the checks and the code behind Table 1 and Figure 3 are in [a script](https://github.com/CamiloMartinezM/CamiloMartinezM.github.io/blob/main/scripts/multitape_palindromes.py) in this site's repository.
+On a palindrome of length $$n \geq 1$$, the single-tape machine takes exactly $$(n+1)(n+2)/2$$ steps and the two-tape machine $$4n + 3$$, which overtakes it at length 6. At length 100 the single-tape machine takes 5,151 steps against 403, almost 13 times as many, and the gap keeps growing with $$n$$; by Hennie's bound, no single-tape machine can close it. The two machines are almost the same size, but the two-tape one reads like a program: copy, rewind, compare. The machines, the checks and the code behind every table and figure on this page are in [a script](https://github.com/CamiloMartinezM/CamiloMartinezM.github.io/blob/main/scripts/multitape_turing_machines.py) in this site's repository.
+
+## Perfect Squares
+
+The second example is the problem from the course's oral exam: decide $$\{0^{n^2} \mid n \geq 1\}$$, the strings of 0s whose length is a perfect square. The solution rests on the identity
+
+$$
+n^2 = 1 + 3 + 5 + \cdots + (2n - 1)
+$$
+
+so the machine builds the sums 1, 4, 9, … one odd block at a time and compares each with the input. It has three tapes: the input, which starts with a `#` that marks its left end, a tape of 0s that holds the current sum, and a tape of blocks that alternate between `X` and `Y`, the last of which has the current odd length. After each block, the machine compares the tape of 0s with the input (Table 2). If both have the same length, it accepts, and if the tape of 0s is longer, it rejects. Otherwise it writes the next block, two symbols longer than the last, appends as many 0s and compares again. To write a block, it marks the symbols of the last one with `S`, one at a time, writing a symbol of the other letter for each, then restores the marks and writes two more (Figure 6).
+
+<div class="table-responsive">
+<table>
+<caption><strong>Table 2:</strong> The tapes each time the machine compares the tape of 0s with an input of nine 0s. With ten 0s, the fourth comparison finds sixteen and rejects.</caption>
+<thead>
+<tr><td></td><th><strong>Tape of 0s</strong></th><th><strong>Tape of blocks</strong></th><th><strong>Outcome</strong></th></tr>
+</thead>
+<tbody>
+<tr><td>Comparison 1</td><td><code>0</code></td><td><code>X</code></td><td>shorter: next block</td></tr>
+<tr><td>Comparison 2</td><td><code>0000</code></td><td><code>XYYY</code></td><td>shorter: next block</td></tr>
+<tr><td>Comparison 3</td><td><code>000000000</code></td><td><code>XYYYXXXXX</code></td><td>same length: accept</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<div class="tm-scroll">
+{% include multitape-turing-machines/perfect-squares-diagram.svg %}
+</div>
+<figcaption class="caption"><strong>Figure 6:</strong> The perfect-squares machine in its four phases, in the notation of Figure 2 with tape 3 last. While it writes the next block, heads 1 and 2 stay on a <code>0</code> and a blank, so the labels in that phase show tape 3 alone. <code>qr</code> rejects.</figcaption>
+</figure>
+
+The machine is part of the library's [tests](https://github.com/caleb531/automata/blob/v9.2.0/tests/test_tm.py#L104-L230):
+
+```python
+perfect_squares.accepts_input("#" + "0" * 9)  # True: 9 = 1 + 3 + 5
+perfect_squares.accepts_input("#" + "0" * 10)  # False
+```
+
+## Approximate String Matching
+
+The same two features make some practical problems short to state as machines. Approximate string matching asks whether a string $$y$$ can be obtained from a string $$x$$ with at most $$k$$ edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, built for this page and defined in full in the same script, answers the question for DNA strings and also returns the edits.
+
+Its input is $$k$$ in unary, $$x$$ and $$y$$, separated by `|`, such as `11|ACGTACGT|CGTACGTA`. It copies the budget onto tape 3 and $$x$$ onto tape 2, so that heads 1 and 2 can then walk along $$y$$ and $$x$$ independently, while tape 4 records the edits. At each step, it chooses one operation: a match (`M`) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (`S`), which also moves both heads, a deletion (`D`) of a symbol of $$x$$, which moves head 2 alone, or an insertion (`I`) of a symbol of $$y$$, which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up. These are the transitions of that phase:
+
+```python
+for budget in "1$":  # head 3 reads an unused edit, or the $ once none is left
+    for b in "ACGT#":  # head 1 reads y
+        for a in "ACGT#":  # head 2 reads x
+            moves = []
+            if a == b == "#":  # both strings are used up: accept
+                moves.append(("qf", ((b, "N"), (a, "N"), (budget, "N"), ("#", "N"))))
+            if a == b != "#":  # match
+                moves.append(("qa", ((b, "R"), (a, "R"), (budget, "N"), ("M", "R"))))
+            if budget == "1":  # each edit erases one mark from tape 3
+                if a != b and "#" not in (a, b):  # substitute
+                    moves.append(("qa", ((b, "R"), (a, "R"), ("#", "L"), ("S", "R"))))
+                if a != "#":  # delete a symbol of x
+                    moves.append(("qa", ((b, "N"), (a, "R"), ("#", "L"), ("D", "R"))))
+                if b != "#":  # insert a symbol of y
+                    moves.append(("qa", ((b, "R"), (a, "N"), ("#", "L"), ("I", "R"))))
+            if moves:
+                transitions["qa"][(b, a, budget, "#")] = moves
+```
+
+On the example, the machine accepts with its edits on tape 4: delete the first `A`, match the next seven symbols and insert an `A` at the end, which is how a read shifted by one position lines up with its reference.
+
+```python
+(config,) = matcher.read_input("11|ACGTACGT|CGTACGTA")
+config.print()
+```
+
+```text
+qf:
+> Tape 1: 11|ACGTACGT|CGTACGTA#
+                              ^
+> Tape 2: $ACGTACGT#
+                   ^
+> Tape 3: $###
+          ^
+> Tape 4: DMMMMMMMI#
+                   ^
+```
+
+Running it with $$k = 0, 1, 2, \ldots$$ until it accepts finds the edit distance itself. A branch takes at most $$m + n$$ steps to align strings of lengths $$m$$ and $$n$$, so a machine that could guess for free would align them in linear time. The library has to try the branches one after another, though (Table 3). With a budget equal to the edit distance, the search visits fewer configurations than the $$(m+1)(n+1)$$ cells that the standard dynamic program fills [\[Wagner & Fischer, 1974\]](https://doi.org/10.1145/321796.321811), but each extra unit of budget roughly triples it, while the dynamic program does the same work for every $$k$$. Nondeterminism makes the problem easy to state; dynamic programming makes it cheap to solve.
+
+<div class="table-responsive">
+<table>
+<caption><strong>Table 3:</strong> Configurations the search visits for <code>ACGTACGT</code> and <code>CGTACGTA</code>, whose edit distance is 2, as the budget <em>k</em> grows. The dynamic program fills 81 cells for every <em>k</em>.</caption>
+<thead>
+<tr><td></td><th><strong>Result</strong></th><th><strong>Configurations visited</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><em>k</em> = 1</td><td>rejected</td><td>32</td></tr>
+<tr><td><em>k</em> = 2</td><td>accepted</td><td>61</td></tr>
+<tr><td><em>k</em> = 3</td><td>accepted</td><td>188</td></tr>
+<tr><td><em>k</em> = 4</td><td>accepted</td><td>548</td></tr>
+<tr><td><em>k</em> = 5</td><td>accepted</td><td>1,681</td></tr>
+</tbody>
+</table>
+</div>
 
 ## Copyright & Credits
 
-&copy; automata was written by [Caleb Evans](https://github.com/caleb531), who maintains it with [Eliot W. Robson](https://github.com/eliotwrobson), and is released under the MIT license. The library is described in [\[Evans & Robson, 2023\]](https://doi.org/10.21105/joss.05759) in the Journal of Open Source Software.
+&copy; [automata](https://github.com/caleb531/automata) was written by [Caleb Evans](https://github.com/caleb531), who maintains it with [Eliot W. Robson](https://github.com/eliotwrobson), and is released under the MIT license. The library is described in [\[Evans & Robson, 2023\]](https://doi.org/10.21105/joss.05759) in the Journal of Open Source Software.
 
 _For more details, please refer to the project's [GitHub repository](https://github.com/caleb531/automata)._
