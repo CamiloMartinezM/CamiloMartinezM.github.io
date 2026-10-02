@@ -176,6 +176,7 @@ const PAGES = [
   "/projects/strings-to-sequences/",
   "/projects/multilingual-lm-representations/",
   "/projects/rend-a-pixel/",
+  "/projects/multitape-turing-machines/",
   "/teaching/",
 ];
 
@@ -613,7 +614,7 @@ test.describe("site chrome", () => {
     }
   });
 
-  test("keeps repository docs out of the built site", async ({ request }) => {
+  test("keeps repository docs and scripts out of the built site", async ({ request }) => {
     const docs = [
       "/AGENTS.md",
       "/CONTEXT.md",
@@ -623,6 +624,7 @@ test.describe("site chrome", () => {
       "/docs/agents/domain.md",
       "/docs/agents/issue-tracker.md",
       "/docs/agents/triage-labels.md",
+      "/scripts/multitape_palindromes.py",
     ];
     for (const doc of docs) {
       expect((await request.get(doc)).status(), doc).toBe(404);
@@ -932,10 +934,10 @@ const MULTILINGUAL_FIGURES = [
 ];
 
 test.describe("Multilingual Language Models Representations and Fine-Tuning", () => {
-  test("is the second of three cards on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+  test("is the second of four cards on the projects page, with its icon, and opens its Project page", async ({ page }) => {
     await page.goto("/projects/");
     const cards = page.locator(".projects .card");
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     const card = cards.nth(1);
     await expect(card.locator(".card-title")).toHaveText(MULTILINGUAL_TITLE);
     await expect(card.locator(".card-text")).toHaveText(
@@ -1172,12 +1174,12 @@ const expectLayout = async (compare, count, x, y) => {
 };
 
 test.describe("Rend-a-Pixel Raytracer", () => {
-  test("is the third card on the projects page, with its icon, in the same row as the others on wide screens, and opens its Project page", async ({
+  test("is the third card on the projects page, with its icon, in the same row as the first two on wide screens, and opens its Project page", async ({
     page,
   }, testInfo) => {
     await page.goto("/projects/");
     const cards = page.locator(".projects .card");
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
     expect(tops[0] === tops[1] && tops[1] === tops[2]).toBe(testInfo.project.name === "desktop");
     const card = cards.nth(2);
