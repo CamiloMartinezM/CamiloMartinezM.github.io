@@ -7,7 +7,7 @@ importance: 4
 _styles: >
   .post-header .post-description { display: none; }
   .text-highlighted { color: var(--global-theme-color); }
-  .table-responsive table { color: inherit; border-collapse: collapse; border-top: 3px solid var(--global-text-color); border-bottom: 3px solid var(--global-text-color); }
+  .table-responsive table { width: 100%; color: inherit; border-collapse: collapse; border-top: 3px solid var(--global-text-color); border-bottom: 3px solid var(--global-text-color); }
   .table-responsive caption { caption-side: top; padding-bottom: 0.5rem; color: inherit; text-align: justify; }
   .table-responsive thead tr { border-top: 2px solid var(--global-text-color); border-bottom: 2px solid var(--global-text-color); }
   .table-responsive tbody tr:hover { background: var(--global-divider-color); }
@@ -201,11 +201,15 @@ def steps(machine, word):
 <table>
 <caption><strong>Table 1:</strong> Size of each machine and number of steps it takes to accept a palindrome of length <em>n</em>.</caption>
 <thead>
-<tr><th><strong>Machine</strong></th><th><strong>States</strong></th><th><strong>Transitions</strong></th><th><strong><em>n</em> = 10</strong></th><th><strong><em>n</em> = 20</strong></th><th><strong><em>n</em> = 50</strong></th><th><strong><em>n</em> = 100</strong></th></tr>
+<tr><td></td><th><strong>One tape (DTM)</strong></th><th><strong>Two tapes (MNTM)</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>One tape (DTM)</td><td>7</td><td>16</td><td>66</td><td>231</td><td>1,326</td><td>5,151</td></tr>
-<tr><td>Two tapes (MNTM)</td><td>6</td><td>17</td><td>43</td><td>83</td><td>203</td><td>403</td></tr>
+<tr><td>States</td><td>7</td><td>6</td></tr>
+<tr><td>Transitions</td><td>16</td><td>17</td></tr>
+<tr><td>Steps, <em>n</em> = 10</td><td>66</td><td>43</td></tr>
+<tr><td>Steps, <em>n</em> = 20</td><td>231</td><td>83</td></tr>
+<tr><td>Steps, <em>n</em> = 50</td><td>1,326</td><td>203</td></tr>
+<tr><td>Steps, <em>n</em> = 100</td><td>5,151</td><td>403</td></tr>
 </tbody>
 </table>
 </div>

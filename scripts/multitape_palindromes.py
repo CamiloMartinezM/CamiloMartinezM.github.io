@@ -203,17 +203,17 @@ def one_tape_figure(state, extended):
 
 
 def steps_figure(one, two):
-    left, right, top, bottom = 56, 404, 44, 262
+    left, right, top, bottom = 56, 404, 54, 272
     n_max, y_max = len(one) - 1, 6000
     px = lambda n: left + (right - left) * n / n_max
     py = lambda s: bottom - (bottom - top) * s / y_max
-    body = [f'<text class="tm-muted tm-start" x="8" y="{top - 16}">Steps</text>']
+    body = [f'<text class="tm-muted tm-start" x="8" y="{top - 22}">Steps</text>']
     for s in range(0, y_max + 1, 1000):
         body.append(f'<path class="{"tm-axis" if s == 0 else "tm-grid"}" d="M{left} {py(s):.1f}H{right}"/>')
         body.append(f'<text class="tm-muted tm-end tm-num" x="{left - 8}" y="{py(s):.1f}">{s:,}</text>')
     for n in range(0, n_max + 1, 20):
         body.append(f'<text class="tm-muted tm-num" x="{px(n):.1f}" y="{bottom + 18}">{n}</text>')
-    body.append(f'<text class="tm-muted" x="{(left + right) / 2}" y="{bottom + 42}">Input length n</text>')
+    body.append(f'<text class="tm-muted" x="{(left + right) / 2}" y="{bottom + 42}">Input length <tspan font-style="italic">n</tspan></text>')
     keys = [("tm-one", "One tape (DTM)", 128), ("tm-two", "Two tapes (MNTM)", 268)]
     for cls, label, kx in keys:
         body.append(f'<path class="tm-line {cls}" d="M{kx} 12h16"/>')
@@ -225,7 +225,7 @@ def steps_figure(one, two):
         body.append(f'<circle class="tm-dot {cls}" cx="{end_x:.1f}" cy="{end_y:.1f}" r="4"/>')
         body.append(f'<text class="tm-start tm-num" x="{end_x + 10:.1f}" y="{end_y:.1f}">{series[-1]:,}</text>')
     desc = f"At length {n_max}, one tape takes {one[-1]:,} steps and two tapes take {two[-1]:,}; the one-tape count grows quadratically, the two-tape count linearly."
-    return svg(480, 316, ("tm-fig3-title", "Steps to accept a palindrome of length n"), ("tm-fig3-desc", desc), body)
+    return svg(480, 326, ("tm-fig3-title", "Steps to accept a palindrome of length n"), ("tm-fig3-desc", desc), body)
 
 
 if __name__ == "__main__":
@@ -248,9 +248,11 @@ if __name__ == "__main__":
     assert all(s == (4 * n + 3 if n else 1) for n, s in enumerate(two))
     assert min(n for n in range(101) if two[n] < one[n]) == 6
 
-    print("Machine | states | transitions | " + " | ".join(f"n = {n}" for n in (10, 20, 50, 100)))
-    for name, machine, series in (("One tape (DTM)", one_tape, one), ("Two tapes (MNTM)", two_tapes, two)):
-        print(f"{name} | {len(machine.states)} | {transitions(machine)} | " + " | ".join(f"{series[n]:,}" for n in (10, 20, 50, 100)))
+    print("Table 1 | One tape (DTM) | Two tapes (MNTM)")
+    print(f"States | {len(one_tape.states)} | {len(two_tapes.states)}")
+    print(f"Transitions | {transitions(one_tape)} | {transitions(two_tapes)}")
+    for n in (10, 20, 50, 100):
+        print(f"Steps, n = {n} | {one[n]:,} | {two[n]:,}")
 
     print("\npalindromes:", len(palindromes.states), "states,", transitions(palindromes), "transitions")
     print("accepts 0110:", palindromes.accepts_input("0110"), "| accepts 0111:", palindromes.accepts_input("0111"))
