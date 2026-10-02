@@ -283,6 +283,45 @@ def approximate_matcher():
 
 matcher = approximate_matcher()
 
+# The matcher's diagram names bases instead of listing them: a and b stand for any of A, C, G and T, the same letter on
+# one line is the same base, and "(a ≠ b)" keeps a line to different bases. The script checks that these labels stand
+# for exactly the machine's transitions.
+MATCHER_LABELS = {
+    ("q0", "qk"): ["1,| → N ; # → $|R ; # → $|R ; # → N"],
+    ("qk", "qk"): ["1 → R ; # → N ; # → 1|R ; # → N"],
+    ("qk", "qx"): ["| → R ; # → N ; # → L ; # → N"],
+    ("qx", "qx"): ["a → R ; # → a|R ; 1,$ → N ; # → N"],
+    ("qx", "qr"): ["| → R ; # → L ; 1,$ → N ; # → N"],
+    ("qr", "qr"): ["b,# → N ; a → L ; 1,$ → N ; # → N"],
+    ("qr", "qa"): ["b,# → N ; $ → R ; 1,$ → N ; # → N"],
+    ("qa", "qa"): [
+        "a → R ; a → R ; 1,$ → N ; # → M|R",
+        "b → R ; a → R ; 1 → #|L ; # → S|R (a ≠ b)",
+        "b,# → N ; a → R ; 1 → #|L ; # → D|R",
+        "b → R ; a,# → N ; 1 → #|L ; # → I|R",
+    ],
+    ("qa", "qf"): ["# → N ; # → N ; 1,$ → N ; # → N"],
+}
+
+
+def expand(line):
+    """The transitions a diagram label stands for, as (reads, (write, move) per tape)."""
+    line, _, condition = line.partition(" (")
+    tapes = [part.split(" → ") for part in line.split(" ; ")]
+    names = sorted({symbol for read, _ in tapes for symbol in read.split(",") if symbol in "ab"})
+    transitions = set()
+    for bases in product("ACGT", repeat=len(names)):
+        base = dict(zip(names, bases))
+        if condition and base["a"] == base["b"]:
+            continue
+        choices = []
+        for read, action in tapes:
+            write, _, move = action.rpartition("|")
+            choices.append([(base.get(r, r), base.get(write, write) if write else base.get(r, r), move) for r in read.split(",")])
+        for row in product(*choices):
+            transitions.add((tuple(r for r, _, _ in row), tuple((w, m) for _, w, m in row)))
+    return transitions
+
 
 def steps(machine, word):
     """Number of transitions a deterministic machine takes on the word."""
@@ -490,9 +529,9 @@ def graphviz():
     return dot
 
 
-def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_tape_only=(), layout=""):
+def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_tape_only=(), layout="", labels=None):
     """The machine's state diagram as SVG for the page. In the states of last_tape_only, the labels show the last tape alone;
-    layout adds Graphviz graph attributes."""
+    labels, if given, replaces the labels of every edge, and layout adds Graphviz graph attributes."""
     edges = moves_by_edge(machine)
     dot = [
         "digraph {",
@@ -510,7 +549,7 @@ def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_t
     for (state, target), rows in edges.items():
         if state in last_tape_only:
             rows = [row[-1:] for row in rows]
-        label = r"\n".join(label_lines(rows))
+        label = r"\n".join(labels[(state, target)] if labels else label_lines(rows))
         dot.append(f'"{state}" -> "{target}" [label="{label}"];')
     dot.append("}")
     out = subprocess.run([graphviz(), "-Tsvg"], input="\n".join(dot).encode("utf-8"), capture_output=True, check=True).stdout.decode("utf-8")
@@ -548,6 +587,13 @@ if __name__ == "__main__":
     for x, y in product(("".join(w) for n in range(4) for w in product("AC", repeat=n)), repeat=2):
         for k in range(3):
             assert matcher.accepts_input("1" * k + "|" + x + "|" + y) == (edit_distance(x, y) <= k), (x, y, k)
+
+    # The matcher's diagram labels stand for exactly its transitions, edge by edge.
+    edges = moves_by_edge(matcher)
+    assert set(edges) == set(MATCHER_LABELS)
+    for edge, rows in edges.items():
+        concrete = {(tuple(r for r, _, _ in row), tuple((w, m) for _, w, m in row)) for row in rows}
+        assert set().union(*map(expand, MATCHER_LABELS[edge])) == concrete, edge
 
     # The single-tape simulation ends on the same tapes as the multitape run.
     runs = [(palindromes, palindrome(n)) for n in range(7)] + [(two_tapes, palindrome(n)) for n in range(7)]
@@ -635,6 +681,14 @@ if __name__ == "__main__":
             ],
             last_tape_only=still_tapes(perfect_squares),
             layout="nodesep=0.22; ranksep=0.3; newrank=true;",
+        ),
+        "matcher-diagram.svg": state_diagram(
+            matcher,
+            "tm-matcher",
+            "The approximate matcher",
+            "Six states: q0, qk, qx and qr copy the budget and x onto tapes 3 and 2, qa matches, substitutes, deletes or inserts, and qf accepts.",
+            rankdir="TB",
+            labels=MATCHER_LABELS,
         ),
     }
     for name, content in diagrams.items():

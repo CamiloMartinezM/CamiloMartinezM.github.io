@@ -191,7 +191,7 @@ for move in moves:
         i += 1
 ```
 
-The simulation follows every branch of a nondeterministic machine, as the multitape run does, and a test checks that both runs end on the same tapes. On `0110`, it starts from the encoded input and ends on the tapes printed above:
+The simulation follows every branch of a nondeterministic machine, as the multitape run does, and the library's tests check that both runs end on the same tapes. On `0110`, it starts from the encoded input and ends on the tapes printed above:
 
 ```python
 run = [config for (config,) in palindromes.read_input_as_ntm("0110")]
@@ -251,7 +251,7 @@ On a palindrome of length $$n \geq 1$$, the single-tape machine takes exactly $$
 
 ## Perfect Squares
 
-The second example is the problem from the course's oral exam: decide $$\{0^{n^2} \mid n \geq 1\}$$, the strings of 0s whose length is a perfect square. The solution rests on the identity
+A larger machine decides $$\{0^{n^2} \mid n \geq 1\}$$, the strings of 0s whose length is a perfect square. It rests on the identity
 
 $$
 n^2 = 1 + 3 + 5 + \cdots + (2n - 1)
@@ -280,7 +280,7 @@ so the machine builds the sums 1, 4, 9, … one odd block at a time and compares
 <figcaption class="caption"><strong>Figure 6:</strong> The perfect-squares machine in its four phases, in the notation of Figure 2 with tape 3 last. While it writes the next block, heads 1 and 2 stay on a <code>0</code> and a blank, so the labels in that phase show tape 3 alone. <code>qr</code> rejects.</figcaption>
 </figure>
 
-The machine is part of the library's [tests](https://github.com/caleb531/automata/blob/v9.2.0/tests/test_tm.py#L104-L230):
+The machine is defined in the library's [tests](https://github.com/caleb531/automata/blob/v9.2.0/tests/test_tm.py#L104-L230), and as `perfect_squares` it runs like any other:
 
 ```python
 perfect_squares.accepts_input("#" + "0" * 9)  # True: 9 = 1 + 3 + 5
@@ -289,9 +289,18 @@ perfect_squares.accepts_input("#" + "0" * 10)  # False
 
 ## Approximate String Matching
 
-The same two features make some practical problems short to state as machines. Approximate string matching asks whether a string $$y$$ can be obtained from a string $$x$$ with at most $$k$$ edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, built for this page and defined in full in the same script, answers the question for DNA strings and also returns the edits.
+Multiple tapes and nondeterminism also make some practical problems short to state as machines. Approximate string matching asks whether a string $$y$$ can be obtained from a string $$x$$ with at most $$k$$ edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, `matcher`, answers the question for DNA strings and also returns the edits.
 
-Its input is $$k$$ in unary, $$x$$ and $$y$$, separated by `|`, such as `11|ACGTACGT|CGTACGTA`. It copies the budget onto tape 3 and $$x$$ onto tape 2, so that heads 1 and 2 can then walk along $$y$$ and $$x$$ independently, while tape 4 records the edits. At each step, it chooses one operation: a match (`M`) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (`S`), which also moves both heads, a deletion (`D`) of a symbol of $$x$$, which moves head 2 alone, or an insertion (`I`) of a symbol of $$y$$, which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up. These are the transitions of that phase:
+Its input is $$k$$ in unary, $$x$$ and $$y$$, separated by `|`, such as `11|ACGTACGT|CGTACGTA`. It copies the budget onto tape 3 and $$x$$ onto tape 2, so that heads 1 and 2 can then walk along $$y$$ and $$x$$ independently, while tape 4 records the edits. At each step, it chooses one operation: a match (`M`) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (`S`), which also moves both heads, a deletion (`D`) of a symbol of $$x$$, which moves head 2 alone, or an insertion (`I`) of a symbol of $$y$$, which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up (Figure 7).
+
+<figure>
+<div class="tm-scroll">
+{% include multitape-turing-machines/matcher-diagram.svg %}
+</div>
+<figcaption class="caption"><strong>Figure 7:</strong> The approximate matcher, in the notation of Figure 2 with its four tapes in order: the input, the copy of <em>x</em>, the budget and the edits. Here <code>a</code> and <code>b</code> stand for any of <code>A</code>, <code>C</code>, <code>G</code> and <code>T</code>, and the same letter on one line is the same symbol. In <code>qa</code>, the machine chooses a match (<code>M</code>), a substitution (<code>S</code>), a deletion (<code>D</code>) or an insertion (<code>I</code>).</figcaption>
+</figure>
+
+In the machine's definition, this loop builds the transitions of `qa`:
 
 ```python
 for budget in "1$":  # head 3 reads an unused edit, or the $ once none is left

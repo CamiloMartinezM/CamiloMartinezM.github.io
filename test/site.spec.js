@@ -1369,7 +1369,7 @@ const MNTM_WRITE_UP = [
   "read_input_as_ntm runs the same machine through the single-tape construction from the proof that both models are equivalent [Sipser, 2012]. It writes all the tapes one after another on a single tape, ends each with the separator _ and marks every head with a ^ right after the cell it is on (Figure 3).",
   "Figure 3: The configuration of Figure 1, as read_input_as_ntm writes it on a single tape. Each ^ follows the cell under a head, and each _ ends a tape.",
   "Every step of the multitape machine then takes two passes over that tape. The first collects the symbol before each ^, which selects the transition. The second, shown below, rewrites each marked cell and moves its ^ one cell to the right, to the left or not at all. When a head moves onto its tape's separator, a blank cell is inserted before the separator, which is how a tape grows; a real single-tape machine pays for it by shifting everything to the right of that cell. These passes over the whole tape are what makes the single-tape machine quadratically slower.",
-  "The simulation follows every branch of a nondeterministic machine, as the multitape run does, and a test checks that both runs end on the same tapes. On 0110, it starts from the encoded input and ends on the tapes printed above:",
+  "The simulation follows every branch of a nondeterministic machine, as the multitape run does, and the library's tests check that both runs end on the same tapes. On 0110, it starts from the encoded input and ends on the tapes printed above:",
   "One Tape vs. Many",
   "To measure what the second tape buys, two deterministic machines built with the library decide the same language, palindromes over \\(\\{0, 1\\}\\) (Figure 4). The single-tape DTM crosses off the first symbol, runs to the end of the input, checks that the last symbol matches, crosses it off and walks back to start again. The two-tape MNTM copies the input onto its second tape, moves the second head back to the start and compares the input read backwards with the copy read forwards.",
   "Figure 4: The single-tape machine (top) and the two-tape machine (bottom), in the notation of Figure 2.",
@@ -1378,15 +1378,17 @@ const MNTM_WRITE_UP = [
   "Figure 5: Number of steps each machine takes to accept a palindrome of length n, from 0 to 100.",
   "On a palindrome of length \\(n \\geq 1\\), the single-tape machine takes exactly \\((n+1)(n+2)/2\\) steps and the two-tape machine \\(4n + 3\\), which overtakes it at length 6. At length 100 the single-tape machine takes 5,151 steps against 403, almost 13 times as many, and the gap keeps growing with \\(n\\); by Hennie's bound, no single-tape machine can close it. The two machines are almost the same size, but the two-tape one reads like a program: copy, rewind, compare. The machines, the checks and the code behind every table and figure on this page are in a script in this site's repository.",
   "Perfect Squares",
-  "The second example is the problem from the course's oral exam: decide \\(\\{0^{n^2} \\mid n \\geq 1\\}\\), the strings of 0s whose length is a perfect square. The solution rests on the identity",
+  "A larger machine decides \\(\\{0^{n^2} \\mid n \\geq 1\\}\\), the strings of 0s whose length is a perfect square. It rests on the identity",
   "\\[n^2 = 1 + 3 + 5 + \\cdots + (2n - 1)\\]",
   "so the machine builds the sums 1, 4, 9, … one odd block at a time and compares each with the input. It has three tapes: the input, which starts with a # that marks its left end, a tape of 0s that holds the current sum, and a tape of blocks that alternate between X and Y, the last of which has the current odd length. After each block, the machine compares the tape of 0s with the input (Table 2). If both have the same length, it accepts, and if the tape of 0s is longer, it rejects. Otherwise it writes the next block, two symbols longer than the last, appends as many 0s and compares again. To write a block, it marks the symbols of the last one with S, one at a time, writing a symbol of the other letter for each, then restores the marks and writes two more (Figure 6).",
   "Table 2: The tapes each time the machine compares the tape of 0s with an input of nine 0s. With ten 0s, the fourth comparison finds sixteen and rejects. Tape of 0s Tape of blocks Outcome Comparison 1 0 X shorter: next block Comparison 2 0000 XYYY shorter: next block Comparison 3 000000000 XYYYXXXXX same length: accept",
   "Figure 6: The perfect-squares machine in its four phases, in the notation of Figure 2 with tape 3 last. While it writes the next block, heads 1 and 2 stay on a 0 and a blank, so the labels in that phase show tape 3 alone. qr rejects.",
-  "The machine is part of the library's tests:",
+  "The machine is defined in the library's tests, and as perfect_squares it runs like any other:",
   "Approximate String Matching",
-  "The same two features make some practical problems short to state as machines. Approximate string matching asks whether a string \\(y\\) can be obtained from a string \\(x\\) with at most \\(k\\) edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, built for this page and defined in full in the same script, answers the question for DNA strings and also returns the edits.",
-  "Its input is \\(k\\) in unary, \\(x\\) and \\(y\\), separated by |, such as 11|ACGTACGT|CGTACGTA. It copies the budget onto tape 3 and \\(x\\) onto tape 2, so that heads 1 and 2 can then walk along \\(y\\) and \\(x\\) independently, while tape 4 records the edits. At each step, it chooses one operation: a match (M) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (S), which also moves both heads, a deletion (D) of a symbol of \\(x\\), which moves head 2 alone, or an insertion (I) of a symbol of \\(y\\), which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up. These are the transitions of that phase:",
+  "Multiple tapes and nondeterminism also make some practical problems short to state as machines. Approximate string matching asks whether a string \\(y\\) can be obtained from a string \\(x\\) with at most \\(k\\) edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, matcher, answers the question for DNA strings and also returns the edits.",
+  "Its input is \\(k\\) in unary, \\(x\\) and \\(y\\), separated by |, such as 11|ACGTACGT|CGTACGTA. It copies the budget onto tape 3 and \\(x\\) onto tape 2, so that heads 1 and 2 can then walk along \\(y\\) and \\(x\\) independently, while tape 4 records the edits. At each step, it chooses one operation: a match (M) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (S), which also moves both heads, a deletion (D) of a symbol of \\(x\\), which moves head 2 alone, or an insertion (I) of a symbol of \\(y\\), which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up (Figure 7).",
+  "Figure 7: The approximate matcher, in the notation of Figure 2 with its four tapes in order: the input, the copy of x, the budget and the edits. Here a and b stand for any of A, C, G and T, and the same letter on one line is the same symbol. In qa, the machine chooses a match (M), a substitution (S), a deletion (D) or an insertion (I).",
+  "In the machine's definition, this loop builds the transitions of qa:",
   "On the example, the machine accepts with its edits on tape 4: delete the first A, match the next seven symbols and insert an A at the end, which is how a read shifted by one position lines up with its reference.",
   "Running it with \\(k = 0, 1, 2, \\ldots\\) until it accepts finds the edit distance itself. A branch takes at most \\(m + n\\) steps to align strings of lengths \\(m\\) and \\(n\\), so a machine that could guess for free would align them in linear time. The library has to try the branches one after another, though (Table 3). With a budget equal to the edit distance, the search visits fewer configurations than the \\((m+1)(n+1)\\) cells that the standard dynamic program fills [Wagner & Fischer, 1974], but each extra unit of budget roughly triples it, while the dynamic program does the same work for every \\(k\\). Nondeterminism makes the problem easy to state; dynamic programming makes it cheap to solve.",
   "Table 3: Configurations the search visits for ACGTACGT and CGTACGTA, whose edit distance is 2, as the budget k grows. The dynamic program fills 81 cells for every k. Result Configurations visited k = 1 rejected 32 k = 2 accepted 61 k = 3 accepted 188 k = 4 accepted 548 k = 5 accepted 1,681",
@@ -1438,6 +1440,7 @@ const MNTM_FIGURES = [
   ["The single-tape palindrome machine", "The two-tape palindrome machine"],
   ["Steps to accept a palindrome of length n"],
   ["The perfect-squares machine"],
+  ["The approximate matcher"],
 ];
 
 test.describe(MNTM_TITLE, () => {
@@ -1518,7 +1521,7 @@ test.describe(MNTM_TITLE, () => {
       await expect(page.locator('article mjx-container[display="true"]')).toHaveCount(2);
     });
 
-    test("shows its six figures as captioned, labelled inline SVG within the content column", async ({ page }) => {
+    test("shows its seven figures as captioned, labelled inline SVG within the content column", async ({ page }) => {
       const figures = page.locator("article figure");
       await expect(figures).toHaveCount(MNTM_FIGURES.length);
       for (const [index, names] of MNTM_FIGURES.entries()) {
@@ -1552,6 +1555,13 @@ test.describe(MNTM_TITLE, () => {
         expect.arrayContaining(["0 → #|R", "1 → #|R", "0,1 → R", "0,1 → L", "# → R"])
       );
       expect(await labels("The perfect-squares machine")).toEqual(expect.arrayContaining(["0 → R ; 0 → R ; # → N", "X → S|R", "# → Y|L"]));
+      expect(await labels("The approximate matcher")).toEqual(
+        expect.arrayContaining([
+          "a → R ; a → R ; 1,$ → N ; # → M|R",
+          "b → R ; a → R ; 1 → #|L ; # → S|R (a ≠ b)",
+          "b,# → N ; a → R ; 1 → #|L ; # → D|R",
+        ])
+      );
       const accepting = page.getByRole("img", { name: "The perfect-squares machine" }).locator(".node", { hasText: "qf" }).locator("ellipse");
       await expect(accepting).toHaveCount(2);
     });
