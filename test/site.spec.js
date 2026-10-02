@@ -1327,6 +1327,206 @@ test.describe("Rend-a-Pixel Raytracer", () => {
   });
 });
 
+const MNTM_PATH = "/projects/multitape-turing-machines/";
+const MNTM_TITLE = "Multitape Nondeterministic Turing Machines";
+const MNTM_GITHUB = "https://github.com/caleb531/automata";
+const MNTM_CARD = "A multitape, nondeterministic Turing machine class contributed to automata, an open-source Python library for automata theory.";
+
+const MNTM_SUMMARY = `${MNTM_CARD} The MNTM class defines and runs Turing machines with any number of tapes, explores every branch of a nondeterministic computation breadth-first, and can replay a run on a single tape, following the textbook proof that both models are equally powerful.`;
+
+const MNTM_HEADINGS = ["Why Multiple Tapes?", "Using the MNTM Class", "How It Works", "One Tape vs. Many", "Copyright & Credits"];
+
+// The page in reading order, one entry per paragraph, heading, list, formula, figure caption or table, as its HTML reads before MathJax typesets
+// the math. Code blocks are checked on their own.
+const MNTM_WRITE_UP = [
+  MNTM_SUMMARY,
+  "By: Camilo Martínez",
+  "View on GitHub",
+  "MNTM is a class for automata, a Python library for finite automata, pushdown automata and Turing machines. It was developed as the final project for the Introduction to the Theory of Computation course lectured by Prof. John Richard Goodrick at Universidad de los Andes during the second semester of 2020, and then contributed to automata in December 2020, together with its tests and its single-tape simulation. A second contribution in November 2024 made that simulation follow every nondeterministic branch. The class is documented in the library's API reference, and the library's paper in the Journal of Open Source Software [Evans & Robson, 2023] acknowledges the contribution.",
+  "Why Multiple Tapes?",
+  "A Turing machine is a finite set of states, an unbounded tape divided into cells and a head that reads and writes one cell at a time. At each step, the current state and the symbol under the head decide what the machine writes, whether the head moves left or right and which state comes next. Simple as it is, the model can carry out any algorithm, which makes it the reference for what computers can and cannot do. A multitape Turing machine has several tapes, each with its own head: it reads the symbols under all its heads at once, then writes on every tape and moves every head independently (Figure 1). The input starts on the first tape and the others start blank. A nondeterministic machine may have several possible moves in the same situation, and it accepts its input if any sequence of choices reaches an accepting state.",
+  "Figure 1: A two-tape machine reading 0110, in state q1, after copying 01 onto its second tape. Each triangle marks the cell under a head, and # is the blank symbol.",
+  "Formally, a \\(k\\)-tape nondeterministic Turing machine is a tuple \\((Q, \\Sigma, \\Gamma, \\delta, q_0, \\#, F)\\) of states, input symbols, tape symbols, transitions, an initial state, a blank symbol and final states. Its transition function maps a state and the \\(k\\) symbols under the heads to a set of possible moves:",
+  "\\[\\delta : Q \\times \\Gamma^k \\to \\mathcal{P}\\left(Q \\times (\\Gamma \\times \\{L, R, N\\})^k\\right)\\]",
+  "Each move names the next state and, for every tape, the symbol to write and where its head goes: left, right or nowhere (\\(N\\), which textbooks often write as \\(S\\), for stay). A deterministic machine has at most one move for each state and symbols, and with \\(k = 1\\) the definition is the ordinary Turing machine.",
+  "Neither extension makes the machine more powerful: every multitape machine has an equivalent single-tape machine, and every nondeterministic machine has an equivalent deterministic one [Sipser, 2012]. What changes is the running time. For a machine that takes \\(t(n) \\geq n\\) steps on inputs of length \\(n\\):",
+  "a single-tape machine can simulate a multitape one in \\(O\\left(t(n)^2\\right)\\) steps; a deterministic machine can simulate a nondeterministic one in \\(2^{O(t(n))}\\) steps.",
+  "The quadratic bound cannot be improved in general: a two-tape machine recognizes palindromes in a linear number of steps, while any single-tape machine needs on the order of \\(n^2\\) steps [Hennie, 1965]. Whether the exponential bound can be brought down to a polynomial one is, in essence, the P versus NP problem. Multiple tapes therefore make machines easier to design, at a cost that is at most quadratic, which is why they are the standard model in complexity theory; nondeterminism is the model behind NP.",
+  "Using the MNTM Class",
+  "An MNTM is defined like the library's other automata, from its states, input and tape symbols, transitions, initial state, blank symbol and final states, plus the number of tapes. The transitions map each state and the tuple of symbols under the heads to a list of moves, and a list with more than one move makes the machine nondeterministic. The machine below accepts palindromes over \\(\\{0, 1\\}\\): it copies the first half of its input onto its second tape, guesses where the middle is, and then reads the second half while walking back over the copy.",
+  "The library checks the definition when the machine is created, for example that every transition reads and writes one symbol per tape, and it runs the machine with the same methods as its other automata. read_input_stepwise yields the configurations in the order a breadth-first search visits them, so every branch advances in turn and an accepting branch is found whenever one exists. On 0110, the search visits 17 configurations until the branch that guesses the middle after 01 accepts, and the final configuration prints one line per tape:",
+  "How It Works",
+  "Tapes are immutable: every step creates new tapes instead of changing the old ones, so each branch of the search holds its own copy and any configuration can be kept, compared or printed later. A tape grows by one blank cell whenever its head moves past either end. read_input_stepwise keeps a queue of configurations: it takes the next one, yields it and adds one successor for each applicable move. A branch with no applicable move stops there, and it accepts if its state is final; the input is rejected once the queue runs empty. Searching breadth-first rather than depth-first keeps a branch that never halts from blocking the others.",
+  "read_input_as_ntm runs the same machine through the single-tape construction from the proof that both models are equivalent [Sipser, 2012]. It writes all the tapes one after another on a single tape, ends each with the separator _ and marks every head with a ^ right after the cell it is on (Figure 2).",
+  "Figure 2: The configuration of Figure 1, as read_input_as_ntm writes it on a single tape. Each ^ follows the cell under a head, and each _ ends a tape.",
+  "Every step of the multitape machine then takes two passes over that tape. The first collects the symbol before each ^, which selects the transition. The second, shown below, rewrites each marked cell and moves its ^ one cell to the right, to the left or not at all. When a head moves onto its tape's separator, a blank cell is inserted before the separator, which is how a tape grows; a real single-tape machine pays for it by shifting everything to the right of that cell. These passes over the whole tape are what makes the single-tape machine quadratically slower.",
+  "Since 2024, the simulation follows every branch of a nondeterministic machine, as the multitape run does, and a test checks that both runs end on the same tapes. On 0110, it starts from the encoded input and ends on the tapes printed above:",
+  "One Tape vs. Many",
+  "To measure what the second tape buys, two deterministic machines built with the library decide the same language, palindromes over \\(\\{0, 1\\}\\). The single-tape DTM crosses off the first symbol, runs to the end of the input, checks that the last symbol matches, crosses it off and walks back to start again. The two-tape MNTM copies the input onto its second tape, moves the second head back to the start and compares the input read backwards with the copy read forwards. Each was run with automata-lib 9.2.0 on a palindrome of every length from 0 to 100, counting its steps from read_input_stepwise:",
+  "Table 1: Size of each machine and number of steps it takes to accept a palindrome of length n. One tape (DTM) Two tapes (MNTM) States 7 6 Transitions 16 17 Steps, n = 10 66 43 Steps, n = 20 231 83 Steps, n = 50 1,326 203 Steps, n = 100 5,151 403",
+  "Figure 3: Number of steps each machine takes to accept a palindrome of length n, from 0 to 100.",
+  "On a palindrome of length \\(n \\geq 1\\), the single-tape machine takes exactly \\((n+1)(n+2)/2\\) steps and the two-tape machine \\(4n + 3\\), which overtakes it at length 6. At length 100 the single-tape machine takes 5,151 steps against 403, almost 13 times as many, and the gap keeps growing with \\(n\\); by Hennie's bound, no single-tape machine can close it. The two machines are almost the same size, but the two-tape one reads like a program: copy, rewind, compare. The machines, the checks and the code behind Table 1 and Figure 3 are in a script in this site's repository.",
+  "Copyright & Credits",
+  "© automata was written by Caleb Evans, who maintains it with Eliot W. Robson, and is released under the MIT license. The library is described in [Evans & Robson, 2023] in the Journal of Open Source Software.",
+  CLOSING_LINE,
+];
+
+const MNTM_LINKS = [
+  ["Introduction to the Theory of Computation", "https://uniandes.smartcatalogiq.com/2020/catalogo/cursos/mate/2000/mate-2181"],
+  ["Prof. John Richard Goodrick", "https://matematicas.uniandes.edu.co/en/professors/john-richard-goodrick"],
+  ["Universidad de los Andes", "https://www.uniandes.edu.co/en"],
+  ["December 2020", "https://github.com/caleb531/automata/pull/19"],
+  ["second contribution in November 2024", "https://github.com/caleb531/automata/pull/239"],
+  ["API reference", "https://caleb531.github.io/automata/api/tm/class-mntm/"],
+  ["[Evans & Robson, 2023]", "https://doi.org/10.21105/joss.05759"],
+  ["[Sipser, 2012]", "https://math.mit.edu/~sipser/book.html"],
+  ["[Hennie, 1965]", "https://doi.org/10.1016/S0019-9958%2865%2990399-2"],
+  ["shown below", "https://github.com/caleb531/automata/blob/v9.2.0/automata/tm/mntm.py#L397-L431"],
+  ["a script", "https://github.com/CamiloMartinezM/CamiloMartinezM.github.io/blob/main/scripts/multitape_palindromes.py"],
+  ["Caleb Evans", "https://github.com/caleb531"],
+  ["Eliot W. Robson", "https://github.com/eliotwrobson"],
+];
+
+// The first line of each Python block, in page order, and the text blocks that show their output.
+const MNTM_CODE = [
+  "from automata.tm.mntm import MNTM",
+  'palindromes.accepts_input("0110")  # True',
+  "for move in moves:",
+  'run = [config for (config,) in palindromes.read_input_as_ntm("0110")]',
+  "def steps(machine, word):",
+];
+const MNTM_OUTPUTS = ["q3:\n> Tape 1: 0110#\n              ^\n> Tape 2: $01#\n          ^", "q0 0^110_#^_\nq3 0110#^_$^01#_"];
+
+const MNTM_FIGURES = ["A two-tape machine", "The same two tapes on one tape", "Steps to accept a palindrome of length n"];
+
+test.describe(MNTM_TITLE, () => {
+  test("is the fourth card on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+    await page.goto("/projects/");
+    const cards = page.locator(".projects .card");
+    await expect(cards).toHaveCount(4);
+    const card = cards.nth(3);
+    await expect(card.locator(".card-title")).toHaveText(MNTM_TITLE);
+    await expect(card.locator(".card-text")).toHaveText(MNTM_CARD);
+    const icon = card.locator("img");
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(await icon.evaluate((img) => img.currentSrc)).toContain("/projects/multitape-turing-machines/icon");
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${MNTM_PATH}$`));
+    await expect(page.locator("h1.post-title")).toHaveText(MNTM_TITLE);
+  });
+
+  test.describe("page", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto(MNTM_PATH);
+    });
+
+    test("opens with the summary, the authors line and the GitHub link, in that order", async ({ page }) => {
+      const paragraphs = page.locator("article > p");
+      const blocks = await paragraphs.evaluateAll((els) => els.slice(0, 3).map((el) => el.innerText.replace(/\s+/g, " ").trim()));
+      expect(blocks).toEqual([MNTM_SUMMARY, "By: Camilo Martínez", "View on GitHub"]);
+      await expect(paragraphs.first().locator("a")).toHaveCount(0);
+      const author = paragraphs.nth(1).locator("a");
+      await expect(author).toHaveCount(1);
+      await expect(author).toHaveAttribute("href", PROJECT_AUTHORS[0][1]);
+      expect(await author.evaluate((a) => getComputedStyle(a.querySelector("u") ?? a).textDecorationLine)).toBe("underline");
+      await expect(paragraphs.nth(2).getByRole("link", { name: "View on GitHub" })).toHaveAttribute("href", MNTM_GITHUB);
+    });
+
+    test("shows every section heading, in order", async ({ page }) => {
+      const headings = await page.locator("article h2, article h3").evaluateAll((hs) => hs.map((h) => [h.tagName, h.textContent.trim()]));
+      expect(headings).toEqual(MNTM_HEADINGS.map((heading) => ["H2", heading]));
+    });
+
+    test("keeps the write-up's links", async ({ page }) => {
+      const links = await page
+        .locator("article a")
+        .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
+      for (const link of MNTM_LINKS) expect(links).toContainEqual(link);
+    });
+
+    test("shows each code block and the exact output of the two that print", async ({ page }) => {
+      const python = await page.locator("article .language-python pre").evaluateAll((pres) => pres.map((pre) => pre.textContent.split("\n")[0]));
+      expect(python).toEqual(MNTM_CODE);
+      const outputs = await page.locator("article .language-text pre").evaluateAll((pres) => pres.map((pre) => pre.textContent.replace(/\n$/, "")));
+      expect(outputs).toEqual(MNTM_OUTPUTS);
+    });
+
+    test("typesets its 18 formulas with MathJax, one of them on its own line", async ({ page }) => {
+      await expect(page.locator("article mjx-container")).toHaveCount(18);
+      await expect(page.locator('article mjx-container[display="true"]')).toHaveCount(1);
+    });
+
+    test("shows its three figures as captioned, labelled inline SVG that fits the content column", async ({ page }) => {
+      const figures = page.locator("article figure");
+      await expect(figures).toHaveCount(MNTM_FIGURES.length);
+      for (const [index, name] of MNTM_FIGURES.entries()) {
+        const figure = figures.nth(index);
+        await expect(figure.getByRole("img", { name })).toHaveCount(1);
+        await expect(figure.locator("figcaption")).toContainText(`Figure ${index + 1}:`);
+        const fits = await figure.locator("svg").evaluate((svg) => {
+          const box = svg.getBoundingClientRect();
+          return box.width > 0 && box.right <= document.querySelector("article").getBoundingClientRect().right + 1;
+        });
+        expect(fits, name).toBe(true);
+      }
+    });
+
+    test("draws its figures in the theme's colors, in light and dark mode", async ({ page }) => {
+      const expected = {
+        light: { text: "rgb(0, 0, 0)", accent: "rgb(0, 118, 223)", oneTape: "rgb(235, 104, 52)" },
+        dark: { text: "rgb(232, 232, 232)", accent: "rgb(38, 152, 186)", oneTape: "rgb(217, 89, 38)" },
+      };
+      for (const [scheme, colors] of Object.entries(expected)) {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.goto(MNTM_PATH);
+        const actual = await page.evaluate(() => {
+          const style = (selector) => getComputedStyle(document.querySelector(`article ${selector}`));
+          return {
+            text: style(".tm-fig .tm-state").fill,
+            head: style(".tm-fig .tm-head").fill,
+            twoTapes: style(".tm-fig .tm-line.tm-two").stroke,
+            oneTape: style(".tm-fig .tm-line.tm-one").stroke,
+          };
+        });
+        expect(actual, scheme).toEqual({ text: colors.text, head: colors.accent, twoTapes: colors.accent, oneTape: colors.oneTape });
+      }
+    });
+
+    test("ends with the pointer to the GitHub repository", async ({ page }) => {
+      const closing = page.locator("article > p").last();
+      expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
+      await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", MNTM_GITHUB);
+    });
+
+    test("fits a phone-width screen, scrolling wide code and tables in their own containers", async ({ page }) => {
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      for (const box of await page.locator("article pre, article .table-responsive").all()) {
+        expect(await box.evaluate((el) => getComputedStyle(el).overflowX)).toMatch(/auto|scroll/);
+      }
+    });
+  });
+
+  test.describe("page source", () => {
+    // Without JavaScript, MathJax leaves the formulas as the TeX that the page's HTML holds.
+    test.use({ javaScriptEnabled: false });
+
+    test("shows the write-up word for word, captions and table included", async ({ page }) => {
+      await page.goto(MNTM_PATH);
+      const blocks = await page.locator("article").evaluate((article) =>
+        [...article.childNodes]
+          .filter((node) => !(node instanceof Element && node.matches(".highlighter-rouge")))
+          .map((node) =>
+            node instanceof Element ? (node.matches("figure") ? node.querySelector("figcaption").innerText : node.innerText) : node.textContent
+          )
+          .map((text) => text.replace(/\s+/g, " ").trim())
+          .filter(Boolean)
+      );
+      expect(blocks).toEqual(MNTM_WRITE_UP);
+    });
+  });
+});
+
 const TEACHING = [
   {
     text: "Saarland University, Germany",
