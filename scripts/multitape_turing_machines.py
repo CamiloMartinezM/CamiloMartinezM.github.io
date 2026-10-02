@@ -490,19 +490,20 @@ def graphviz():
     return dot
 
 
-def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_tape_only=()):
-    """The machine's state diagram as SVG for the page. In the states of last_tape_only, the labels show the last tape alone."""
+def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_tape_only=(), layout=""):
+    """The machine's state diagram as SVG for the page. In the states of last_tape_only, the labels show the last tape alone;
+    layout adds Graphviz graph attributes."""
     edges = moves_by_edge(machine)
     dot = [
         "digraph {",
-        f'rankdir={rankdir}; nodesep=0.3; ranksep=0.4; bgcolor="transparent";',
+        f'rankdir={rankdir}; nodesep=0.3; ranksep=0.4; bgcolor="transparent"; {layout}',
         'node [shape=circle, fixedsize=true, width=0.55, fontname="Courier", fontsize=14];',
         'edge [fontname="Courier", fontsize=12, arrowsize=0.7];',
         'start [shape=none, label="", width=0.05, height=0.05];',
     ]
-    for label, members in clusters:
+    for label, members, *attributes in clusters:
         members = " ".join(f'"{s}";' for s in sorted(members))
-        dot.append(f'subgraph "cluster {label}" {{ label="{label}"; style=rounded; fontname="Helvetica"; fontsize=13; {members} }}')
+        dot.append(f'subgraph "cluster {label}" {{ label="{label}"; style=rounded; margin=14; fontname="Helvetica"; fontsize=13; {" ".join(attributes)} {members} }}')
     for state in sorted({machine.initial_state, *(s for edge in edges for s in edge)}):
         dot.append(f'"{state}" [shape={"doublecircle" if state in machine.final_states else "circle"}];')
     dot.append(f'start -> "{machine.initial_state}" [label="start"];')
@@ -614,7 +615,11 @@ if __name__ == "__main__":
             one_tape, "tm-one-tape", "The single-tape palindrome machine", "Seven states that cross off matching symbols at both ends of the input until none are left."
         ),
         "two-tapes-diagram.svg": state_diagram(
-            two_tapes, "tm-two-tapes", "The two-tape palindrome machine", "Six states that copy the input, rewind the copy and compare it with the input read backwards."
+            two_tapes,
+            "tm-two-tapes",
+            "The two-tape palindrome machine",
+            "Six states that copy the input, rewind the copy and compare it with the input read backwards.",
+            rankdir="TB",
         ),
         "perfect-squares-diagram.svg": state_diagram(
             perfect_squares,
@@ -625,10 +630,11 @@ if __name__ == "__main__":
             clusters=[
                 ("set up", {"q-1", "q0", "q1", "q2"}),
                 ("compare", {"qc"}),
-                ("write the next block on tape 3", still_tapes(perfect_squares)),
+                ("write the next block on tape 3", still_tapes(perfect_squares), "labeljust=l;"),  # clear of the edge into q3
                 ("copy it onto tape 2", {"q22", "q23", "q26"}),
             ],
             last_tape_only=still_tapes(perfect_squares),
+            layout="nodesep=0.22; ranksep=0.3; newrank=true;",
         ),
     }
     for name, content in diagrams.items():
