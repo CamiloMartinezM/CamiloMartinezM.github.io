@@ -12,7 +12,7 @@ _styles: >
   .table-responsive thead tr { border-top: 2px solid var(--global-text-color); border-bottom: 2px solid var(--global-text-color); }
   .table-responsive tbody tr:hover { background: var(--global-divider-color); }
   .table-responsive th, .table-responsive td { padding: 4px 8px; text-align: center; font-variant-numeric: tabular-nums; }
-  .table-responsive th:first-child, .table-responsive td:first-child { text-align: left; }
+  .table-responsive th:first-child, .table-responsive td:first-child { text-align: left; white-space: nowrap; }
   .tm-fig { display: block; width: 100%; max-width: 600px; height: auto; margin: 0 auto; }
   .tm-fig text { fill: var(--global-text-color); font-size: 14px; text-anchor: middle; dominant-baseline: central; }
   .tm-fig .tm-start { text-anchor: start; }
