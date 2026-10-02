@@ -1,4 +1,4 @@
-<svg class="tm-graph" viewBox="0.00 0.00 926.00 1597.00" role="img" aria-labelledby="tm-squares-title tm-squares-desc" style="min-width: 741px; max-width: 1235px">
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 926.00 1597.00" role="img" aria-labelledby="tm-squares-title tm-squares-desc" style="min-width: 741px; max-width: 1235px">
 <title id="tm-squares-title">The perfect-squares machine</title>
 <desc id="tm-squares-desc">The 29 states it uses, in four phases: set up, compare tape 2 with the input, write the next block on tape 3, and copy it onto tape 2.</desc>
 <g class="graph" transform="scale(1 1) rotate(0) translate(4 1593.25)">

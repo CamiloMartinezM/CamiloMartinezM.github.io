@@ -1,4 +1,4 @@
-<svg class="tm-graph" viewBox="0.00 0.00 381.00 537.00" role="img" aria-labelledby="tm-two-tapes-title tm-two-tapes-desc" style="min-width: 305px; max-width: 508px">
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 381.00 537.00" role="img" aria-labelledby="tm-two-tapes-title tm-two-tapes-desc" style="min-width: 305px; max-width: 508px">
 <title id="tm-two-tapes-title">The two-tape palindrome machine</title>
 <desc id="tm-two-tapes-desc">Six states that copy the input, rewind the copy and compare it with the input read backwards.</desc>
 <g class="graph" transform="scale(1 1) rotate(0) translate(4 532.95)">

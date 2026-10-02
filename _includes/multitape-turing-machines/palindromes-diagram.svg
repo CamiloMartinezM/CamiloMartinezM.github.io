@@ -1,4 +1,4 @@
-<svg class="tm-graph" viewBox="0.00 0.00 673.00 137.00" role="img" aria-labelledby="tm-palindromes-title tm-palindromes-desc" style="min-width: 538px; max-width: 897px">
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 673.00 137.00" role="img" aria-labelledby="tm-palindromes-title tm-palindromes-desc" style="min-width: 538px; max-width: 897px">
 <title id="tm-palindromes-title">The palindrome machine</title>
 <desc id="tm-palindromes-desc">Four states: q0 writes $ on tape 2, q1 pushes or guesses the middle, q2 compares, q3 accepts.</desc>
 <g class="graph" transform="scale(1 1) rotate(0) translate(4 133.1)">

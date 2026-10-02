@@ -389,7 +389,8 @@ def comparisons(word):
     ]
 
 
-# The SVG figures draw with the page's CSS classes, so they follow its light and dark themes.
+# The SVG figures draw with the page's CSS classes, so they follow its light and dark themes. Their mathjax_ignore class
+# keeps MathJax from reading the $ on their tapes as math.
 CELL = 36
 
 
@@ -411,7 +412,7 @@ def cells(symbols, x, y, head=None):
 def svg(width, height, title, desc, body):
     return "\n".join(
         [
-            f'<svg class="tm-fig" viewBox="0 0 {width} {height}" role="img" aria-labelledby="{title[0]} {desc[0]}">',
+            f'<svg class="tm-fig mathjax_ignore" viewBox="0 0 {width} {height}" role="img" aria-labelledby="{title[0]} {desc[0]}">',
             f'<title id="{title[0]}">{title[1]}</title>',
             f'<desc id="{desc[0]}">{desc[1]}</desc>',
             *body,
@@ -564,7 +565,7 @@ def state_diagram(machine, ident, title, desc, rankdir="LR", clusters=(), last_t
     width = float(re.search(r'<svg width="([\d.]+)pt"', out)[1]) * 4 / 3
     out = re.sub(
         r"<svg [^>]*(viewBox=\"[^\"]*\")[^>]*>",
-        lambda m: f'<svg class="tm-graph" {m[1]} role="img" aria-labelledby="{ident}-title {ident}-desc" style="min-width: {0.6 * width:.0f}px; max-width: {width:.0f}px">'
+        lambda m: f'<svg class="tm-graph mathjax_ignore" {m[1]} role="img" aria-labelledby="{ident}-title {ident}-desc" style="min-width: {0.6 * width:.0f}px; max-width: {width:.0f}px">'
         f'\n<title id="{ident}-title">{title}</title>\n<desc id="{ident}-desc">{desc}</desc>',
         out,
         count=1,

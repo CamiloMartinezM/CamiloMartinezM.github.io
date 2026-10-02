@@ -1,4 +1,4 @@
-<svg class="tm-fig" viewBox="0 0 480 112" role="img" aria-labelledby="tm-encoding-title tm-encoding-desc">
+<svg class="tm-fig mathjax_ignore" viewBox="0 0 480 112" role="img" aria-labelledby="tm-encoding-title tm-encoding-desc">
 <title id="tm-encoding-title">The same two tapes on one tape</title>
 <desc id="tm-encoding-desc">The single tape reads 011^0_$01#^_: each tape is followed by _, and ^ follows the cell under each head.</desc>
 <text class="tm-muted tm-start" x="24" y="22">state q1</text>

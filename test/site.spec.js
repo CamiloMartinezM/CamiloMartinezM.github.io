@@ -1519,6 +1519,8 @@ test.describe(MNTM_TITLE, () => {
     test("typesets its 37 formulas with MathJax, two of them on their own line", async ({ page }) => {
       await expect(page.locator("article mjx-container")).toHaveCount(37);
       await expect(page.locator('article mjx-container[display="true"]')).toHaveCount(2);
+      // The $ on the figures' tapes is not math.
+      await expect(page.locator("article svg mjx-container")).toHaveCount(0);
     });
 
     test("shows its seven figures as captioned, labelled inline SVG within the content column", async ({ page }) => {

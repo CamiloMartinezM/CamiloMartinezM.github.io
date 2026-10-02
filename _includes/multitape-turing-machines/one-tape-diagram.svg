@@ -1,4 +1,4 @@
-<svg class="tm-graph" viewBox="0.00 0.00 480.00 231.00" role="img" aria-labelledby="tm-one-tape-title tm-one-tape-desc" style="min-width: 384px; max-width: 640px">
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 480.00 231.00" role="img" aria-labelledby="tm-one-tape-title tm-one-tape-desc" style="min-width: 384px; max-width: 640px">
 <title id="tm-one-tape-title">The single-tape palindrome machine</title>
 <desc id="tm-one-tape-desc">Seven states that cross off matching symbols at both ends of the input until none are left.</desc>
 <g class="graph" transform="scale(1 1) rotate(0) translate(4 226.61)">

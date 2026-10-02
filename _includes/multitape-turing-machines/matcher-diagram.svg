@@ -1,4 +1,4 @@
-<svg class="tm-graph" viewBox="0.00 0.00 381.00 540.00" role="img" aria-labelledby="tm-matcher-title tm-matcher-desc" style="min-width: 305px; max-width: 508px">
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 381.00 540.00" role="img" aria-labelledby="tm-matcher-title tm-matcher-desc" style="min-width: 305px; max-width: 508px">
 <title id="tm-matcher-title">The approximate matcher</title>
 <desc id="tm-matcher-desc">Six states: q0, qk, qx and qr copy the budget and x onto tapes 3 and 2, qa matches, substitutes, deletes or inserts, and qf accepts.</desc>
 <g class="graph" transform="scale(1 1) rotate(0) translate(4 536.1)">
