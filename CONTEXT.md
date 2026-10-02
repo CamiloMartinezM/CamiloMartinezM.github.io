@@ -15,6 +15,10 @@ A Publication that is also featured on the home page.
 A piece of work shown on the projects page. It may have its own page or only link elsewhere, and it may relate to Publications without being one.
 _Avoid_: research
 
+**Credits section**:
+The last section of a Project page, headed "Copyright & Credits", that names the authors of the work the Project builds on and links to their originals.
+_Avoid_: acknowledgements, attribution
+
 **News item**:
 A short, dated announcement on the home page, such as a new Publication.
 _Avoid_: announcement, update

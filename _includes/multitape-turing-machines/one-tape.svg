@@ -1,0 +1,34 @@
+<svg class="tm-fig mathjax_ignore" viewBox="0 0 480 112" role="img" aria-labelledby="tm-encoding-title tm-encoding-desc">
+<title id="tm-encoding-title">The same two tapes on one tape</title>
+<desc id="tm-encoding-desc">The single tape reads 011^0_$01#^_: each tape is followed by _, and ^ follows the cell under each head.</desc>
+<text class="tm-muted tm-start" x="24" y="22">state q1</text>
+<rect class="tm-cell" x="24" y="32" width="36" height="36"/>
+<text class="tm-sym" x="42.0" y="50.0">0</text>
+<rect class="tm-cell" x="60" y="32" width="36" height="36"/>
+<text class="tm-sym" x="78.0" y="50.0">1</text>
+<rect class="tm-cell" x="96" y="32" width="36" height="36"/>
+<text class="tm-sym" x="114.0" y="50.0">1</text>
+<rect class="tm-cell" x="132" y="32" width="36" height="36"/>
+<text class="tm-sym tm-marker" x="150.0" y="50.0">^</text>
+<rect class="tm-cell" x="168" y="32" width="36" height="36"/>
+<text class="tm-sym" x="186.0" y="50.0">0</text>
+<rect class="tm-cell" x="204" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="222.0" y="50.0">_</text>
+<rect class="tm-cell" x="240" y="32" width="36" height="36"/>
+<text class="tm-sym" x="258.0" y="50.0">$</text>
+<rect class="tm-cell" x="276" y="32" width="36" height="36"/>
+<text class="tm-sym" x="294.0" y="50.0">0</text>
+<rect class="tm-cell" x="312" y="32" width="36" height="36"/>
+<text class="tm-sym" x="330.0" y="50.0">1</text>
+<rect class="tm-cell" x="348" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="366.0" y="50.0">#</text>
+<rect class="tm-cell" x="384" y="32" width="36" height="36"/>
+<text class="tm-sym tm-marker" x="402.0" y="50.0">^</text>
+<rect class="tm-cell" x="420" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="438.0" y="50.0">_</text>
+<text class="tm-muted" x="470" y="50.0">…</text>
+<path class="tm-axis" d="M28 80v6H236v-6"/>
+<text class="tm-muted" x="132.0" y="102">Tape 1</text>
+<path class="tm-axis" d="M244 80v6H452v-6"/>
+<text class="tm-muted" x="348.0" y="102">Tape 2</text>
+</svg>

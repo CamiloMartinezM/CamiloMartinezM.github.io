@@ -1,0 +1,63 @@
+<svg class="tm-graph mathjax_ignore" viewBox="0.00 0.00 673.00 137.00" role="img" aria-labelledby="tm-palindromes-title tm-palindromes-desc" style="min-width: 538px; max-width: 897px">
+<title id="tm-palindromes-title">The palindrome machine</title>
+<desc id="tm-palindromes-desc">Four states: q0 writes $ on tape 2, q1 pushes or guesses the middle, q2 compares, q3 accepts.</desc>
+<g class="graph" transform="scale(1 1) rotate(0) translate(4 133.1)">
+<g class="node">
+</g>
+<g class="node">
+<ellipse fill="none" stroke="black" cx="90.9" cy="-23.8" rx="19.8" ry="19.8"/>
+<text xml:space="preserve" text-anchor="middle" x="90.9" y="-18.75" font-family="Courier,monospace" font-size="14.00">q0</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M3.36,-23.8C7.87,-23.8 38.97,-23.8 62.61,-23.8"/>
+<polygon fill="black" stroke="black" points="62.4,-26.25 69.4,-23.8 62.4,-21.35 62.4,-26.25"/>
+<text xml:space="preserve" text-anchor="middle" x="37.35" y="-26.65" font-family="Courier,monospace" font-size="12.00">start</text>
+</g>
+<g class="node">
+<ellipse fill="none" stroke="black" cx="288" cy="-58.8" rx="19.8" ry="19.8"/>
+<text xml:space="preserve" text-anchor="middle" x="288" y="-53.75" font-family="Courier,monospace" font-size="14.00">q1</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M110.61,-27.16C145.26,-33.37 219.56,-46.7 259.79,-53.92"/>
+<polygon fill="black" stroke="black" points="259.25,-56.31 266.57,-55.14 260.12,-51.49 259.25,-56.31"/>
+<text xml:space="preserve" text-anchor="middle" x="189.45" y="-54.95" font-family="Courier,monospace" font-size="12.00">0,1 → N ; # → $|R</text>
+</g>
+<g class="node">
+<ellipse fill="none" stroke="black" cx="641.2" cy="-23.8" rx="19.8" ry="19.8"/>
+<ellipse fill="none" stroke="black" cx="641.2" cy="-23.8" rx="23.8" ry="23.8"/>
+<text xml:space="preserve" text-anchor="middle" x="641.2" y="-18.75" font-family="Courier,monospace" font-size="14.00">q3</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M111.09,-23.8C192.22,-23.8 507.48,-23.8 608.72,-23.8"/>
+<polygon fill="black" stroke="black" points="608.5,-26.25 615.5,-23.8 608.5,-21.35 608.5,-26.25"/>
+<text xml:space="preserve" text-anchor="middle" x="379.05" y="-26.65" font-family="Courier,monospace" font-size="12.00"># → N ; # → N</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M273.97,-73.37C267.14,-86.52 271.82,-100.6 288,-100.6 300.9,-100.6 306.49,-91.66 304.77,-81.37"/>
+<polygon fill="black" stroke="black" points="307.11,-80.63 302.52,-74.8 302.47,-82.21 307.11,-80.63"/>
+<text xml:space="preserve" text-anchor="middle" x="288" y="-117.7" font-family="Courier,monospace" font-size="12.00">0 → R ; # → 0|R</text>
+<text xml:space="preserve" text-anchor="middle" x="288" y="-103.45" font-family="Courier,monospace" font-size="12.00">1 → R ; # → 1|R</text>
+</g>
+<g class="node">
+<ellipse fill="none" stroke="black" cx="470.1" cy="-58.8" rx="19.8" ry="19.8"/>
+<text xml:space="preserve" text-anchor="middle" x="470.1" y="-53.75" font-family="Courier,monospace" font-size="14.00">q2</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M308.27,-58.8C340.37,-58.8 404.85,-58.8 441.67,-58.8"/>
+<polygon fill="black" stroke="black" points="441.45,-61.25 448.45,-58.8 441.45,-56.35 441.45,-61.25"/>
+<text xml:space="preserve" text-anchor="middle" x="379.05" y="-75.9" font-family="Courier,monospace" font-size="12.00">0,1 → N ; # → L</text>
+<text xml:space="preserve" text-anchor="middle" x="379.05" y="-61.65" font-family="Courier,monospace" font-size="12.00">0,1 → R ; # → L</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M457.02,-73.8C451.05,-86.82 455.41,-100.6 470.1,-100.6 481.8,-100.6 486.95,-91.85 485.54,-81.71"/>
+<polygon fill="black" stroke="black" points="487.96,-81.26 483.61,-75.25 483.26,-82.66 487.96,-81.26"/>
+<text xml:space="preserve" text-anchor="middle" x="470.1" y="-117.7" font-family="Courier,monospace" font-size="12.00">0 → R ; 0 → L</text>
+<text xml:space="preserve" text-anchor="middle" x="470.1" y="-103.45" font-family="Courier,monospace" font-size="12.00">1 → R ; 1 → L</text>
+</g>
+<g class="edge">
+<path fill="none" stroke="black" d="M489.84,-54.92C518.82,-48.92 574.79,-37.34 609.66,-30.12"/>
+<polygon fill="black" stroke="black" points="609.78,-32.6 616.14,-28.78 608.79,-27.8 609.78,-32.6"/>
+<text xml:space="preserve" text-anchor="middle" x="553.65" y="-54.09" font-family="Courier,monospace" font-size="12.00"># → N ; $ → N</text>
+</g>
+</g>
+</svg>

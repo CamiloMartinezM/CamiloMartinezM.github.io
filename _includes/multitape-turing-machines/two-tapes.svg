@@ -1,0 +1,49 @@
+<svg class="tm-fig mathjax_ignore" viewBox="0 0 480 178" role="img" aria-labelledby="tm-config-title tm-config-desc">
+<title id="tm-config-title">A two-tape machine</title>
+<desc id="tm-config-desc">State q1; the tapes hold 0110 with its head on cell 3 and $01 with its head on cell 4.</desc>
+<rect class="tm-control" x="4" y="38" width="84" height="122" rx="6"/>
+<text class="tm-muted" x="46" y="86">state</text>
+<text class="tm-sym tm-state" x="46" y="112">q1</text>
+<text class="tm-muted tm-start" x="112" y="22">Tape 1</text>
+<rect class="tm-cell" x="112" y="32" width="36" height="36"/>
+<text class="tm-sym" x="130.0" y="50.0">0</text>
+<rect class="tm-cell" x="148" y="32" width="36" height="36"/>
+<text class="tm-sym" x="166.0" y="50.0">1</text>
+<rect class="tm-cell" x="184" y="32" width="36" height="36"/>
+<text class="tm-sym" x="202.0" y="50.0">1</text>
+<rect class="tm-cell" x="220" y="32" width="36" height="36"/>
+<text class="tm-sym" x="238.0" y="50.0">0</text>
+<rect class="tm-cell" x="256" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="274.0" y="50.0">#</text>
+<rect class="tm-cell" x="292" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="310.0" y="50.0">#</text>
+<rect class="tm-cell" x="328" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="346.0" y="50.0">#</text>
+<rect class="tm-cell" x="364" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="382.0" y="50.0">#</text>
+<rect class="tm-cell" x="400" y="32" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="418.0" y="50.0">#</text>
+<text class="tm-muted" x="450" y="50.0">…</text>
+<path class="tm-head" d="M202.0 72l7 11h-14z"/>
+<text class="tm-muted tm-start" x="112" y="112">Tape 2</text>
+<rect class="tm-cell" x="112" y="122" width="36" height="36"/>
+<text class="tm-sym" x="130.0" y="140.0">$</text>
+<rect class="tm-cell" x="148" y="122" width="36" height="36"/>
+<text class="tm-sym" x="166.0" y="140.0">0</text>
+<rect class="tm-cell" x="184" y="122" width="36" height="36"/>
+<text class="tm-sym" x="202.0" y="140.0">1</text>
+<rect class="tm-cell" x="220" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="238.0" y="140.0">#</text>
+<rect class="tm-cell" x="256" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="274.0" y="140.0">#</text>
+<rect class="tm-cell" x="292" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="310.0" y="140.0">#</text>
+<rect class="tm-cell" x="328" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="346.0" y="140.0">#</text>
+<rect class="tm-cell" x="364" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="382.0" y="140.0">#</text>
+<rect class="tm-cell" x="400" y="122" width="36" height="36"/>
+<text class="tm-sym tm-muted" x="418.0" y="140.0">#</text>
+<text class="tm-muted" x="450" y="140.0">…</text>
+<path class="tm-head" d="M238.0 162l7 11h-14z"/>
+</svg>

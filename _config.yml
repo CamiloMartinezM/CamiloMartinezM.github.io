@@ -181,6 +181,7 @@ exclude:
   - package-lock.json
   - purgecss.config.js
   - README.md
+  - scripts/
   - test/
   - vendor
 keep_files:

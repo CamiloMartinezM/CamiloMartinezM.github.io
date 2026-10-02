@@ -176,6 +176,7 @@ const PAGES = [
   "/projects/strings-to-sequences/",
   "/projects/multilingual-lm-representations/",
   "/projects/rend-a-pixel/",
+  "/projects/multitape-turing-machines/",
   "/teaching/",
 ];
 
@@ -613,7 +614,7 @@ test.describe("site chrome", () => {
     }
   });
 
-  test("keeps repository docs out of the built site", async ({ request }) => {
+  test("keeps repository docs and scripts out of the built site", async ({ request }) => {
     const docs = [
       "/AGENTS.md",
       "/CONTEXT.md",
@@ -623,6 +624,7 @@ test.describe("site chrome", () => {
       "/docs/agents/domain.md",
       "/docs/agents/issue-tracker.md",
       "/docs/agents/triage-labels.md",
+      "/scripts/multitape_turing_machines.py",
     ];
     for (const doc of docs) {
       expect((await request.get(doc)).status(), doc).toBe(404);
@@ -932,10 +934,10 @@ const MULTILINGUAL_FIGURES = [
 ];
 
 test.describe("Multilingual Language Models Representations and Fine-Tuning", () => {
-  test("is the second of three cards on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+  test("is the second of four cards on the projects page, with its icon, and opens its Project page", async ({ page }) => {
     await page.goto("/projects/");
     const cards = page.locator(".projects .card");
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     const card = cards.nth(1);
     await expect(card.locator(".card-title")).toHaveText(MULTILINGUAL_TITLE);
     await expect(card.locator(".card-text")).toHaveText(
@@ -1172,12 +1174,12 @@ const expectLayout = async (compare, count, x, y) => {
 };
 
 test.describe("Rend-a-Pixel Raytracer", () => {
-  test("is the third card on the projects page, with its icon, in the same row as the others on wide screens, and opens its Project page", async ({
+  test("is the third card on the projects page, with its icon, in the same row as the first two on wide screens, and opens its Project page", async ({
     page,
   }, testInfo) => {
     await page.goto("/projects/");
     const cards = page.locator(".projects .card");
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
     expect(tops[0] === tops[1] && tops[1] === tops[2]).toBe(testInfo.project.name === "desktop");
     const card = cards.nth(2);
@@ -1321,6 +1323,315 @@ test.describe("Rend-a-Pixel Raytracer", () => {
         return els.map((el) => el.getBoundingClientRect().right <= column + 1);
       });
       expect(widths.every(Boolean)).toBe(true);
+    });
+  });
+});
+
+const MNTM_PATH = "/projects/multitape-turing-machines/";
+const MNTM_TITLE = "Multitape Nondeterministic Turing Machines";
+const MNTM_GITHUB = "https://github.com/caleb531/automata";
+const MNTM_CARD = "A multitape, nondeterministic Turing machine class contributed to automata, an open-source Python library for automata theory.";
+
+const MNTM_SUMMARY = `${MNTM_CARD} The MNTM class defines and runs Turing machines with any number of tapes, explores every branch of a nondeterministic computation breadth-first, and can replay a run on a single tape, following the textbook proof that both models are equally powerful.`;
+
+const MNTM_HEADINGS = [
+  "Why Multiple Tapes?",
+  "Using the MNTM Class",
+  "How It Works",
+  "One Tape vs. Many",
+  "Perfect Squares",
+  "Approximate String Matching",
+  "Copyright & Credits",
+];
+
+// The page in reading order, one entry per paragraph, heading, list, formula, figure caption or table, as its HTML reads before MathJax typesets
+// the math. Code blocks are checked on their own.
+const MNTM_WRITE_UP = [
+  MNTM_SUMMARY,
+  "By: Camilo Martínez",
+  "View on GitHub",
+  "MNTM is a class for automata, a Python library for finite automata, pushdown automata and Turing machines. It was developed as the final project for the Introduction to the Theory of Computation course lectured by Prof. John Richard Goodrick at Universidad de los Andes during the second semester of 2020, and then contributed to the library together with its tests and its single-tape simulation. The class is documented in the library's API reference, and the library's paper in the Journal of Open Source Software [Evans & Robson, 2023] acknowledges the contribution.",
+  "Why Multiple Tapes?",
+  "A Turing machine is a finite set of states, an unbounded tape divided into cells and a head that reads and writes one cell at a time. At each step, the current state and the symbol under the head decide what the machine writes, whether the head moves left or right and which state comes next. Simple as it is, the model can carry out any algorithm, which makes it the reference for what computers can and cannot do. A multitape Turing machine has several tapes, each with its own head: it reads the symbols under all its heads at once, then writes on every tape and moves every head independently (Figure 1). The input starts on the first tape and the others start blank. A nondeterministic machine may have several possible moves in the same situation, and it accepts its input if any sequence of choices reaches an accepting state.",
+  "Figure 1: A two-tape machine reading 0110, in state q1, after copying 01 onto its second tape. Each triangle marks the cell under a head, and # is the blank symbol.",
+  "Formally, a \\(k\\)-tape nondeterministic Turing machine is a tuple \\((Q, \\Sigma, \\Gamma, \\delta, q_0, \\#, F)\\) of states, input symbols, tape symbols, transitions, an initial state, a blank symbol and final states. Its transition function maps a state and the \\(k\\) symbols under the heads to a set of possible moves:",
+  "\\[\\delta : Q \\times \\Gamma^k \\to \\mathcal{P}\\left(Q \\times (\\Gamma \\times \\{L, R, N\\})^k\\right)\\]",
+  "Each move names the next state and, for every tape, the symbol to write and where its head goes: left, right or nowhere (\\(N\\), which textbooks often write as \\(S\\), for stay). A deterministic machine has at most one move for each state and symbols, and with \\(k = 1\\) the definition is the ordinary Turing machine.",
+  "Neither extension makes the machine more powerful: every multitape machine has an equivalent single-tape machine, and every nondeterministic machine has an equivalent deterministic one [Sipser, 2012]. What changes is the running time. For a machine that takes \\(t(n) \\geq n\\) steps on inputs of length \\(n\\):",
+  "a single-tape machine can simulate a multitape one in \\(O\\left(t(n)^2\\right)\\) steps; a deterministic machine can simulate a nondeterministic one in \\(2^{O(t(n))}\\) steps.",
+  "The quadratic bound cannot be improved in general: a two-tape machine recognizes palindromes in a linear number of steps, while any single-tape machine needs on the order of \\(n^2\\) steps [Hennie, 1965]. Whether the exponential bound can be brought down to a polynomial one is, in essence, the P versus NP problem. Multiple tapes therefore make machines easier to design, at a cost that is at most quadratic, which is why they are the standard model in complexity theory; nondeterminism is the model behind NP.",
+  "Using the MNTM Class",
+  "An MNTM is defined like the library's other automata, from its states, input and tape symbols, transitions, initial state, blank symbol and final states, plus the number of tapes. The transitions map each state and the tuple of symbols under the heads to a list of moves, and a list with more than one move makes the machine nondeterministic. The machine below accepts palindromes over \\(\\{0, 1\\}\\): it copies the first half of its input onto its second tape, guesses where the middle is, and then reads the second half while walking back over the copy (Figure 2).",
+  "Figure 2: The palindrome machine. Each label gives, for tape 1 and then tape 2, the symbol read, the symbol written when it changes (after |) and the head's move; 0,1 stands for either symbol, and the double circle is the accepting state. From q1, the machine can push the symbol it reads, guess that the second half starts there, or guess that it is the middle symbol.",
+  "The library checks the definition when the machine is created, for example that every transition reads and writes one symbol per tape, and it runs the machine with the same methods as its other automata. read_input_stepwise yields the configurations in the order a breadth-first search visits them, so every branch advances in turn and an accepting branch is found whenever one exists. On 0110, the search visits 17 configurations until the branch that guesses the middle after 01 accepts, and the final configuration prints one line per tape:",
+  "How It Works",
+  "Tapes are immutable: every step creates new tapes instead of changing the old ones, so each branch of the search holds its own copy and any configuration can be kept, compared or printed later. A tape grows by one blank cell whenever its head moves past either end. read_input_stepwise keeps a queue of configurations: it takes the next one, yields it and adds one successor for each applicable move. A branch with no applicable move stops there, and it accepts if its state is final; the input is rejected once the queue runs empty. Searching breadth-first rather than depth-first keeps a branch that never halts from blocking the others.",
+  "read_input_as_ntm runs the same machine through the single-tape construction from the proof that both models are equivalent [Sipser, 2012]. It writes all the tapes one after another on a single tape, ends each with the separator _ and marks every head with a ^ right after the cell it is on (Figure 3).",
+  "Figure 3: The configuration of Figure 1, as read_input_as_ntm writes it on a single tape. Each ^ follows the cell under a head, and each _ ends a tape.",
+  "Every step of the multitape machine then takes two passes over that tape. The first collects the symbol before each ^, which selects the transition. The second, shown below, rewrites each marked cell and moves its ^ one cell to the right, to the left or not at all. When a head moves onto its tape's separator, a blank cell is inserted before the separator, which is how a tape grows; a real single-tape machine pays for it by shifting everything to the right of that cell. These passes over the whole tape are what makes the single-tape machine quadratically slower.",
+  "The simulation follows every branch of a nondeterministic machine, as the multitape run does, and the library's tests check that both runs end on the same tapes. On 0110, it starts from the encoded input and ends on the tapes printed above:",
+  "One Tape vs. Many",
+  "To measure what the second tape buys, two deterministic machines built with the library decide the same language, palindromes over \\(\\{0, 1\\}\\) (Figure 4). The single-tape DTM crosses off the first symbol, runs to the end of the input, checks that the last symbol matches, crosses it off and walks back to start again. The two-tape MNTM copies the input onto its second tape, moves the second head back to the start and compares the input read backwards with the copy read forwards.",
+  "Figure 4: The single-tape machine (top) and the two-tape machine (bottom), in the notation of Figure 2.",
+  "Each was run with automata-lib 9.2.0 on a palindrome of every length from 0 to 100, counting its steps from read_input_stepwise:",
+  "Table 1: Size of each machine and number of steps it takes to accept a palindrome of length n. One tape (DTM) Two tapes (MNTM) States 7 6 Transitions 16 17 Steps, n = 10 66 43 Steps, n = 20 231 83 Steps, n = 50 1,326 203 Steps, n = 100 5,151 403",
+  "Figure 5: Number of steps each machine takes to accept a palindrome of length n, from 0 to 100.",
+  "On a palindrome of length \\(n \\geq 1\\), the single-tape machine takes exactly \\((n+1)(n+2)/2\\) steps and the two-tape machine \\(4n + 3\\), which overtakes it at length 6. At length 100 the single-tape machine takes 5,151 steps against 403, almost 13 times as many, and the gap keeps growing with \\(n\\); by Hennie's bound, no single-tape machine can close it. The two machines are almost the same size, but the two-tape one reads like a program: copy, rewind, compare. The machines, the checks and the code behind every table and figure on this page are in a script in this site's repository.",
+  "Perfect Squares",
+  "A larger machine decides \\(\\{0^{n^2} \\mid n \\geq 1\\}\\), the strings of 0s whose length is a perfect square. It rests on the identity",
+  "\\[n^2 = 1 + 3 + 5 + \\cdots + (2n - 1)\\]",
+  "so the machine builds the sums 1, 4, 9, … one odd block at a time and compares each with the input. It has three tapes: the input, which starts with a # that marks its left end, a tape of 0s that holds the current sum, and a tape of blocks that alternate between X and Y, the last of which has the current odd length. After each block, the machine compares the tape of 0s with the input (Table 2). If both have the same length, it accepts, and if the tape of 0s is longer, it rejects. Otherwise it writes the next block, two symbols longer than the last, appends as many 0s and compares again. To write a block, it marks the symbols of the last one with S, one at a time, writing a symbol of the other letter for each, then restores the marks and writes two more (Figure 6).",
+  "Table 2: The tapes each time the machine compares the tape of 0s with an input of nine 0s. With ten 0s, the fourth comparison finds sixteen and rejects. Tape of 0s Tape of blocks Outcome Comparison 1 0 X shorter: next block Comparison 2 0000 XYYY shorter: next block Comparison 3 000000000 XYYYXXXXX same length: accept",
+  "Figure 6: The perfect-squares machine in its four phases, in the notation of Figure 2 with tape 3 last. While it writes the next block, heads 1 and 2 stay on a 0 and a blank, so the labels in that phase show tape 3 alone. qr rejects.",
+  "The machine is defined in the library's tests, and as perfect_squares it runs like any other:",
+  "Approximate String Matching",
+  "Multiple tapes and nondeterminism also make some practical problems short to state as machines. Approximate string matching asks whether a string \\(y\\) can be obtained from a string \\(x\\) with at most \\(k\\) edits, each inserting, deleting or substituting one symbol; the fewest edits that do it is the edit distance between the two. Spell checkers rank their corrections by it, and sequencing tools use it to align DNA reads with a reference genome. The machine below, matcher, answers the question for DNA strings and also returns the edits.",
+  "Its input is \\(k\\) in unary, \\(x\\) and \\(y\\), separated by |, such as 11|ACGTACGT|CGTACGTA. It copies the budget onto tape 3 and \\(x\\) onto tape 2, so that heads 1 and 2 can then walk along \\(y\\) and \\(x\\) independently, while tape 4 records the edits. At each step, it chooses one operation: a match (M) when the two symbols agree, which moves both heads, or, while budget is left, a substitution (S), which also moves both heads, a deletion (D) of a symbol of \\(x\\), which moves head 2 alone, or an insertion (I) of a symbol of \\(y\\), which moves head 1 alone. Each edit erases one mark from tape 3, and the machine accepts when both strings are used up (Figure 7).",
+  "Figure 7: The approximate matcher, in the notation of Figure 2 with its four tapes in order: the input, the copy of x, the budget and the edits. Here a and b stand for any of A, C, G and T, and the same letter on one line is the same symbol. In qa, the machine chooses a match (M), a substitution (S), a deletion (D) or an insertion (I).",
+  "In the machine's definition, this loop builds the transitions of qa:",
+  "On the example, the machine accepts with its edits on tape 4: delete the first A, match the next seven symbols and insert an A at the end, which is how a read shifted by one position lines up with its reference.",
+  "Running it with \\(k = 0, 1, 2, \\ldots\\) until it accepts finds the edit distance itself. A branch takes at most \\(m + n\\) steps to align strings of lengths \\(m\\) and \\(n\\), so a machine that could guess for free would align them in linear time. The library has to try the branches one after another, though (Table 3). With a budget equal to the edit distance, the search visits fewer configurations than the \\((m+1)(n+1)\\) cells that the standard dynamic program fills [Wagner & Fischer, 1974], but each extra unit of budget roughly triples it, while the dynamic program does the same work for every \\(k\\). Nondeterminism makes the problem easy to state; dynamic programming makes it cheap to solve.",
+  "Table 3: Configurations the search visits for ACGTACGT and CGTACGTA, whose edit distance is 2, as the budget k grows. The dynamic program fills 81 cells for every k. Result Configurations visited k = 1 rejected 32 k = 2 accepted 61 k = 3 accepted 188 k = 4 accepted 548 k = 5 accepted 1,681",
+  "Copyright & Credits",
+  "© automata was written by Caleb Evans, who maintains it with Eliot W. Robson, and is released under the MIT license. The library is described in [Evans & Robson, 2023] in the Journal of Open Source Software.",
+  CLOSING_LINE,
+];
+
+const MNTM_LINKS = [
+  ["automata", MNTM_GITHUB],
+  ["Introduction to the Theory of Computation", "https://uniandes.smartcatalogiq.com/2020/catalogo/cursos/mate/2000/mate-2181"],
+  ["Prof. John Richard Goodrick", "https://matematicas.uniandes.edu.co/en/professors/john-richard-goodrick"],
+  ["Universidad de los Andes", "https://www.uniandes.edu.co/en"],
+  ["API reference", "https://caleb531.github.io/automata/api/tm/class-mntm/"],
+  ["[Evans & Robson, 2023]", "https://doi.org/10.21105/joss.05759"],
+  ["[Sipser, 2012]", "https://math.mit.edu/~sipser/book.html"],
+  ["[Hennie, 1965]", "https://doi.org/10.1016/S0019-9958%2865%2990399-2"],
+  ["shown below", "https://github.com/caleb531/automata/blob/v9.2.0/automata/tm/mntm.py#L397-L431"],
+  ["automata-lib 9.2.0", "https://github.com/caleb531/automata/releases/tag/v9.2.0"],
+  ["a script", "https://github.com/CamiloMartinezM/CamiloMartinezM.github.io/blob/main/scripts/multitape_turing_machines.py"],
+  ["tests", "https://github.com/caleb531/automata/blob/v9.2.0/tests/test_tm.py#L104-L230"],
+  ["[Wagner & Fischer, 1974]", "https://doi.org/10.1145/321796.321811"],
+  ["Caleb Evans", "https://github.com/caleb531"],
+  ["Eliot W. Robson", "https://github.com/eliotwrobson"],
+];
+
+// The first line of each Python block, in page order, and the text blocks that show their output.
+const MNTM_CODE = [
+  "from automata.tm.mntm import MNTM",
+  'palindromes.accepts_input("0110")  # True',
+  "for move in moves:",
+  'run = [config for (config,) in palindromes.read_input_as_ntm("0110")]',
+  "def steps(machine, word):",
+  'perfect_squares.accepts_input("#" + "0" * 9)  # True: 9 = 1 + 3 + 5',
+  'for budget in "1$":  # head 3 reads an unused edit, or the $ once none is left',
+  '(config,) = matcher.read_input("11|ACGTACGT|CGTACGTA")',
+];
+const MNTM_OUTPUTS = [
+  "q3:\n> Tape 1: 0110#\n              ^\n> Tape 2: $01#\n          ^",
+  "q0 0^110_#^_\nq3 0110#^_$^01#_",
+  "qf:\n> Tape 1: 11|ACGTACGT|CGTACGTA#\n                              ^\n> Tape 2: $ACGTACGT#\n                   ^\n> Tape 3: $###\n          ^\n> Tape 4: DMMMMMMMI#\n                   ^",
+];
+
+// The accessible name of each image in each figure, in page order. The state diagrams sit in containers that scroll on narrow screens.
+const MNTM_FIGURES = [
+  ["A two-tape machine"],
+  ["The palindrome machine"],
+  ["The same two tapes on one tape"],
+  ["The single-tape palindrome machine", "The two-tape palindrome machine"],
+  ["Steps to accept a palindrome of length n"],
+  ["The perfect-squares machine"],
+  ["The approximate matcher"],
+];
+
+test.describe(MNTM_TITLE, () => {
+  test("is the fourth card on the projects page, with its icon, and opens its Project page", async ({ page }) => {
+    await page.goto("/projects/");
+    const cards = page.locator(".projects .card");
+    await expect(cards).toHaveCount(4);
+    const card = cards.nth(3);
+    await expect(card.locator(".card-title")).toHaveText(MNTM_TITLE);
+    await expect(card.locator(".card-text")).toHaveText(MNTM_CARD);
+    const icon = card.locator("img");
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(await icon.evaluate((img) => img.currentSrc)).toContain("/projects/multitape-turing-machines/icon");
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${MNTM_PATH}$`));
+    await expect(page.locator("h1.post-title")).toHaveText(MNTM_TITLE);
+  });
+
+  test.describe("page", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto(MNTM_PATH);
+    });
+
+    test("opens with the summary, the authors line and the GitHub link, in that order", async ({ page }) => {
+      const paragraphs = page.locator("article > p");
+      const blocks = await paragraphs.evaluateAll((els) => els.slice(0, 3).map((el) => el.innerText.replace(/\s+/g, " ").trim()));
+      expect(blocks).toEqual([MNTM_SUMMARY, "By: Camilo Martínez", "View on GitHub"]);
+      const summaryLinks = await paragraphs
+        .first()
+        .locator("a")
+        .evaluateAll((as) => as.map((a) => [a.textContent, a.getAttribute("href")]));
+      expect(summaryLinks).toEqual([["automata", MNTM_GITHUB]]);
+      const author = paragraphs.nth(1).locator("a");
+      await expect(author).toHaveCount(1);
+      await expect(author).toHaveAttribute("href", PROJECT_AUTHORS[0][1]);
+      expect(await author.evaluate((a) => getComputedStyle(a.querySelector("u") ?? a).textDecorationLine)).toBe("underline");
+      await expect(paragraphs.nth(2).getByRole("link", { name: "View on GitHub" })).toHaveAttribute("href", MNTM_GITHUB);
+    });
+
+    test("shows every section heading, in order", async ({ page }) => {
+      const headings = await page.locator("article h2, article h3").evaluateAll((hs) => hs.map((h) => [h.tagName, h.textContent.trim()]));
+      expect(headings).toEqual(MNTM_HEADINGS.map((heading) => ["H2", heading]));
+    });
+
+    test("keeps the write-up's links, and links every mention of automata to its repository", async ({ page }) => {
+      const links = await page
+        .locator("article a")
+        .evaluateAll((as) => as.map((a) => [a.textContent.replace(/\s+/g, " ").trim(), a.getAttribute("href")]));
+      for (const link of MNTM_LINKS) expect(links).toContainEqual(link);
+      // The library's name, as a word of its own, is a link wherever it appears in the text.
+      const unlinked = await page.locator("article").evaluate((article) => {
+        const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT);
+        const found = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          if (node.parentElement.closest("a, pre, figure, mjx-container")) continue;
+          for (const match of node.textContent.matchAll(/\bautomata\b(?! theory)/g)) {
+            const before = node.textContent.slice(0, match.index);
+            if (!/(finite|pushdown|other) $/.test(before)) found.push(node.textContent.trim().slice(0, 60));
+          }
+        }
+        return found;
+      });
+      expect(unlinked).toEqual([]);
+      const named = await page.locator("article a", { hasText: /^automata$/ }).evaluateAll((as) => as.map((a) => a.getAttribute("href")));
+      expect(named).toEqual([MNTM_GITHUB, MNTM_GITHUB, MNTM_GITHUB]);
+    });
+
+    test("shows each code block and the exact output of those that print", async ({ page }) => {
+      const python = await page.locator("article .language-python pre").evaluateAll((pres) => pres.map((pre) => pre.textContent.split("\n")[0]));
+      expect(python).toEqual(MNTM_CODE);
+      const outputs = await page.locator("article .language-text pre").evaluateAll((pres) => pres.map((pre) => pre.textContent.replace(/\n$/, "")));
+      expect(outputs).toEqual(MNTM_OUTPUTS);
+    });
+
+    test("typesets its 37 formulas with MathJax, two of them on their own line", async ({ page }) => {
+      await expect(page.locator("article mjx-container")).toHaveCount(37);
+      await expect(page.locator('article mjx-container[display="true"]')).toHaveCount(2);
+      // The $ on the figures' tapes is not math.
+      await expect(page.locator("article svg mjx-container")).toHaveCount(0);
+    });
+
+    test("shows its seven figures as captioned, labelled inline SVG within the content column", async ({ page }) => {
+      const figures = page.locator("article figure");
+      await expect(figures).toHaveCount(MNTM_FIGURES.length);
+      for (const [index, names] of MNTM_FIGURES.entries()) {
+        const figure = figures.nth(index);
+        await expect(figure.locator("svg")).toHaveCount(names.length);
+        for (const name of names) await expect(figure.getByRole("img", { name })).toHaveCount(1);
+        await expect(figure.locator("figcaption")).toContainText(`Figure ${index + 1}:`);
+        // A state diagram may be wider than a phone screen, but then its own container scrolls, not the page.
+        const boxes = await figure.locator(":scope > svg, :scope > .tm-scroll").evaluateAll((els) => {
+          const column = document.querySelector("article").getBoundingClientRect().right;
+          return els.map((el) => {
+            const box = el.getBoundingClientRect();
+            const scrolls = el.scrollWidth <= el.clientWidth + 1 || getComputedStyle(el).overflowX === "auto";
+            return box.width > 0 && box.right <= column + 1 && scrolls;
+          });
+        });
+        expect(boxes, names[0]).toEqual(names.map(() => true));
+      }
+    });
+
+    test("labels the state diagrams in the course's notation, from the machines themselves", async ({ page }) => {
+      const labels = (name) =>
+        page
+          .getByRole("img", { name })
+          .locator(".edge text")
+          .evaluateAll((texts) => texts.map((t) => t.textContent));
+      expect(await labels("The palindrome machine")).toEqual(
+        expect.arrayContaining(["0,1 → N ; # → $|R", "0 → R ; # → 0|R", "1 → R ; # → 1|R", "0,1 → N ; # → L", "0,1 → R ; # → L", "# → N ; $ → N"])
+      );
+      expect(await labels("The single-tape palindrome machine")).toEqual(
+        expect.arrayContaining(["0 → #|R", "1 → #|R", "0,1 → R", "0,1 → L", "# → R"])
+      );
+      expect(await labels("The perfect-squares machine")).toEqual(expect.arrayContaining(["0 → R ; 0 → R ; # → N", "X → S|R", "# → Y|L"]));
+      expect(await labels("The approximate matcher")).toEqual(
+        expect.arrayContaining([
+          "a → R ; a → R ; 1,$ → N ; # → M|R",
+          "b → R ; a → R ; 1 → #|L ; # → S|R (a ≠ b)",
+          "b,# → N ; a → R ; 1 → #|L ; # → D|R",
+        ])
+      );
+      const accepting = page.getByRole("img", { name: "The perfect-squares machine" }).locator(".node", { hasText: "qf" }).locator("ellipse");
+      await expect(accepting).toHaveCount(2);
+    });
+
+    test("draws its figures in the theme's colors, in light and dark mode", async ({ page }) => {
+      const expected = {
+        light: { text: "rgb(0, 0, 0)", accent: "rgb(0, 118, 223)", oneTape: "rgb(235, 104, 52)" },
+        dark: { text: "rgb(232, 232, 232)", accent: "rgb(38, 152, 186)", oneTape: "rgb(217, 89, 38)" },
+      };
+      for (const [scheme, colors] of Object.entries(expected)) {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.goto(MNTM_PATH);
+        const actual = await page.evaluate(() => {
+          const style = (selector) => getComputedStyle(document.querySelector(`article ${selector}`));
+          return {
+            text: style(".tm-fig .tm-state").fill,
+            head: style(".tm-fig .tm-head").fill,
+            twoTapes: style(".tm-fig .tm-line.tm-two").stroke,
+            oneTape: style(".tm-fig .tm-line.tm-one").stroke,
+            label: style(".tm-graph .edge text").fill,
+            state: style(".tm-graph .node ellipse").stroke,
+            edge: style(".tm-graph .edge path").stroke,
+            arrow: style(".tm-graph .edge polygon").fill,
+          };
+        });
+        expect(actual, scheme).toEqual({
+          text: colors.text,
+          head: colors.accent,
+          twoTapes: colors.accent,
+          oneTape: colors.oneTape,
+          label: colors.text,
+          state: colors.text,
+          edge: colors.accent,
+          arrow: colors.accent,
+        });
+      }
+    });
+
+    test("ends with the pointer to the GitHub repository", async ({ page }) => {
+      const closing = page.locator("article > p").last();
+      expect(squash(await closing.innerText())).toBe(CLOSING_LINE);
+      await expect(closing.getByRole("link", { name: "GitHub repository" })).toHaveAttribute("href", MNTM_GITHUB);
+    });
+
+    test("fits a phone-width screen, scrolling wide code, tables and diagrams in their own containers", async ({ page }) => {
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      for (const box of await page.locator("article pre, article .table-responsive, article .tm-scroll").all()) {
+        expect(await box.evaluate((el) => getComputedStyle(el).overflowX)).toMatch(/auto|scroll/);
+      }
+    });
+  });
+
+  test.describe("page source", () => {
+    // Without JavaScript, MathJax leaves the formulas as the TeX that the page's HTML holds.
+    test.use({ javaScriptEnabled: false });
+
+    test("shows the write-up word for word, captions and table included", async ({ page }) => {
+      await page.goto(MNTM_PATH);
+      const blocks = await page.locator("article").evaluate((article) =>
+        [...article.childNodes]
+          .filter((node) => !(node instanceof Element && node.matches(".highlighter-rouge")))
+          .map((node) =>
+            node instanceof Element ? (node.matches("figure") ? node.querySelector("figcaption").innerText : node.innerText) : node.textContent
+          )
+          .map((text) => text.replace(/\s+/g, " ").trim())
+          .filter(Boolean)
+      );
+      expect(blocks).toEqual(MNTM_WRITE_UP);
     });
   });
 });
