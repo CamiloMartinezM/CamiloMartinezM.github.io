@@ -101,15 +101,23 @@ sections:
     - name: Django for Everybody
       date: 2023
 
+  # Languages and Interests show each name with its keywords below it, one per line.
   Languages:
     - name: Spanish
-      summary: Native
+      keywords:
+        - Native
     - name: English
-      summary: Full Professional Proficiency, TOEFL C1 (2023)
+      keywords:
+        - Full Professional Proficiency
+        - TOEFL C1 (2023)
     - name: German
-      summary: Professional Working Proficiency, Goethe Zertifikat B2 (2016)
+      keywords:
+        - Professional Working Proficiency
+        - Goethe Zertifikat B2 (2016)
     - name: French
-      summary: Limited Working Proficiency, DELF B2 (2016)
+      keywords:
+        - Limited Working Proficiency
+        - DELF B2 (2016)
 
   Interests:
     - name: Topics
@@ -121,6 +129,6 @@ sections:
     - name: Hobbies
       keywords:
         - Running/biking
-        - dancing (salsa & bachata)
-        - reading
-        - coding
+        - Dancing (salsa & bachata)
+        - Reading
+        - Coding

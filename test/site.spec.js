@@ -1842,17 +1842,25 @@ const CV_ENTRIES = {
   ],
 };
 
-const CV_ITEMS = {
-  Certificates: ["DeepLearning.AI Deep Learning (2022)", "DeepLearning.AI TensorFlow Developer (2020)", "Django for Everybody (2023)"],
+const CV_CERTIFICATES = ["DeepLearning.AI Deep Learning (2022)", "DeepLearning.AI TensorFlow Developer (2020)", "Django for Everybody (2023)"];
+
+// Each language and interest: its name, then its keywords.
+const CV_GROUPS = {
   Languages: [
-    "Spanish: Native",
-    "English: Full Professional Proficiency, TOEFL C1 (2023)",
-    "German: Professional Working Proficiency, Goethe Zertifikat B2 (2016)",
-    "French: Limited Working Proficiency, DELF B2 (2016)",
+    ["Spanish", "Native"],
+    ["English", "Full Professional Proficiency", "TOEFL C1 (2023)"],
+    ["German", "Professional Working Proficiency", "Goethe Zertifikat B2 (2016)"],
+    ["French", "Limited Working Proficiency", "DELF B2 (2016)"],
   ],
   Interests: [
-    "Topics: Computer Vision for Materials Microstructure Analysis, Data-Frugal Learning, Vision and Language Foundation Models, Multimodal Learning with EEG",
-    "Hobbies: Running/biking, dancing (salsa & bachata), reading, coding",
+    [
+      "Topics",
+      "Computer Vision for Materials Microstructure Analysis",
+      "Data-Frugal Learning",
+      "Vision and Language Foundation Models",
+      "Multimodal Learning with EEG",
+    ],
+    ["Hobbies", "Running/biking", "Dancing (salsa & bachata)", "Reading", "Coding"],
   ],
 };
 
@@ -1911,15 +1919,30 @@ test.describe("CV page", () => {
     });
   }
 
-  test("lists the Certificates, Languages and Interests word for word", async ({ page }) => {
-    for (const [heading, items] of Object.entries(CV_ITEMS)) {
-      const shown = await section(page, heading).locator(".list-group-item, .language-item, .interest-item").allInnerTexts();
-      expect(shown.map(squash), heading).toEqual(items);
-    }
+  test("lists the Certificates word for word", async ({ page }) => {
+    expect((await section(page, "Certificates").locator(".list-group-item").allInnerTexts()).map(squash)).toEqual(CV_CERTIFICATES);
   });
 
+  for (const [heading, groups] of Object.entries(CV_GROUPS)) {
+    test(`shows the ${heading} as names in the accent color with their keywords in bold below, two to a row on wide screens`, async ({ page }) => {
+      const card = section(page, heading);
+      const shown = await card
+        .locator(".list-group")
+        .evaluateAll((divs) =>
+          divs.map((div) => [...div.querySelectorAll(".list-group-category, .list-group-name b")].map((el) => el.textContent.trim()))
+        );
+      expect(shown).toEqual(groups);
+      const accent = await section(page, "Personal Details")
+        .getByRole("link", { name: "CamiloMartinezM" })
+        .evaluate((a) => getComputedStyle(a).color);
+      for (const name of await card.locator(".list-group-category").all()) await expect(name).toHaveCSS("color", accent);
+      const tops = await card.locator(".list-group").evaluateAll((divs) => divs.map((div) => Math.round(div.getBoundingClientRect().top)));
+      expect(tops[0] === tops[1]).toBe(page.viewportSize().width >= 768);
+    });
+  }
+
   test("shows its entries without list bullets, divided by lines, with no line above the date badges", async ({ page }) => {
-    const lists = await page.locator(".cv .list-group").evaluateAll((uls) =>
+    const lists = await page.locator(".cv ul.list-group").evaluateAll((uls) =>
       uls.map((ul) => ({
         bullets: getComputedStyle(ul).listStyleType,
         dividers: [...ul.children].map((li) => getComputedStyle(li).borderBottomStyle),

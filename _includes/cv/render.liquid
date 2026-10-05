@@ -1,8 +1,8 @@
 {% comment %}
   Local override of templates/cv/render.liquid from al_folio_cv 1.0.2, which renders the CV page from _data/cv.yml:
   the Personal details first, then each section in the file's order. Stays Abroad entries render like Professional
-  Experience ones. Apart from Languages, the entries still use the gem's includes. Compare this file with the gem's
-  copy when bumping al_folio_cv.
+  Experience ones. Languages and Interests use the list groups of al-folio's earlier CV layout; all other entries use
+  the gem's includes. Compare this file with the gem's copy when bumping al_folio_cv.
 {% endcomment %}
 {% assign cv = site.data.cv %}
 <div class="post">
@@ -59,17 +59,30 @@
                 {% include cv/education.liquid %}
               {% when 'Certificates' %}
                 {% include cv/certificates.liquid %}
-              {% when 'Languages' %}
-                {% comment %} Not the gem's include, which leaves a space before the colon ("Spanish : Native"). {% endcomment %}
-                <div class="card-text font-weight-light">
+              {% when 'Languages', 'Interests' %}
+                {% comment %} Each name in the accent color with its keywords in bold below it, two names to a row. {% endcomment %}
+                <div class="list-groups">
                   {% for entry in entries %}
-                    <div class="language-item">
-                      <strong>{{ entry.name }}:</strong> {{ entry.summary }}
+                    <div class="list-group col-md-6">
+                      <table class="table-cv list-group-table">
+                        <tbody>
+                          <tr>
+                            <td class="list-group-category-icon"></td>
+                            <td class="list-group-category">{{ entry.name }}</td>
+                          </tr>
+                          {% for keyword in entry.keywords %}
+                            <tr>
+                              <td></td>
+                              <td class="list-group-name">
+                                <b>{{ keyword }}</b>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                   {% endfor %}
                 </div>
-              {% when 'Interests' %}
-                {% include cv/interests.liquid %}
             {% endcase %}
           </div>
         </div>
@@ -83,7 +96,7 @@
       overflow: visible;
     }
     /* The entries are Bootstrap list groups, which the theme leaves unstyled while its Bootstrap compatibility is off. */
-    .cv .list-group {
+    .cv ul.list-group {
       margin: 0;
       padding: 0;
       list-style: none;
@@ -103,9 +116,6 @@
     .cv table.table td:first-child {
       padding-right: 1rem;
       white-space: nowrap;
-    }
-    .language-item {
-      padding: 0.5rem 0;
     }
   </style>
 </div>
