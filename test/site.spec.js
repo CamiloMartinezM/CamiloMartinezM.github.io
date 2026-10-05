@@ -1913,6 +1913,22 @@ test.describe("CV page", () => {
     }
   });
 
+  test("shows its entries without list bullets, divided by lines, with no line above the date badges", async ({ page }) => {
+    const lists = await page.locator(".cv .list-group").evaluateAll((uls) =>
+      uls.map((ul) => ({
+        bullets: getComputedStyle(ul).listStyleType,
+        dividers: [...ul.children].map((li) => getComputedStyle(li).borderBottomStyle),
+      }))
+    );
+    expect(lists).toHaveLength(4);
+    for (const list of lists) {
+      expect(list.bullets).toBe("none");
+      expect(list.dividers).toEqual([...Array(list.dividers.length - 1).fill("solid"), "none"]);
+    }
+    const lines = await page.locator(".cv .date-column td").evaluateAll((tds) => tds.map((td) => getComputedStyle(td).borderTopStyle));
+    expect(new Set(lines)).toEqual(new Set(["none"]));
+  });
+
   test("has no intro text, PDF download or photo", async ({ page }) => {
     await expect(page.locator(".post-description")).toHaveCount(0);
     await expect(page.locator(".fa-file-pdf")).toHaveCount(0);
