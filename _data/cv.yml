@@ -1,0 +1,126 @@
+# The CV page: a hand-kept copy of the CV document, without its phone number and its Publications.
+# The name, LinkedIn and GitHub in the Personal details come from _config.yml and _data/socials.yml, and the email
+# from _includes/written-out-email.liquid. Sections render in this file's order. Dates are quoted "YYYY.MM" strings:
+# unquoted, YAML would read 2021.10 as the number 2021.1.
+
+nationality: Colombian
+
+sections:
+  Professional Experience:
+    - position: Research Assistant
+      company: '<a href="https://martinmueller1104.github.io/d3m.github.io/">Data-Driven Design of Materials (d3M)</a>, <a href="https://www.uni-saarland.de/en/home.html">Saarland University</a>'
+      location: Saarbrücken, Germany
+      start_date: "2026.08"
+      highlights:
+        - Development of reliable Machine Learning methods for microstructure analysis in low-data regimes, working with small, heterogeneous datasets while reducing manual annotation effort.
+        - Research on active and semi-supervised learning, synthetic data generation, self-supervised pretraining of domain-specific encoders, and adaptation of foundation models such as SAM.
+        - Collaboration with university and industry partners in the CircularSaar consortium on materials data science projects, from exploratory data analysis to training and evaluating models.
+    - position: Research Assistant
+      company: '<a href="https://www.mec-s.de/en/welcome/">Material Engineering Center Saarland</a>'
+      location: Saarbrücken, Germany
+      start_date: "2025.01"
+      end_date: "2026.07"
+      highlights:
+        - Development of Machine Learning models for analysis and characterization tasks in Materials Science and Engineering (MES), leveraging both traditional ML and modern DL approaches.
+        - Research and application of state-of-the-art architectures, including Visual Transformers (ViTs), semi-supervised, and self-supervised learning methods, optimized for low-data regimes for enhancing microstructure classification and segmentation.
+    - position: Teaching Assistant
+      company: '<a href="https://www.uni-saarland.de/en/home.html">Saarland University</a>'
+      location: Saarbrücken, Germany
+      start_date: "2024.04"
+      end_date: "2025.03"
+      highlights:
+        - Organization of weekly face-to-face tutorials for the courses “Elements of Machine Learning” (approx. 40 students) and “Digital Signal Processing” (approx. 30 students) in order to deepen the concepts covered in the lectures and to clarify questions from students.
+    - position: Research Assistant
+      company: '<a href="https://www.dfki.de/en/web">Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)</a>'
+      location: Saarbrücken, Germany
+      start_date: "2024.03"
+      end_date: "2024.12"
+      highlights:
+        - (Pre-)processing of EEG signals and eye tracking data, for use in Machine Learning models, using Python.
+        - Training of Machine Learning models (particularly, sequence-to-label routines with LSTMs and Transformers, using TensorFlow and PyTorch's implementations), focused on predicting target- and non-target eye fixations.
+    - position: Functional Consultant
+      company: '<a href="https://www.indragroup.com/en">Indra Sistemas</a>'
+      location: Barranquilla, Colombia
+      start_date: "2021.07"
+      end_date: "2023.09"
+      highlights:
+        - Led a team expanding the capabilities of utility companies [AFINIA](https://afinia.com.co/) (Colombia), [Agua de Puebla](https://www.aguapuebla.mx/) (Mexico) and [Sedapal](https://www.sedapal.com.pe/) (Lima, Peru), supporting their Industry 4.0 transition with Business Intelligence.
+        - Gathered requirements from clients and stakeholders, remotely and on site, and relayed them to technical teams, using SharePoint, Teams, and Agile methods with Jira and Confluence.
+        - Designed, created, and analyzed PowerBI and Excel dashboards/reports for improved operational analysis and KPI assessment.
+    - position: Research Assistant in Data Analysis with MATLAB
+      company: '<a href="https://www.uniandes.edu.co/en">Universidad de los Andes</a>'
+      location: Remote, Colombia
+      start_date: "2021.03"
+      end_date: "2021.04"
+      highlights:
+        - Carried out the optimization and execution of pre-written MATLAB code, adapted it to different portions of the A.C. Nielsen Kilts database and reduced the total execution time by 99,8% vectorizing operations.
+    - position: Teaching Assistant
+      company: '<a href="https://www.uniandes.edu.co/en">Universidad de los Andes</a>'
+      location: Bogotá D.C., Colombia
+      start_date: "2020.01"
+      end_date: "2020.12"
+
+  Stays Abroad:
+    - position: 'Requirements analysis and blueprint sign-off with <a href="https://www.sedapal.com.pe/">Sedapal</a>'
+      company: '<a href="https://www.indragroup.com/en">Indra Sistemas</a>'
+      location: Lima, Peru
+      start_date: "2023.03"
+      end_date: "2023.08"
+      summary: 4 stays, 9 weeks in total
+    - position: 'Training of <a href="https://www.aguapuebla.mx/">Agua de Puebla</a> staff in Onesait Utilities Customers'
+      company: '<a href="https://www.indragroup.com/en">Indra Sistemas</a>'
+      location: Puebla, Mexico
+      start_date: "2022.07"
+      end_date: "2022.09"
+      summary: 2 stays, 3 weeks in total
+
+  Education:
+    - studyType: M.Sc. Data Science and Artificial Intelligence
+      url: https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/
+      institution: '<a href="https://www.uni-saarland.de/en/home.html">Saarland University</a>'
+      location: Saarbrücken, Germany
+      start_date: "2023.10"
+      end_date: "2026.10"
+      highlights:
+        - "Master's thesis: *Brain2Face: Reconstructing Dynamic 3D Facial Expressions from EEG Signals*, written at the [Max Planck Institute for Informatics](https://www.mpi-inf.mpg.de/home)"
+    - studyType: B.Sc. Mechanical Engineering, Minor in Computational Mathematics
+      institution: '<a href="https://www.uniandes.edu.co/en">Universidad de los Andes</a>'
+      location: Bogotá D.C., Colombia
+      start_date: "2017.01"
+      end_date: "2021.04"
+      highlights:
+        - "Bachelor's thesis: [*Application of Computer Vision in the Analysis of Microstructures and Obtaining Structure-Property Relationships*](/publications/#Martinez_2021)"
+        - "GPA: 4,41/5,00 (equivalent to 1,8 in the German grading system)"
+        - Awarded the national “Ser Pilo Paga 3” scholarship by the Colombian government for academic excellence, funding 100% of my tuition and living expenses throughout my bachelor’s studies.
+
+  Certificates:
+    - name: DeepLearning.AI Deep Learning
+      date: 2022
+    - name: DeepLearning.AI TensorFlow Developer
+      date: 2020
+    - name: Django for Everybody
+      date: 2023
+
+  Languages:
+    - name: Spanish
+      summary: Native
+    - name: English
+      summary: Full Professional Proficiency, TOEFL C1 (2023)
+    - name: German
+      summary: Professional Working Proficiency, Goethe Zertifikat B2 (2016)
+    - name: French
+      summary: Limited Working Proficiency, DELF B2 (2016)
+
+  Interests:
+    - name: Topics
+      keywords:
+        - Computer Vision for Materials Microstructure Analysis
+        - Data-Frugal Learning
+        - Vision and Language Foundation Models
+        - Multimodal Learning with EEG
+    - name: Hobbies
+      keywords:
+        - Running/biking
+        - dancing (salsa & bachata)
+        - reading
+        - coding

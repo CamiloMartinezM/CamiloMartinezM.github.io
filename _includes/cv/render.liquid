@@ -1,0 +1,84 @@
+{% comment %}
+  Local override of templates/cv/render.liquid from al_folio_cv 1.0.2, which renders the CV page from _data/cv.yml:
+  the Personal details first, then each section in the file's order. Stays Abroad entries render like Professional
+  Experience ones. Apart from Languages, the entries still use the gem's includes. Compare this file with the gem's
+  copy when bumping al_folio_cv.
+{% endcomment %}
+{% assign cv = site.data.cv %}
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+  </header>
+
+  <article>
+    <div class="cv">
+      <div class="card mt-3 p-3">
+        <h3 id="personal-details" class="card-title font-weight-medium">Personal Details</h3>
+        <table class="table table-cv table-sm table-borderless">
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Name</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              {{ site.first_name }}
+              {{ site.last_name }}
+            </td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Nationality</b></td>
+            <td class="p-1 pl-2 font-weight-light">{{ cv.nationality }}</td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Email</b></td>
+            <td class="p-1 pl-2 font-weight-light">{% include written-out-email.liquid %}</td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>LinkedIn</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              <a href="https://www.linkedin.com/in/{{ site.data.socials.linkedin_username }}">{{ site.data.socials.linkedin_username }}</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>GitHub</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              <a href="https://github.com/{{ site.data.socials.github_username }}">{{ site.data.socials.github_username }}</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      {% for section in cv.sections %}
+        {% assign entries = section[1] %}
+        <div class="card mt-3 p-3">
+          <h3 id="{{ section[0] | slugify }}" class="card-title font-weight-medium">{{ section[0] }}</h3>
+          <div>
+            {% case section[0] %}
+              {% when 'Professional Experience', 'Stays Abroad' %}
+                {% assign entries = entries | al_cv_sort_by_date %}
+                {% include cv/experience.liquid %}
+              {% when 'Education' %}
+                {% assign entries = entries | al_cv_sort_by_date %}
+                {% include cv/education.liquid %}
+              {% when 'Certificates' %}
+                {% include cv/certificates.liquid %}
+              {% when 'Languages' %}
+                {% comment %} Not the gem's include, which leaves a space before the colon ("Spanish : Native"). {% endcomment %}
+                <div class="card-text font-weight-light">
+                  {% for entry in entries %}
+                    <div class="language-item">
+                      <strong>{{ entry.name }}:</strong> {{ entry.summary }}
+                    </div>
+                  {% endfor %}
+                </div>
+                <style>
+                  .language-item {
+                    padding: 0.5rem 0;
+                  }
+                </style>
+              {% when 'Interests' %}
+                {% include cv/interests.liquid %}
+            {% endcase %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+</div>
