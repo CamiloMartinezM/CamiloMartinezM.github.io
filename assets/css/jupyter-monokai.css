@@ -386,6 +386,7 @@ li,
 h1,
 h2,
 h3,
+h6,
 pre,
 code,
 form,
@@ -493,6 +494,22 @@ mark,
   background-color: #282828;
   color: #f8f8f0;
   padding: 0.15em;
+}
+
+#toc a,
+.toc {
+  color: #f8f8f0 !important;
+  font-size: 11pt !important;
+}
+
+#toc li > span:hover {
+  background-color: rgba(93, 92, 82, 0.25) !important;
+}
+
+#toc a:hover,
+.toc {
+  color: #f8f8f2 !important;
+  font-size: 11pt !important;
 }
 
 audio,
