@@ -1924,7 +1924,9 @@ test.describe("CV page", () => {
   });
 
   for (const [heading, groups] of Object.entries(CV_GROUPS)) {
-    test(`shows the ${heading} as names in the accent color with their keywords in bold below, two to a row on wide screens`, async ({ page }) => {
+    test(`shows the ${heading} as names in the accent color with their keywords small and bold below, two to a row on wide screens`, async ({
+      page,
+    }) => {
       const card = section(page, heading);
       const shown = await card
         .locator(".list-group")
@@ -1936,6 +1938,10 @@ test.describe("CV page", () => {
         .getByRole("link", { name: "CamiloMartinezM" })
         .evaluate((a) => getComputedStyle(a).color);
       for (const name of await card.locator(".list-group-category").all()) await expect(name).toHaveCSS("color", accent);
+      for (const keyword of await card.locator(".list-group-name").all()) {
+        await expect(keyword).toHaveCSS("font-size", "12.8px");
+        await expect(keyword.locator("b")).toHaveCSS("font-weight", "700");
+      }
       const tops = await card.locator(".list-group").evaluateAll((divs) => divs.map((div) => Math.round(div.getBoundingClientRect().top)));
       expect(tops[0] === tops[1]).toBe(page.viewportSize().width >= 768);
     });

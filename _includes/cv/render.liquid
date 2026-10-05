@@ -112,6 +112,13 @@
     .cv table.table-cv td {
       border-top: 0;
     }
+    /* The theme's rule for plain tables outweighs the gem's smaller keywords, and <b> on the theme's light text is only regular. */
+    .cv table.table-cv td.list-group-name {
+      font-size: 0.8rem;
+    }
+    .cv .list-group-name b {
+      font-weight: 700;
+    }
     /* The gem's 1px cell padding would leave each Personal details label touching its value on a phone. */
     .cv table.table td:first-child {
       padding-right: 1rem;
