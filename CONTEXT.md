@@ -30,3 +30,19 @@ _Avoid_: contact icons, socials
 **Contact section**:
 The last section of the home page: the owner's email address, office address and a map of the office building. The Social links are not part of it.
 _Avoid_: contact page, contact info, contact widget
+
+**CV document**:
+The owner's curriculum vitae as a standalone document, kept outside this site. It is the source of the CV page.
+_Avoid_: resume, CV (on its own)
+
+**CV page**:
+The page that presents the CV document on the site, from the Personal details to the owner's interests. It leaves out the phone number, and the Publications, which have their own page.
+_Avoid_: CV section, resume
+
+**Personal details**:
+The first section of the CV page: the owner's name, nationality, email address, LinkedIn and GitHub.
+_Avoid_: basics, contact information
+
+**Stay abroad**:
+A period the owner worked on site at a client of their employer, in a country other than the one they were based in at the time, such as the stays in Puebla and Lima for Indra.
+_Avoid_: business trip, travel, assignment
