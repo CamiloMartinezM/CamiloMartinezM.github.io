@@ -557,12 +557,12 @@ test.describe("accent colors", () => {
 });
 
 test.describe("site chrome", () => {
-  test("navbar shows about, publications, projects, teaching, cv and the theme toggle, without search or social icons", async ({ page }) => {
+  test("navbar shows about, publications, projects, teaching, CV and the theme toggle, without search or social icons", async ({ page }) => {
     await page.goto("/");
     const toggler = page.locator(".navbar-toggler-main");
     if (await toggler.isVisible()) await toggler.click();
     const links = await page.locator(".navbar-nav .nav-link").allInnerTexts();
-    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects", "teaching", "cv"]);
+    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects", "teaching", "CV"]);
     await expect(page.locator("#light-toggle")).toBeVisible();
     await expect(page.locator("#search-toggle")).toHaveCount(0);
     await expect(page.locator("nav .social")).toHaveCount(0);
@@ -1863,7 +1863,8 @@ test.describe("CV page", () => {
     await page.goto("/cv/");
   });
 
-  test("shows its sections in order, each listed in the sidebar's table of contents", async ({ page }) => {
+  test("shows its CV heading and its sections in order, each listed in the sidebar's table of contents", async ({ page }) => {
+    await expect(page.locator("h1.post-title")).toHaveText("CV");
     expect((await page.locator(".cv h3").allInnerTexts()).map(squash)).toEqual(CV_HEADINGS);
     await expect(page.locator("#toc-sidebar a")).toHaveText(CV_HEADINGS);
   });
