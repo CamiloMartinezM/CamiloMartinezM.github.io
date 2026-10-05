@@ -1868,7 +1868,7 @@ test.describe("CV page", () => {
     await expect(page.locator("#toc-sidebar a")).toHaveText(CV_HEADINGS);
   });
 
-  test("shows the Personal details with the profile links", async ({ page }) => {
+  test("shows the Personal details with the profile links, each label on one line and clear of its value", async ({ page }) => {
     const details = section(page, "Personal Details");
     const rows = await details
       .locator("tr")
@@ -1876,6 +1876,10 @@ test.describe("CV page", () => {
     expect(rows).toEqual(CV_PERSONAL_DETAILS);
     await expect(details.getByRole("link", { name: "camilo-martinez-m" })).toHaveAttribute("href", SOCIAL_LINKS[0]);
     await expect(details.getByRole("link", { name: "CamiloMartinezM" })).toHaveAttribute("href", SOCIAL_LINKS[2]);
+    for (const label of await details.locator("td:first-child").all()) {
+      await expect(label).toHaveCSS("padding-right", "16px");
+      await expect(label).toHaveCSS("white-space", "nowrap");
+    }
   });
 
   test("writes out the email, leaving no address in the page for scrapers", async ({ page }) => {

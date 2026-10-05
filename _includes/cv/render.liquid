@@ -95,6 +95,11 @@
     .cv table.table-cv td {
       border-top: 0;
     }
+    /* The gem's 1px cell padding would leave each Personal details label touching its value on a phone. */
+    .cv table.table td:first-child {
+      padding-right: 1rem;
+      white-space: nowrap;
+    }
     .language-item {
       padding: 0.5rem 0;
     }
