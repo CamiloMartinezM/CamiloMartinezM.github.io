@@ -28,7 +28,7 @@ const BIO = [
   {
     text: "Before that, I was a Functional Consultant at Indra, where I oversaw a team to enhance utility companies' operational abilities to align with the Industry 4.0, namely, AFINIA in Colombia, Agua de Puebla in Mexico and Sedapal in Peru.",
     links: [
-      ["Indra", "https://www.linkedin.com/company/indra/posts/?feedView=all"],
+      ["Indra", "https://www.indragroup.com/en"],
       ["AFINIA", "https://afinia.com.co/"],
       ["Agua de Puebla", "https://www.aguapuebla.mx/"],
       ["Sedapal", "https://www.sedapal.com.pe/"],
@@ -178,6 +178,7 @@ const PAGES = [
   "/projects/rend-a-pixel/",
   "/projects/multitape-turing-machines/",
   "/teaching/",
+  "/cv/",
 ];
 
 // Collects what a visitor's browser would flag as broken while a page loads, and any request that would reach Google.
@@ -197,6 +198,21 @@ function watchPage(page) {
     if (res.url().startsWith(ORIGIN) && res.status() >= 400) problems.failedRequests.push(`${res.url()} ${res.status()}`);
   });
   return problems;
+}
+
+// The email written out with [at] and [dot], each half on one line, and no address anywhere in the page for scrapers.
+async function expectWrittenOutEmail(page, email) {
+  expect(squash(await email.innerText())).toBe(CONTACT_EMAIL);
+  const separators = email.locator(".sep");
+  expect(await separators.allInnerTexts()).toEqual(["[dot]", "[at]", "[dot]"]);
+  for (const separator of await separators.all()) await expect(separator).toHaveCSS("color", "rgb(130, 130, 130)");
+  // Each half stays on one line, so a narrow screen breaks the address only at [at].
+  for (const part of await email.locator(".part").all()) {
+    expect(await part.evaluate((el) => new Set([...el.getClientRects()].map((rect) => Math.round(rect.top))).size)).toBe(1);
+  }
+  const html = await page.content();
+  expect(html).not.toContain("mailto:");
+  expect(html).not.toContain("@uni-saarland");
 }
 
 test.describe("home page", () => {
@@ -292,19 +308,8 @@ test.describe("home page", () => {
     test("writes out the email, leaving no address in the page for scrapers", async ({ page }) => {
       const item = page.locator(".contact li").first();
       await expect(item.locator("i.fa-envelope")).toBeVisible();
-      const email = item.locator(".email");
-      expect(squash(await email.innerText())).toBe(CONTACT_EMAIL);
-      const separators = email.locator(".sep");
-      expect(await separators.allInnerTexts()).toEqual(["[dot]", "[at]", "[dot]"]);
-      for (const separator of await separators.all()) await expect(separator).toHaveCSS("color", "rgb(130, 130, 130)");
-      // Each half stays on one line, so a narrow screen breaks the address only at [at].
-      for (const part of await email.locator(".part").all()) {
-        expect(await part.evaluate((el) => new Set([...el.getClientRects()].map((rect) => Math.round(rect.top))).size)).toBe(1);
-      }
+      await expectWrittenOutEmail(page, item.locator(".email"));
       expect(await page.locator(".contact").innerHTML()).not.toContain("@");
-      const html = await page.content();
-      expect(html).not.toContain("mailto:");
-      expect(html).not.toContain("@uni-saarland");
     });
 
     test("shows the office address with Saarland University linked", async ({ page }) => {
@@ -552,12 +557,12 @@ test.describe("accent colors", () => {
 });
 
 test.describe("site chrome", () => {
-  test("navbar shows about, publications, projects, teaching and the theme toggle, without search or social icons", async ({ page }) => {
+  test("navbar shows about, publications, projects, teaching, CV and the theme toggle, without search or social icons", async ({ page }) => {
     await page.goto("/");
     const toggler = page.locator(".navbar-toggler-main");
     if (await toggler.isVisible()) await toggler.click();
     const links = await page.locator(".navbar-nav .nav-link").allInnerTexts();
-    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects", "teaching"]);
+    expect(links.map((text) => squash(text.replace("(current)", "")))).toEqual(["about", "publications", "projects", "teaching", "CV"]);
     await expect(page.locator("#light-toggle")).toBeVisible();
     await expect(page.locator("#search-toggle")).toHaveCount(0);
     await expect(page.locator("nav .social")).toHaveCount(0);
@@ -609,7 +614,7 @@ test.describe("site chrome", () => {
   }
 
   test("has none of the other starter pages", async ({ request }) => {
-    for (const gone of ["/404.html", "/blog/", "/news/", "/cv/", "/repositories/", "/people/", "/books/"]) {
+    for (const gone of ["/404.html", "/blog/", "/news/", "/repositories/", "/people/", "/books/"]) {
       expect((await request.get(gone)).status(), gone).toBe(404);
     }
   });
@@ -1691,5 +1696,280 @@ test.describe("teaching page", () => {
   test("has no intro text", async ({ page }) => {
     for (const text of await page.locator(".post-description").allInnerTexts()) expect(text.trim()).toBe("");
     expect(await page.locator("article > *").evaluateAll((els) => els.map((el) => el.tagName))).toEqual(["H2", "UL", "H2", "UL"]);
+  });
+});
+
+const CV_HEADINGS = ["Personal Details", "Professional Experience", "Stays Abroad", "Education", "Certificates", "Languages", "Interests"];
+
+const CV_PERSONAL_DETAILS = [
+  ["Name", OWNER],
+  ["Nationality", "Colombian"],
+  ["Email", CONTACT_EMAIL],
+  ["LinkedIn", "camilo-martinez-m"],
+  ["GitHub", "CamiloMartinezM"],
+];
+
+const SAARLAND = ["Saarland University", "https://www.uni-saarland.de/en/home.html"];
+const UNIANDES = ["Universidad de los Andes", "https://www.uniandes.edu.co/en"];
+const INDRA = ["Indra Sistemas", "https://www.indragroup.com/en"];
+
+// Each entry as the CV page shows it: its date badge, its place, the lines beside them, its bullets and every link in it.
+const CV_ENTRIES = {
+  "Professional Experience": [
+    {
+      dates: "2026.08 - Present",
+      place: "Saarbrücken, Germany",
+      lines: ["Research Assistant", "Data-Driven Design of Materials (d3M), Saarland University"],
+      bullets: [
+        "Development of reliable Machine Learning methods for microstructure analysis in low-data regimes, working with small, heterogeneous datasets while reducing manual annotation effort.",
+        "Research on active and semi-supervised learning, synthetic data generation, self-supervised pretraining of domain-specific encoders, and adaptation of foundation models such as SAM.",
+        "Collaboration with university and industry partners in the CircularSaar consortium on materials data science projects, from exploratory data analysis to training and evaluating models.",
+      ],
+      links: [["Data-Driven Design of Materials (d3M)", "https://martinmueller1104.github.io/d3m.github.io/"], SAARLAND],
+    },
+    {
+      dates: "2025.01 - 2026.07",
+      place: "Saarbrücken, Germany",
+      lines: ["Research Assistant", "Material Engineering Center Saarland"],
+      bullets: [
+        "Development of Machine Learning models for analysis and characterization tasks in Materials Science and Engineering (MES), leveraging both traditional ML and modern DL approaches.",
+        "Research and application of state-of-the-art architectures, including Visual Transformers (ViTs), semi-supervised, and self-supervised learning methods, optimized for low-data regimes for enhancing microstructure classification and segmentation.",
+      ],
+      links: [["Material Engineering Center Saarland", "https://www.mec-s.de/en/welcome/"]],
+    },
+    {
+      dates: "2024.04 - 2025.03",
+      place: "Saarbrücken, Germany",
+      lines: ["Teaching Assistant", "Saarland University"],
+      bullets: [
+        "Organization of weekly face-to-face tutorials for the courses “Elements of Machine Learning” (approx. 40 students) and “Digital Signal Processing” (approx. 30 students) in order to deepen the concepts covered in the lectures and to clarify questions from students.",
+      ],
+      links: [SAARLAND],
+    },
+    {
+      dates: "2024.03 - 2024.12",
+      place: "Saarbrücken, Germany",
+      lines: ["Research Assistant", "Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)"],
+      bullets: [
+        "(Pre-)processing of EEG signals and eye tracking data, for use in Machine Learning models, using Python.",
+        "Training of Machine Learning models (particularly, sequence-to-label routines with LSTMs and Transformers, using TensorFlow and PyTorch's implementations), focused on predicting target- and non-target eye fixations.",
+      ],
+      links: [["Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)", "https://www.dfki.de/en/web"]],
+    },
+    {
+      dates: "2021.07 - 2023.09",
+      place: "Barranquilla, Colombia",
+      lines: ["Functional Consultant", "Indra Sistemas"],
+      bullets: [
+        "Led a team expanding the capabilities of utility companies AFINIA (Colombia), Agua de Puebla (Mexico) and Sedapal (Lima, Peru), supporting their Industry 4.0 transition with Business Intelligence.",
+        "Gathered requirements from clients and stakeholders, remotely and on site, and relayed them to technical teams, using SharePoint, Teams, and Agile methods with Jira and Confluence.",
+        "Designed, created, and analyzed PowerBI and Excel dashboards/reports for improved operational analysis and KPI assessment.",
+      ],
+      links: [
+        INDRA,
+        ["AFINIA", "https://afinia.com.co/"],
+        ["Agua de Puebla", "https://www.aguapuebla.mx/"],
+        ["Sedapal", "https://www.sedapal.com.pe/"],
+      ],
+    },
+    {
+      dates: "2021.03 - 2021.04",
+      place: "Remote, Colombia",
+      lines: ["Research Assistant in Data Analysis with MATLAB", "Universidad de los Andes"],
+      bullets: [
+        "Carried out the optimization and execution of pre-written MATLAB code, adapted it to different portions of the A.C. Nielsen Kilts database and reduced the total execution time by 99,8% vectorizing operations.",
+      ],
+      links: [UNIANDES],
+    },
+    {
+      dates: "2020.01 - 2020.12",
+      place: "Bogotá D.C., Colombia",
+      lines: ["Teaching Assistant", "Universidad de los Andes"],
+      bullets: [],
+      links: [UNIANDES],
+    },
+  ],
+  "Stays Abroad": [
+    {
+      dates: "2023.03 - 2023.08",
+      place: "Lima, Peru",
+      lines: ["Requirements analysis and blueprint sign-off with Sedapal", "Indra Sistemas", "4 stays, 9 weeks in total"],
+      bullets: [],
+      links: [["Sedapal", "https://www.sedapal.com.pe/"], INDRA],
+    },
+    {
+      dates: "2022.07 - 2022.09",
+      place: "Puebla, Mexico",
+      lines: ["Training of Agua de Puebla staff in Onesait Utilities Customers", "Indra Sistemas", "2 stays, 3 weeks in total"],
+      bullets: [],
+      links: [["Agua de Puebla", "https://www.aguapuebla.mx/"], INDRA],
+    },
+  ],
+  Education: [
+    {
+      dates: "2023.10 - 2026.10",
+      place: "Saarbrücken, Germany",
+      lines: ["M.Sc. Data Science and Artificial Intelligence", "Saarland University"],
+      bullets: [
+        "Master's thesis: Brain2Face: Reconstructing Dynamic 3D Facial Expressions from EEG Signals, written at the Max Planck Institute for Informatics",
+      ],
+      links: [
+        [
+          "M.Sc. Data Science and Artificial Intelligence",
+          "https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/",
+        ],
+        SAARLAND,
+        ["Max Planck Institute for Informatics", "https://www.mpi-inf.mpg.de/home"],
+      ],
+    },
+    {
+      dates: "2017.01 - 2021.04",
+      place: "Bogotá D.C., Colombia",
+      lines: ["B.Sc. Mechanical Engineering, Minor in Computational Mathematics", "Universidad de los Andes"],
+      bullets: [
+        "Bachelor's thesis: Application of Computer Vision in the Analysis of Microstructures and Obtaining Structure-Property Relationships",
+        "GPA: 4,41/5,00 (equivalent to 1,8 in the German grading system)",
+        "Awarded the national “Ser Pilo Paga 3” scholarship by the Colombian government for academic excellence, funding 100% of my tuition and living expenses throughout my bachelor’s studies.",
+      ],
+      links: [
+        UNIANDES,
+        [
+          "Application of Computer Vision in the Analysis of Microstructures and Obtaining Structure-Property Relationships",
+          "/publications/#Martinez_2021",
+        ],
+      ],
+    },
+  ],
+};
+
+const CV_CERTIFICATES = ["DeepLearning.AI Deep Learning (2022)", "DeepLearning.AI TensorFlow Developer (2020)", "Django for Everybody (2023)"];
+
+// Each language and interest: its name, then its keywords.
+const CV_GROUPS = {
+  Languages: [
+    ["Spanish", "Native"],
+    ["English", "Full Professional Proficiency", "TOEFL C1 (2023)"],
+    ["German", "Professional Working Proficiency", "Goethe Zertifikat B2 (2016)"],
+    ["French", "Limited Working Proficiency", "DELF B2 (2016)"],
+  ],
+  Interests: [
+    [
+      "Topics",
+      "Computer Vision for Materials Microstructure Analysis",
+      "Data-Frugal Learning",
+      "Vision and Language Foundation Models",
+      "Multimodal Learning with EEG",
+    ],
+    ["Hobbies", "Running/biking", "Dancing (salsa & bachata)", "Reading", "Coding"],
+  ],
+};
+
+test.describe("CV page", () => {
+  const section = (page, heading) => page.locator(".cv .card", { has: page.locator("h3", { hasText: heading }) });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/cv/");
+  });
+
+  test("shows its CV heading and its sections in order, each listed in the sidebar's table of contents", async ({ page }) => {
+    await expect(page.locator("h1.post-title")).toHaveText("CV");
+    expect((await page.locator(".cv h3").allInnerTexts()).map(squash)).toEqual(CV_HEADINGS);
+    await expect(page.locator("#toc-sidebar a")).toHaveText(CV_HEADINGS);
+  });
+
+  test("shows the Personal details with the profile links, each label on one line and clear of its value", async ({ page }) => {
+    const details = section(page, "Personal Details");
+    const rows = await details
+      .locator("tr")
+      .evaluateAll((trs) => trs.map((tr) => [...tr.cells].map((td) => td.innerText.replace(/\s+/g, " ").trim())));
+    expect(rows).toEqual(CV_PERSONAL_DETAILS);
+    await expect(details.getByRole("link", { name: "camilo-martinez-m" })).toHaveAttribute("href", SOCIAL_LINKS[0]);
+    await expect(details.getByRole("link", { name: "CamiloMartinezM" })).toHaveAttribute("href", SOCIAL_LINKS[2]);
+    for (const label of await details.locator("td:first-child").all()) {
+      await expect(label).toHaveCSS("padding-right", "16px");
+      await expect(label).toHaveCSS("white-space", "nowrap");
+    }
+  });
+
+  test("writes out the email, leaving no address in the page for scrapers", async ({ page }) => {
+    await expectWrittenOutEmail(page, section(page, "Personal Details").locator(".email"));
+  });
+
+  test("leaves out the phone number, the Portfolio link and the Publications", async ({ page }) => {
+    const text = await page.locator("article").innerText();
+    expect(text).not.toMatch(/phone|\+49|portfolio/i);
+    for (const publication of PUBLICATIONS.filter((p) => p.id !== "Martinez_2021")) expect(text).not.toContain(publication.title);
+  });
+
+  for (const [heading, entries] of Object.entries(CV_ENTRIES)) {
+    test(`lists the ${heading} entries newest first, word for word, with their links`, async ({ page }) => {
+      const shown = await section(page, heading)
+        .locator(".list-group-item")
+        .evaluateAll((items) => {
+          const text = (el) => el.textContent.replace(/\s+/g, " ").trim();
+          return items.map((item) => ({
+            dates: text(item.querySelector(".badge")),
+            place: text(item.querySelector(".location")),
+            lines: [...item.querySelectorAll("h6")].map(text),
+            bullets: [...item.querySelectorAll(".items .item")].map(text),
+            links: [...item.querySelectorAll("a")].map((a) => [text(a), a.getAttribute("href")]),
+          }));
+        });
+      expect(shown).toEqual(entries);
+    });
+  }
+
+  test("lists the Certificates word for word", async ({ page }) => {
+    expect((await section(page, "Certificates").locator(".list-group-item").allInnerTexts()).map(squash)).toEqual(CV_CERTIFICATES);
+  });
+
+  for (const [heading, groups] of Object.entries(CV_GROUPS)) {
+    test(`shows the ${heading} as names in the accent color with their keywords small and bold below, two to a row on wide screens`, async ({
+      page,
+    }) => {
+      const card = section(page, heading);
+      const shown = await card
+        .locator(".list-group")
+        .evaluateAll((divs) =>
+          divs.map((div) => [...div.querySelectorAll(".list-group-category, .list-group-name b")].map((el) => el.textContent.trim()))
+        );
+      expect(shown).toEqual(groups);
+      const accent = await section(page, "Personal Details")
+        .getByRole("link", { name: "CamiloMartinezM" })
+        .evaluate((a) => getComputedStyle(a).color);
+      for (const name of await card.locator(".list-group-category").all()) await expect(name).toHaveCSS("color", accent);
+      for (const keyword of await card.locator(".list-group-name").all()) {
+        await expect(keyword).toHaveCSS("font-size", "12.8px");
+        await expect(keyword.locator("b")).toHaveCSS("font-weight", "700");
+      }
+      const tops = await card.locator(".list-group").evaluateAll((divs) => divs.map((div) => Math.round(div.getBoundingClientRect().top)));
+      expect(tops[0] === tops[1]).toBe(page.viewportSize().width >= 768);
+    });
+  }
+
+  test("shows its entries without list bullets, divided by lines, with no line above the date badges", async ({ page }) => {
+    const lists = await page.locator(".cv ul.list-group").evaluateAll((uls) =>
+      uls.map((ul) => ({
+        bullets: getComputedStyle(ul).listStyleType,
+        dividers: [...ul.children].map((li) => getComputedStyle(li).borderBottomStyle),
+      }))
+    );
+    expect(lists).toHaveLength(4);
+    for (const list of lists) {
+      expect(list.bullets).toBe("none");
+      expect(list.dividers).toEqual([...Array(list.dividers.length - 1).fill("solid"), "none"]);
+    }
+    const lines = await page.locator(".cv .date-column td").evaluateAll((tds) => tds.map((td) => getComputedStyle(td).borderTopStyle));
+    expect(new Set(lines)).toEqual(new Set(["none"]));
+  });
+
+  test("shows the table of contents without a scrollbar", async ({ page }) => {
+    await expect(page.locator("#toc-sidebar")).toHaveCSS("overflow-y", "visible");
+  });
+
+  test("has no intro text, PDF download or photo", async ({ page }) => {
+    await expect(page.locator(".post-description")).toHaveCount(0);
+    await expect(page.locator(".fa-file-pdf")).toHaveCount(0);
+    await expect(page.locator("article img")).toHaveCount(0);
   });
 });

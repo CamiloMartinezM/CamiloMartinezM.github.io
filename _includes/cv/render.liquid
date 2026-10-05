@@ -1,0 +1,128 @@
+{% comment %}
+  Local override of templates/cv/render.liquid from al_folio_cv 1.0.2, which renders the CV page from _data/cv.yml:
+  the Personal details first, then each section in the file's order. Stays Abroad entries render like Professional
+  Experience ones. Languages and Interests use the list groups of al-folio's earlier CV layout; all other entries use
+  the gem's includes. Compare this file with the gem's copy when bumping al_folio_cv.
+{% endcomment %}
+{% assign cv = site.data.cv %}
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+  </header>
+
+  <article>
+    <div class="cv">
+      <div class="card mt-3 p-3">
+        <h3 id="personal-details" class="card-title font-weight-medium">Personal Details</h3>
+        <table class="table table-cv table-sm table-borderless">
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Name</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              {{ site.first_name }}
+              {{ site.last_name }}
+            </td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Nationality</b></td>
+            <td class="p-1 pl-2 font-weight-light">{{ cv.nationality }}</td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>Email</b></td>
+            <td class="p-1 pl-2 font-weight-light">{% include written-out-email.liquid %}</td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>LinkedIn</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              <a href="https://www.linkedin.com/in/{{ site.data.socials.linkedin_username }}">{{ site.data.socials.linkedin_username }}</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="p-1 pr-2 font-weight-bold"><b>GitHub</b></td>
+            <td class="p-1 pl-2 font-weight-light">
+              <a href="https://github.com/{{ site.data.socials.github_username }}">{{ site.data.socials.github_username }}</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      {% for section in cv.sections %}
+        {% assign entries = section[1] %}
+        <div class="card mt-3 p-3">
+          <h3 id="{{ section[0] | slugify }}" class="card-title font-weight-medium">{{ section[0] }}</h3>
+          <div>
+            {% case section[0] %}
+              {% when 'Professional Experience', 'Stays Abroad' %}
+                {% assign entries = entries | al_cv_sort_by_date %}
+                {% include cv/experience.liquid %}
+              {% when 'Education' %}
+                {% assign entries = entries | al_cv_sort_by_date %}
+                {% include cv/education.liquid %}
+              {% when 'Certificates' %}
+                {% include cv/certificates.liquid %}
+              {% when 'Languages', 'Interests' %}
+                {% comment %} Each name in the accent color with its keywords in bold below it, two names to a row. {% endcomment %}
+                <div class="list-groups">
+                  {% for entry in entries %}
+                    <div class="list-group col-md-6">
+                      <table class="table-cv list-group-table">
+                        <tbody>
+                          <tr>
+                            <td class="list-group-category-icon"></td>
+                            <td class="list-group-category">{{ entry.name }}</td>
+                          </tr>
+                          {% for keyword in entry.keywords %}
+                            <tr>
+                              <td></td>
+                              <td class="list-group-name">
+                                <b>{{ keyword }}</b>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% endfor %}
+                </div>
+            {% endcase %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+
+  <style>
+    /* tocbot scrolls the table of contents, which overflowed it by a pixel and showed a scrollbar beside seven links. */
+    #toc-sidebar {
+      overflow: visible;
+    }
+    /* The entries are Bootstrap list groups, which the theme leaves unstyled while its Bootstrap compatibility is off. */
+    .cv ul.list-group {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .cv .list-group-item {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--global-divider-color);
+    }
+    .cv .list-group-flush .list-group-item:last-child {
+      border-bottom: 0;
+    }
+    /* The theme's rule for plain tables would draw a line above each date badge. */
+    .cv table.table-cv td {
+      border-top: 0;
+    }
+    /* The theme's rule for plain tables outweighs the gem's smaller keywords, and <b> on the theme's light text is only regular. */
+    .cv table.table-cv td.list-group-name {
+      font-size: 0.8rem;
+    }
+    .cv .list-group-name b {
+      font-weight: 700;
+    }
+    /* The gem's 1px cell padding would leave each Personal details label touching its value on a phone. */
+    .cv table.table td:first-child {
+      padding-right: 1rem;
+      white-space: nowrap;
+    }
+  </style>
+</div>

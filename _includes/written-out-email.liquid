@@ -1,0 +1,17 @@
+{% comment %}
+  The owner's email address, written out so the page holds no address for scrapers.
+  Each half stays on one line, so a narrow screen breaks the address only at [at].
+{% endcomment %}
+<span class="email">
+  <span class="part">camilo <span class="sep">[dot]</span> martinez</span>
+  <span class="sep">[at]</span>
+  <span class="part">uni-saarland <span class="sep">[dot]</span> de</span>
+</span>
+<style>
+  .email .part {
+    white-space: nowrap;
+  }
+  .email .sep {
+    color: var(--global-text-color-light);
+  }
+</style>
