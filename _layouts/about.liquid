@@ -75,11 +75,7 @@ layout: default
     <ul class="fa-ul contact">
       <li>
         <span class="fa-li"><i class="fa-solid fa-envelope fa-xl"></i></span>
-        <span class="email">
-          <span class="part">camilo <span class="sep">[dot]</span> martinez</span>
-          <span class="sep">[at]</span>
-          <span class="part">uni-saarland <span class="sep">[dot]</span> de</span>
-        </span>
+        {% include written-out-email.liquid %}
       </li>
       <li>
         <span class="fa-li"><i class="fa-solid fa-location-dot fa-xl"></i></span>
@@ -96,12 +92,6 @@ layout: default
       }
       .contact > li {
         margin-bottom: 0.5rem;
-      }
-      .contact .email .part {
-        white-space: nowrap;
-      }
-      .contact .email .sep {
-        color: var(--global-text-color-light);
       }
       #contact-map {
         height: 350px;

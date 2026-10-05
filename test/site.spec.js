@@ -199,6 +199,21 @@ function watchPage(page) {
   return problems;
 }
 
+// The email written out with [at] and [dot], each half on one line, and no address anywhere in the page for scrapers.
+async function expectWrittenOutEmail(page, email) {
+  expect(squash(await email.innerText())).toBe(CONTACT_EMAIL);
+  const separators = email.locator(".sep");
+  expect(await separators.allInnerTexts()).toEqual(["[dot]", "[at]", "[dot]"]);
+  for (const separator of await separators.all()) await expect(separator).toHaveCSS("color", "rgb(130, 130, 130)");
+  // Each half stays on one line, so a narrow screen breaks the address only at [at].
+  for (const part of await email.locator(".part").all()) {
+    expect(await part.evaluate((el) => new Set([...el.getClientRects()].map((rect) => Math.round(rect.top))).size)).toBe(1);
+  }
+  const html = await page.content();
+  expect(html).not.toContain("mailto:");
+  expect(html).not.toContain("@uni-saarland");
+}
+
 test.describe("home page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -292,19 +307,8 @@ test.describe("home page", () => {
     test("writes out the email, leaving no address in the page for scrapers", async ({ page }) => {
       const item = page.locator(".contact li").first();
       await expect(item.locator("i.fa-envelope")).toBeVisible();
-      const email = item.locator(".email");
-      expect(squash(await email.innerText())).toBe(CONTACT_EMAIL);
-      const separators = email.locator(".sep");
-      expect(await separators.allInnerTexts()).toEqual(["[dot]", "[at]", "[dot]"]);
-      for (const separator of await separators.all()) await expect(separator).toHaveCSS("color", "rgb(130, 130, 130)");
-      // Each half stays on one line, so a narrow screen breaks the address only at [at].
-      for (const part of await email.locator(".part").all()) {
-        expect(await part.evaluate((el) => new Set([...el.getClientRects()].map((rect) => Math.round(rect.top))).size)).toBe(1);
-      }
+      await expectWrittenOutEmail(page, item.locator(".email"));
       expect(await page.locator(".contact").innerHTML()).not.toContain("@");
-      const html = await page.content();
-      expect(html).not.toContain("mailto:");
-      expect(html).not.toContain("@uni-saarland");
     });
 
     test("shows the office address with Saarland University linked", async ({ page }) => {
