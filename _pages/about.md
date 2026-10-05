@@ -21,7 +21,7 @@ Hello there! I'm a full-time research assistant in the [Data-Driven Design of Ma
 
 I hold a master's degree in [Data Science and Artificial Intelligence](https://saarland-informatics-campus.de/en/studium-studies/data-science-and-artificial-intelligence-master/) from Saarland University and a bachelor's degree in Mechanical Engineering with a Minor in Computational Mathematics from [Universidad de los Andes](https://www.uniandes.edu.co/en), Colombia. Previously, I applied Computer Vision to materials microstructure analysis at the [Material Engineering Center Saarland (MECS)](https://www.mec-s.de/en/welcome/), worked on multimodal EEG and eye tracking for intent prediction at the [German Research Center for Artificial Intelligence (DFKI)](https://www.dfki.de/en/web) and driving photorealistic 3D Gaussian Avatars with EEG signals at the [Max Planck Institute for Informatics (MPI)](https://www.mpi-inf.mpg.de/home).
 
-Before that, I was a Functional Consultant at [Indra](https://www.linkedin.com/company/indra/posts/?feedView=all), where I oversaw a team to enhance utility companies' operational abilities to align with the Industry 4.0, namely, [AFINIA](https://afinia.com.co/) in Colombia, [Agua de Puebla](https://www.aguapuebla.mx/) in Mexico and [Sedapal](https://www.sedapal.com.pe/) in Peru.
+Before that, I was a Functional Consultant at [Indra](https://www.indragroup.com/en), where I oversaw a team to enhance utility companies' operational abilities to align with the Industry 4.0, namely, [AFINIA](https://afinia.com.co/) in Colombia, [Agua de Puebla](https://www.aguapuebla.mx/) in Mexico and [Sedapal](https://www.sedapal.com.pe/) in Peru.
 
 ## Research Interests
 

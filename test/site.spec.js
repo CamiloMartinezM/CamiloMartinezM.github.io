@@ -28,7 +28,7 @@ const BIO = [
   {
     text: "Before that, I was a Functional Consultant at Indra, where I oversaw a team to enhance utility companies' operational abilities to align with the Industry 4.0, namely, AFINIA in Colombia, Agua de Puebla in Mexico and Sedapal in Peru.",
     links: [
-      ["Indra", "https://www.linkedin.com/company/indra/posts/?feedView=all"],
+      ["Indra", "https://www.indragroup.com/en"],
       ["AFINIA", "https://afinia.com.co/"],
       ["Agua de Puebla", "https://www.aguapuebla.mx/"],
       ["Sedapal", "https://www.sedapal.com.pe/"],
