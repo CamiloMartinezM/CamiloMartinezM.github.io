@@ -1934,6 +1934,10 @@ test.describe("CV page", () => {
     expect(new Set(lines)).toEqual(new Set(["none"]));
   });
 
+  test("shows the table of contents without a scrollbar", async ({ page }) => {
+    await expect(page.locator("#toc-sidebar")).toHaveCSS("overflow-y", "visible");
+  });
+
   test("has no intro text, PDF download or photo", async ({ page }) => {
     await expect(page.locator(".post-description")).toHaveCount(0);
     await expect(page.locator(".fa-file-pdf")).toHaveCount(0);
